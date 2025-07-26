@@ -37,21 +37,16 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
             subtitle: _('Match user shell theme with accent color (Fluent user themes only).'),
         });
         GeneralGroup.add(changeAppColors);
-        // Add custom theme selection group
-        const ThemeGroup = new Adw.PreferencesGroup({
-            title: _('Custom User Themes'),
+        // Add custom light theme selection group
+        const ThemeGroupLight = new Adw.PreferencesGroup({
+            title: _('Custom User Themes Light'),
             description: _('Select custom user shell theme for each accent color'),
         });
-        page.add(ThemeGroup);
+        page.add(ThemeGroupLight);
         // Get available user shell themes
         const userThemesLight = this._getAvailableUserThemes();
-        const userThemesDark = this._getAvailableUserThemes();
         // Create dropdown for each accent color
         const accentColorsLight = [
-            'blue', 'teal', 'green', 'yellow',
-            'orange', 'red', 'pink', 'purple', 'slate'
-        ];
-        const accentColorsDark = [
             'blue', 'teal', 'green', 'yellow',
             'orange', 'red', 'pink', 'purple', 'slate'
         ];
@@ -65,8 +60,22 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
                 const selected = userThemesLight[row.selected];
                 preferences.set_string(`${color}-theme-light`, selected);
             });
-            ThemeGroup.add(row);
+            ThemeGroupLight.add(row);
         });
+        // Add custom dark theme selection group
+                // Add custom light theme selection group
+        const ThemeGroupDark = new Adw.PreferencesGroup({
+            title: _('Custom User Themes Dark'),
+            description: _('Select custom user shell theme for each accent color'),
+        });
+        page.add(ThemeGroupDark);
+        // Get available user shell themes
+        const userThemesDark = this._getAvailableUserThemes();
+        // Create dropdown for each accent color
+        const accentColorsDark = [
+            'blue', 'teal', 'green', 'yellow',
+            'orange', 'red', 'pink', 'purple', 'slate'
+        ];
         accentColorsDark.forEach(color => {
             const row = new Adw.ComboRow({
                 title: _(color.charAt(0).toUpperCase() + color.slice(1)),
@@ -77,7 +86,7 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
                 const selected = userThemesDark[row.selected];
                 preferences.set_string(`${color}-theme-dark`, selected);
             });
-            ThemeGroup.add(row);
+            ThemeGroupDark.add(row);
         });
         window.add(page);
         preferences.bind('change-app-colors', changeAppColors, 'active', Gio.SettingsBindFlags.DEFAULT);
