@@ -66,7 +66,7 @@ Fluent-round-yellow-compact
 ```
 Also is nice to have installed [Accent Icons](https://extensions.gnome.org/extension/7535/accent-directories/) and [Accent user theme](https://github.com/florintanasa/brgvos-void/tree/main/accent-user-theme%40brgvos), BRGV-OS have by defaults this.
   
-In **BRGV-OS** also instalated [Fluent icon theme](https://github.com/vinceliuice/Fluent-icon-theme):  
+In **BRGV-OS** also is instalated [Fluent icon theme](https://github.com/vinceliuice/Fluent-icon-theme):  
   
 ```txt
 Fluent

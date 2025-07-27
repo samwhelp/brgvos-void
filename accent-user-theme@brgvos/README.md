@@ -64,8 +64,37 @@ Fluent-round-yellow-Light
 Fluent-round-yellow-Light-compact
 Fluent-round-yellow-compact
 ```
-Also is nice to have installed [Accent Icons](https://extensions.gnome.org/extension/7535/accent-directories/) and [Accent gtk theme](https://github.com/florintanasa/brgvos-void/tree/main/accent-gtk-theme%40brgvos), BRGV-OS have by defaults this.
-
+Also is nice to have installed [Accent Icons](https://extensions.gnome.org/extension/7535/accent-directories/) and [Accent gtk theme](https://github.com/florintanasa/brgvos-void/tree/main/accent-gtk-theme%40brgvos), BRGV-OS have by defaults this.  
+  
+In **BRGV-OS** also is instalated [Fluent icon theme](https://github.com/vinceliuice/Fluent-icon-theme):  
+  
+```txt
+Fluent
+Fluent-dark
+Fluent-green
+Fluent-green-dark
+Fluent-green-light
+Fluent-grey
+Fluent-grey-dark
+Fluent-grey-light
+Fluent-light
+Fluent-orange
+Fluent-orange-dark
+Fluent-orange-light
+Fluent-pink
+Fluent-pink-dark
+Fluent-pink-light
+Fluent-purple
+Fluent-purple-dark
+Fluent-purple-light
+Fluent-red
+Fluent-red-dark
+Fluent-red-light
+Fluent-yellow
+Fluent-yellow-dark
+Fluent-yellow-light
+```  
+  
 ## Warning 
 
 The open-source software included in **BRGV-OS** is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**.
