@@ -1,5 +1,5 @@
 # Accent User Theme
-It is a Gnome extension that changes the user's theme based on the accent color chosen by the user in Gnome Settings, Appearance screen.  
+It is a Gnome extension that changes the user's theme based on the accent color chosen by the user in Gnome Settings, Appearance screen and by preferred color schema Light or Dark.    
 The extension is a modification of the [Accent Color Icon Theme Changer For GNOME](https://github.com/taiwbi/gnome-accent-directories) extension, thank you `Mohammad Mahdi Tayebi` for your work.  
 This extension is included in **BRGV-OS** Linux distribution.  
 
@@ -100,7 +100,3 @@ Fluent-yellow-light
 The open-source software included in **BRGV-OS** is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**.
 
 The work is in progress..
-
-## To do ...
-
-Is necessary to modify `Accent Icons` to work with 8 icons themes for Light scheme and 8 icons themes for Dark scheme. 
