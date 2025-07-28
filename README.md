@@ -32,9 +32,7 @@ Next video is a example...
 
 |       |       |
 |:-----:|:-----:|
-|[<img src="https://img.youtube.com/vi/QVdH_dGIyOQ/maxresdefault.jpg" width="400" height="280"
-/>](https://www.youtube.com/embed/QVdH_dGIyOQ?autoplay=1&mute=1)|[<img src="https://img.youtube.com/vi/HZfKh0V6aOo/maxresdefault.jpg" width="400" height="280"
-/>](https://www.youtube.com/embed/HZfKh0V6aOo?autoplay=1&mute=1)|
+|[<img src="https://img.youtube.com/vi/QVdH_dGIyOQ/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/QVdH_dGIyOQ?autoplay=1&mute=1)|[<img src="https://img.youtube.com/vi/HZfKh0V6aOo/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/HZfKh0V6aOo?autoplay=1&mute=1)|
 
 ## How to install applications
 
