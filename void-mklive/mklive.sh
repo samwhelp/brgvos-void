@@ -294,7 +294,7 @@ menuentry "${entrytitle}" --id "${id}" ${hotkey:+--hotkey $hotkey} {
     linux (\${voidlive})/boot/${KERNEL_IMG} \\
         root=live:CDLABEL=VOID_LIVE ro init=/sbin/init \\
         rd.luks=0 rd.md=0 rd.dm=0 loglevel=4 gpt add_efi_memmap \\
-        vconsole.unicode=1 vconsole.keymap=${KEYMAP} locale.LANG=${LOCALE} ${cmdline} quiet splash
+        vconsole.unicode=1 vconsole.keymap=${KEYMAP} locale.LANG=${LOCALE} ${cmdline}
     initrd (\${voidlive})/boot/initrd
 EOF
         if [ -n "${dtb}" ]; then
