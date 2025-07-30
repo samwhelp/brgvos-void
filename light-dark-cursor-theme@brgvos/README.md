@@ -6,8 +6,7 @@ This extension is included in **BRGV-OS** Linux distribution.
 |:-----------------:|:------------------:|
 |![Dark Cursor Theme](../screenshots/dark_color_scheme_cursor_theme.png)|![Light Cursor Theme](../screenshots/light_color_scheme_cursor_theme.png)|  
     
-## What is necessary ...
-Is necessary to have [User Themes](https://extensions.gnome.org/extension/19/user-themes/) installed, thank you `@fmuellner` for your work.  
+## What is necessary ...  
 BRGV-OS have all [Fluent icon theme](https://github.com/vinceliuice/Fluent-icon-theme) installed in `/usr/share/icons`, thank you `Vince` for your work.  
 In **BRGV-OS** is allready installed [Fluent icon theme](https://github.com/vinceliuice/Fluent-icon-theme), with next theme cursors:  
   
