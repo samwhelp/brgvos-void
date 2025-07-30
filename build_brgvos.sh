@@ -25,6 +25,7 @@ service=$(cat ../services)
 sudo ./mkiso.sh \
 -a $arch \
 -b $variant \
+-L $locale \
 -- -k $keymap \
 -B $variant \
 -l $locale \

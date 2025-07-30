@@ -28,6 +28,7 @@ usage() {
 	               Equivalent to setting -a, -b, and -d
 	 -r <repo>     Use this XBPS repository. May be specified multiple times
 	 -h            Show this help and exit
+     -L <locale>   Default installer to use (for example only: ro_RO.UTF-8, for Romanian, others values for English)
 	 -V            Show version and exit
 
 	Other options can be passed directly to mklive.sh by specifying them after the --.
@@ -35,13 +36,14 @@ usage() {
 	EOH
 }
 
-while getopts "a:b:d:t:hr:V" opt; do
+while getopts "a:b:d:t:hr:L:V" opt; do
 case $opt in
     a) ARCH="$OPTARG";;
     b) IMAGES="$OPTARG";;
     d) DATE="$OPTARG";;
     r) REPO="-r $OPTARG $REPO";;
     t) TRIPLET="$OPTARG";;
+    L) LANGUAGE="$OPTARG";;
     V) version; exit 0;;
     h) usage; exit 0;;
     *) usage >&2; exit 1;;
@@ -57,16 +59,33 @@ cleanup() {
 }
 
 include_installer() {
-    if [ -x installer.sh ]; then
-        MKLIVE_VERSION="$(PROGNAME='' version)"
-        installer=$(mktemp)
-        sed "s/@@MKLIVE_VERSION@@/${MKLIVE_VERSION}/" installer_ro.sh > "$installer"
-        install -Dm755 "$installer" "$INCLUDEDIR"/usr/bin/brgvos-installer
-        rm "$installer"
-    else
-        echo installer_ro.sh not found >&2
-        exit 1
-    fi
+    case "$LANGUAGE" in
+    ro_RO.UTF-8*)
+        if [ -x installer_ro.sh ]; then
+            MKLIVE_VERSION="$(PROGNAME='' version)"
+            installer=$(mktemp)
+            sed "s/@@MKLIVE_VERSION@@/${MKLIVE_VERSION}/" installer_ro.sh > "$installer"
+            install -Dm755 "$installer" "$INCLUDEDIR"/usr/bin/brgvos-installer
+            rm "$installer"
+        else
+            echo installer_ro.sh not found >&2
+            exit 1
+        fi
+        ;;
+    *)
+        if [ -x installer.sh ]; then
+            MKLIVE_VERSION="$(PROGNAME='' version)"
+            installer=$(mktemp)
+            sed "s/@@MKLIVE_VERSION@@/${MKLIVE_VERSION}/" installer.sh > "$installer"
+            install -Dm755 "$installer" "$INCLUDEDIR"/usr/bin/brgvos-installer
+            rm "$installer"
+        else
+            echo installer.sh not found >&2
+            exit 1
+        fi
+        ;;
+    esac
+
 }
 
 setup_pipewire() {
