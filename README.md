@@ -14,25 +14,26 @@ BRGV-OS is a custom [Void Linux](https://voidlinux.org/) based distribution that
 It is suggested to use Void Linux or other based by this distribution.  
 To build the iso image is necessary to use a Void Linux distribution where we run next commands:  
 
-> [!IMPORTANT]  
-> In this moment the build is for romanian language only, but with few modifications can be buildid for antohers.
-
 ```bash
 git clone https://github.com/florintanasa/brgvos-void.git
 cd brgvos-void
 sudo ./build_brgvos.sh
 ```  
-
+  
 After that, if everythink works, we find the iso image is in directory `void-mklive`
-
-ISO file can be downloaded from [here](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/) 
-
+  
+> [!IMPORTANT]  
+> In this moment the build is for romanian language only, but with few modifications can be buildid for anothers.  
+> Exist iso images files for: ro_RO.UTF-8 and en_US.UTF-8.  
+> ISO file can be downloaded from [here](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/)
+  
 Test the result of ISO file in virtual machine.
-Next video is a example...  
+Next videos is a example...  
 
-|       |       |
-|:-----:|:-----:|
-|[<img src="https://img.youtube.com/vi/QVdH_dGIyOQ/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/QVdH_dGIyOQ?autoplay=1&mute=1)|[<img src="https://img.youtube.com/vi/HZfKh0V6aOo/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/HZfKh0V6aOo?autoplay=1&mute=1)|
+|    Installation in Romanian   |   Change the theme by accent color and scheme color    |Installation in English  |
+|:-----------------------------:|:------------------------------------------------------:|:------------------------:|
+|[<img src="https://img.youtube.com/vi/QVdH_dGIyOQ/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/QVdH_dGIyOQ?autoplay=1&mute=1)|[<img src="https://img.youtube.com/vi/HZfKh0V6aOo/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/HZfKh0V6aOo?autoplay=1&mute=1)|[<img src="https://img.youtube.com/vi/SnHjbCFt-qw/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/SnHjbCFt-qw?autoplay=1&mute=1)|  
+  
 
 ## How to install applications
 
