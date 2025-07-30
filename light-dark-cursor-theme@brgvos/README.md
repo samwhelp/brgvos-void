@@ -16,7 +16,7 @@ Fluent-cursors
 Fluent-dark-cursors 
 ```  
   
-Also is nice to have installed [Accent gtk theme](https://github.com/florintanasa/brgvos-void/tree/main/accent-gtk-theme%40brgvos), [Accent user theme](https://github.com/florintanasa/brgvos-void/tree/main/accent-user-theme%40brgvos), BRGV-OS have by defaults this and [Accent icons theme](https://github.com/florintanasa/brgvos-void/tree/main/accent-icons-theme%40brgvos)
+Also is nice to have installed [Accent gtk theme](https://github.com/florintanasa/brgvos-void/tree/main/accent-gtk-theme%40brgvos), [Accent user theme](https://github.com/florintanasa/brgvos-void/tree/main/accent-user-theme%40brgvos), and [Accent icons theme](https://github.com/florintanasa/brgvos-void/tree/main/accent-icons-theme%40brgvos), BRGV-OS have by defaults this. 
   
 > [!IMPORTANT]  
 > In this moment Fluent icons not have for teal color a theme, I used blue icon theme for this accent color...
