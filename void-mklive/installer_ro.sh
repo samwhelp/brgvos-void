@@ -45,7 +45,7 @@ MIRROR_DONE=
 
 TARGETDIR=/mnt/target
 LOG=/dev/tty8
-CONF_FILE=/tmp/.void-installer.conf
+CONF_FILE=/tmp/.brgvos-installer.conf
 if [ ! -f $CONF_FILE ]; then
     touch -f $CONF_FILE
 fi
@@ -1358,7 +1358,7 @@ ${BOLD}Doriți să continuați?${RESET}" 20 80 || return
         . /etc/default/live.conf
         rm -f $TARGETDIR/etc/motd
         rm -f $TARGETDIR/etc/issue
-        rm -f $TARGETDIR/usr/sbin/void-installer
+        rm -f $TARGETDIR/usr/sbin/brgvos-installer
         # Remove modified sddm.conf to let sddm use the defaults.
         rm -f $TARGETDIR/etc/sddm.conf
         # Remove live user.
