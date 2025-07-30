@@ -1,6 +1,9 @@
 # BRGV-OS
 
-BRGV-OS is a custom [Void Linux](https://voidlinux.org/) based distribution that aims to facilitate developers and users to transitioning from Windows to Linux by maintaining familiar operational habits and workflows.
+BRGV-OS is a custom [Void Linux](https://voidlinux.org/) based distribution that aims to facilitate developers and users to transitioning from Windows to Linux by maintaining familiar operational habits and workflows.  
+The name BRGV mean in Romanian "Banca de Resurse Genetice Vegetale" (shortly in English Gene Bank), an OS mean of course Operating System.  
+The work was do it for our needs (Gene Bank research institute from Suceava, Romania), especially for open source software what run in Linux, but anyone can modify for their needs.  
+  
 |                     Theme Light                                     |                         Theme Dark                               |
 |:-------------------------------------------------------------------:|:----------------------------------------------------------------:|
 |![BRGV-OS Light](./screenshots/screeshot_1.png "BRGV-OS Light Theme")|![BRGV-OS Dark](./screenshots/screenshot_1_dark.png "BRGV-OS Dark Theme")|
@@ -47,7 +50,7 @@ sudo xbps-install -S <name_package>
 
 * or the GUI - OctoXBPS
 
-Using `flatpak`:
+Using `flatpak`:  
 We can search the applications on https://flathub.org/ and then we can install manualy:
 
 ```bash
