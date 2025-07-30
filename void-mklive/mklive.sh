@@ -736,9 +736,9 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-icons-theme@brgvos.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-gtk-theme@brgvos.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-user-theme@brgvos.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/light-dark-cursor-theme@brgvos.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/loc@brgvos.com.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/noti-bottom-right@brgvos.zip
-    #chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/switcher@brgvos.zip
 
 
     # install extensions second version but is intercative
@@ -778,9 +778,9 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-icons-theme@brgvos /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-gtk-theme@brgvos /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-user-theme@brgvos /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos  /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/loc@brgvos.com  /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/noti-bottom-right@brgvos  /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/switcher@brgvos  /usr/share/gnome-shell/extensions/
     
     # create directory schemas for extensions 
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/arcmenu@arcmenu.com/schemas
@@ -800,9 +800,9 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/accent-icons-theme@brgvos/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/accent-gtk-theme@brgvos/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/accent-user-theme@brgvos/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/loc@brgvos.com/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/noti-bottom-right@brgvos/schemas
-    #chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/switcher@brgvos/schemas
 
     # compile schemas for extensions 
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/arcmenu@arcmenu.com/schemas
@@ -822,9 +822,9 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/accent-icons-theme@brgvos/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/accent-gtk-theme@brgvos/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/accent-user-theme@brgvos/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/loc@brgvos.com/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/noti-bottom-right@brgvos/schemas
-    #chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/switcher@brgvos/schemas
 
     # add permissions to the user to read extensions
     chroot "$ROOTFS" chmod -R 755 /usr/share/gnome-shell/extensions/
