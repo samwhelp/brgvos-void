@@ -11,7 +11,7 @@ BRGV-OS is a custom [Void Linux](https://voidlinux.org/) based distribution that
 
 ## How to build
 
-It is suggested to use Void Linux or other based by this distribution.  
+It is suggested to use Void Linux or other based by this distribution, also BRGV-OS work :)  
 To build the iso image is necessary to use a Void Linux distribution where we run next commands:  
 
 ```bash
