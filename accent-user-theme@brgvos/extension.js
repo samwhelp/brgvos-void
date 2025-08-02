@@ -100,9 +100,10 @@ export default class AccentColorUserThemeExtension extends Extension {
             const userTheme = customTheme || "Adwaita";
             // Set the user shell theme
             this._setUserTheme(userTheme);
-            // Set link for libadwaita
-            const command = `ln -sf /usr/share/themes/${userTheme}/gtk-4.0/* $HOME/.config/gtk-4.0/`;
-            GLib.spawn_async(null, ['sh', '-c', command], null, GLib.SpawnFlags.SEARCH_PATH, null);
+            // Set link for libadwaita, 
+            // but is necessary to investigate why destroy accent color buttons from gnome-control-center
+            //const command = `ln -sf /usr/share/themes/${userTheme}/gtk-4.0/* $HOME/.config/gtk-4.0/`;
+            //GLib.spawn_async(null, ['sh', '-c', command], null, GLib.SpawnFlags.SEARCH_PATH, null);
         }
         else
         {
@@ -114,9 +115,10 @@ export default class AccentColorUserThemeExtension extends Extension {
             const userTheme = customTheme || "Adwaita";
             // Set the user shell theme
             this._setUserTheme(userTheme);            
-            // Set link for libadwaita
-            const command = `ln -sf /usr/share/themes/${userTheme}/gtk-4.0/* $HOME/.config/gtk-4.0/`;
-            GLib.spawn_async(null, ['sh', '-c', command], null, GLib.SpawnFlags.SEARCH_PATH, null);
+            // Set link for libadwaita,
+            // but is necessary to investigate why destroy accent color buttons from gnome-control-center
+            //const command = `ln -sf /usr/share/themes/${userTheme}/gtk-4.0/* $HOME/.config/gtk-4.0/`;
+            //GLib.spawn_async(null, ['sh', '-c', command], null, GLib.SpawnFlags.SEARCH_PATH, null);
         }
 
     }
