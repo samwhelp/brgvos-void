@@ -32,11 +32,11 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
             description: _('Configure General Options'),
         });
         page.add(GeneralGroup);
-        const changeAppColors = new Adw.SwitchRow({
-            title: _('User Shell Theme'),
-            subtitle: _('Match user shell theme with accent color (Fluent user themes only).'),
+        const setLinkGTK4 = new Adw.SwitchRow({
+            title: _('Create link to gtk4 local config'),
+            subtitle: _('Enables or disables create link to gtk4 local config for theming libadwaita'),
         });
-        GeneralGroup.add(changeAppColors);
+        GeneralGroup.add(setLinkGTK4);
         // Add custom light theme selection group
         const ThemeGroupLight = new Adw.PreferencesGroup({
             title: _('Custom User Themes Light'),
@@ -89,7 +89,7 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
             ThemeGroupDark.add(row);
         });
         window.add(page);
-        preferences.bind('change-app-colors', changeAppColors, 'active', Gio.SettingsBindFlags.DEFAULT);
+        preferences.bind('set-link-gtk4', setLinkGTK4, 'active', Gio.SettingsBindFlags.DEFAULT);
         return Promise.resolve();
     }
     _getAvailableUserThemes() {
