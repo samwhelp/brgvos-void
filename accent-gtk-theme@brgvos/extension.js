@@ -143,6 +143,8 @@ export default class AccentColorGtkThemeExtension extends Extension {
 
     // Next method create symlinks to local gtk 4 config
     _createSymlinkLocalGtk4(themeName) {
+        const command_0 = 'mkdir -p $HOME/.config/gtk-4.0';
+        GLib.spawn_async(null, ['sh', '-c', command_0], null, GLib.SpawnFlags.SEARCH_PATH, null);        
         const setPathTheme = this._preferences?.get_string(`set-theme-path`);
         const command_1 = `ln -sf ${setPathTheme}/${themeName}/gtk-4.0/assets $HOME/.config/gtk-4.0/assets`;
         GLib.spawn_async(null, ['sh', '-c', command_1], null, GLib.SpawnFlags.SEARCH_PATH, null);
