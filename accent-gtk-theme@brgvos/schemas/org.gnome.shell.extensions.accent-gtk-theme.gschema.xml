@@ -7,7 +7,10 @@
             <summary>Create link to gtk4 local config</summary>
             <description>Enables or disables create link to gtk4 local config for theming libadwaita</description>
         </key>
-        
+        <key type="s" name="set-theme-path">
+            <default>"/usr/share/themes"</default>
+            <summary>The path to the themes</summary>
+        </key>
         <!-- Add keys for custom themes -->
         <key type="s" name="blue-theme-light">
             <default>"Fluent-round-Light"</default>

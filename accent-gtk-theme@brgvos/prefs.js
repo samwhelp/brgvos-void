@@ -33,11 +33,43 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
             description: _('Configure General Options'),
         });
         page.add(GeneralGroup);
+        // Create a switch
         const setLinkGTK4 = new Adw.SwitchRow({
             title: _('Create link to gtk4 local config'),
             subtitle: _('Enables or disables create link to gtk4 local config for theming libadwaita'),
         });
         GeneralGroup.add(setLinkGTK4);
+        // Create a label for the entry
+        const label = new Adw.PreferencesGroup();
+        label.set_title('Path to the themes');
+        label.set_visible(false);
+        // Create an entry for the variable
+        const pathTheme = new Adw.EntryRow();
+        pathTheme.set_title('Edit the path and then push Save button (used for link in .config/gtk-4.0)');
+        pathTheme.set_text(this._getPathTheme(preferences)); // Set the current value
+        label.add(pathTheme);
+        GeneralGroup.add(label);   
+        // Create a save button
+        const saveButton = new Gtk.Button({
+            label: "Save",
+            visible: false,
+        });
+        saveButton.connect("clicked", () => {
+            //_setPathTheme(pathTheme.get_text()); // Save the new path
+            preferences.set_string('set-theme-path', pathTheme.get_text());
+        });
+        GeneralGroup.add(saveButton);
+        // connect the switch state with label and botton to be visible or not 
+        setLinkGTK4.connect("notify::active", (row) => {
+            let isActive = row.get_active();
+            if(isActive) {                
+                label.set_visible(isActive);
+                saveButton.set_visible(isActive);
+            } else {
+                label.set_visible(isActive);
+                saveButton.set_visible(isActive);
+            }
+        });
         // Add custom light theme selection group
         const ThemeGroupLight = new Adw.PreferencesGroup({
             title: _('Custom Gtk Themes Light'),
@@ -93,6 +125,7 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
         return Promise.resolve();
     }
 
+    // Next method load the themes in declarated dirs and return the list with themes
     _getAvailableGtkThemes() {
         const themes = new Set();
         const directories = [
@@ -118,23 +151,33 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
         return Array.from(themes).sort();
     }
 
+    // Next method is used to check if in a path exist a theme (check if index.theme file exist)
     _isValidGtkTheme(path) {
         return GLib.file_test(path + '/index.theme', GLib.FileTest.EXISTS);
     }
 
+    // Next return a list with themes
     _createGtkThemeModel(themes) {
         return new Gtk.StringList({ strings: themes });
     }
 
+    // Next method return theme selected used for Ligh scheme
     _getSelectedIndexLight(preferences, color, themes) {
         const savedTheme = preferences.get_string(`${color}-theme-light`);
         const theme = savedTheme;
         return Math.max(0, themes.indexOf(theme));
     }
     
+    // Next method return theme selected used for Dark scheme
     _getSelectedIndexDark(preferences, color, themes) {
         const savedTheme = preferences.get_string(`${color}-theme-dark`);
         const theme = savedTheme;
         return Math.max(0, themes.indexOf(theme));
+    }
+
+    // Next method return the path stored in schema and used for set the link to gtk4 config local
+    _getPathTheme(preferences) {
+        const savedPath = preferences.get_string('set-theme-path');
+        return savedPath;
     }
 }

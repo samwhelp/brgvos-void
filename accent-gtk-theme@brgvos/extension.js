@@ -25,7 +25,8 @@ export default class AccentColorGtkThemeExtension extends Extension {
     _accentColorChangedId = 0;
     _colorSchemeChangedId = 0;
     _customThemeChangedId = 0;
-     _stateSwitchChangedId = 0;
+    _stateSwitchChangedId = 0;
+    _pathThemeChangedId = 0;
     gtkThemesLight = Object.values({});
     gtkThemesDark = Object.values({});
 
@@ -66,6 +67,8 @@ export default class AccentColorGtkThemeExtension extends Extension {
         this._colorSchemeChangedId = this._settings.connect("changed::color-scheme", this._onSomethingChanged.bind(this));
         // Connect to switch Create link to gtk4 local config
         this._stateSwitchChangedId = this._preferences.connect("changed::set-link-gtk4", this._onSomethingChanged.bind(this));        
+        // Connect to editable Path Theme 
+        this._pathThemeChangedId = this._preferences.connect("changed::set-theme-path", this._onSomethingChanged.bind(this)); 
         // Initial theme update
         this._onSomethingChanged();
     }
@@ -91,7 +94,7 @@ export default class AccentColorGtkThemeExtension extends Extension {
         this._preferences = null;
     }
 
-    // Next metod is called when: extension is enabled, color accent or the switch for set link gtk4 local is changed
+    // Next metod is called when extension is enabled, color accent, edit a new path to the themes, or the switch for set link gtk4 local is changed
     _onSomethingChanged() {
         // Get the state of the switch Create link to gtk4 local config
         const changeSetLinkGTK4 = this._preferences?.get_boolean("set-link-gtk4");
@@ -140,11 +143,12 @@ export default class AccentColorGtkThemeExtension extends Extension {
 
     // Next method create symlinks to local gtk 4 config
     _createSymlinkLocalGtk4(themeName) {
-        const command_1 = `ln -sf /usr/share/themes/${themeName}/gtk-4.0/assets $HOME/.config/gtk-4.0/assets`;
+        const setPathTheme = this._preferences?.get_string(`set-theme-path`);
+        const command_1 = `ln -sf ${setPathTheme}/${themeName}/gtk-4.0/assets $HOME/.config/gtk-4.0/assets`;
         GLib.spawn_async(null, ['sh', '-c', command_1], null, GLib.SpawnFlags.SEARCH_PATH, null);
-        const command_2 = `ln -sf /usr/share/themes/${themeName}/gtk-4.0/gtk-dark.css $HOME/.config/gtk-4.0/gtk-dark.css`;
+        const command_2 = `ln -sf ${setPathTheme}/${themeName}/gtk-4.0/gtk-dark.css $HOME/.config/gtk-4.0/gtk-dark.css`;
         GLib.spawn_async(null, ['sh', '-c', command_2], null, GLib.SpawnFlags.SEARCH_PATH, null);
-        const command_3 = `ln -sf /usr/share/themes/${themeName}/gtk-4.0/gtk.css $HOME/.config/gtk-4.0/gtk.css`;
+        const command_3 = `ln -sf ${setPathTheme}/${themeName}/gtk-4.0/gtk.css $HOME/.config/gtk-4.0/gtk.css`;
         GLib.spawn_async(null, ['sh', '-c', command_3], null, GLib.SpawnFlags.SEARCH_PATH, null);
     }
 
@@ -158,6 +162,7 @@ export default class AccentColorGtkThemeExtension extends Extension {
         GLib.spawn_async(null, ['sh', '-c', command_rm_3], null, GLib.SpawnFlags.SEARCH_PATH, null);
     }
     
+    // Next method set the theme
     _setGtkTheme(themeName) {
         // Set the gtk theme
         this._settings?.set_string("gtk-theme", themeName);
