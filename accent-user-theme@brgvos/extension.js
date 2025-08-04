@@ -26,7 +26,6 @@ export default class AccentColorUserThemeExtension extends Extension {
     _preferences;
     _accentColorChangedId = 0;
     _colorSchemeChangedId = 0;
-    _stateSwitchChangedId = 0;
     userThemesLight = Object.values({});
     userThemesDark = Object.values({});
 
@@ -69,8 +68,6 @@ export default class AccentColorUserThemeExtension extends Extension {
         this._accentColorChangedId = this._settings.connect("changed::accent-color", this._onSomethingChanged.bind(this));
         // Connect to color scheme changes
         this._colorSchemeChangedId = this._settings.connect("changed::color-scheme", this._onSomethingChanged.bind(this));
-        // Connect to switch Create link to gtk4 local config
-        this._stateSwitchChangedId = this._preferences.connect("changed::set-link-gtk4", this._onSomethingChanged.bind(this));
         // Initial theme update
         this._onSomethingChanged();
     }
@@ -81,10 +78,6 @@ export default class AccentColorUserThemeExtension extends Extension {
         if (this._settings && this._accentColorChangedId) {
             this._settings.disconnect(this._accentColorChangedId);
             this._accentColorChangedId = 0;
-        }
-        if (this._preferences && this._stateSwitchChangedId) {
-            this._preferences.disconnect(this._stateSwitchChangedId);
-            this._stateSwitchChangedId = 0;
         }
         // Clear the userThemes array
         this.userThemesLight = [];
@@ -99,8 +92,6 @@ export default class AccentColorUserThemeExtension extends Extension {
 
     // Next metod is called when: extension is enabled, color accent, color scheme or the switch for set link gtk4 local is changed
     _onSomethingChanged() {
-        // Get the state of the switch Create link to gtk4 local config
-        const changeSetLinkGTK4 = this._preferences?.get_boolean("set-link-gtk4");
         // Check color scheme and set the user theme
         if(this._settings?.get_string("color-scheme") === 'prefer-dark') {
             // Get the current accent color
@@ -111,16 +102,6 @@ export default class AccentColorUserThemeExtension extends Extension {
             const userTheme = customTheme || "Adwaita";
             // Set the user shell theme
             this._setUserTheme(userTheme);
-            // Set link for libadwaita
-            if(changeSetLinkGTK4) {
-                // If the swith is ON first delete actual symlinks
-                this._remSymlinkLocalGtk4();
-                // Then create new symlink to the light user theme
-                this._createSymlinkLocalGtk4(userTheme);
-            } else {
-                // Else if the switch is OFF delete actual symlinks
-                this._remSymlinkLocalGtk4();
-            }
         }
         else {
             // Get the current accent color
@@ -130,38 +111,8 @@ export default class AccentColorUserThemeExtension extends Extension {
             // Get the corresponding user shell theme or default to Adwaita
             const userTheme = customTheme || "Adwaita";
             // Set the user shell theme
-            this._setUserTheme(userTheme);            
-            // Set link for libadwaita
-            if(changeSetLinkGTK4) {
-                // If the swith is ON first delete actual symlinks
-                this._remSymlinkLocalGtk4();
-                // Then create new symlink to the dark user theme
-                this._createSymlinkLocalGtk4(userTheme);
-            } else {
-                // Else if the switch is OFF delete actual symlinks
-                this._remSymlinkLocalGtk4();
-            }
+            this._setUserTheme(userTheme);
         }
-    }
-
-    // Next method create symlinks to local gtk 4 config
-    _createSymlinkLocalGtk4(themeName) {
-        const command_1 = `ln -sf /usr/share/themes/${themeName}/gtk-4.0/assets $HOME/.config/gtk-4.0/assets`;
-        GLib.spawn_async(null, ['sh', '-c', command_1], null, GLib.SpawnFlags.SEARCH_PATH, null);
-        const command_2 = `ln -sf /usr/share/themes/${themeName}/gtk-4.0/gtk-dark.css $HOME/.config/gtk-4.0/gtk-dark.css`;
-        GLib.spawn_async(null, ['sh', '-c', command_2], null, GLib.SpawnFlags.SEARCH_PATH, null);
-        const command_3 = `ln -sf /usr/share/themes/${themeName}/gtk-4.0/gtk.css $HOME/.config/gtk-4.0/gtk.css`;
-        GLib.spawn_async(null, ['sh', '-c', command_3], null, GLib.SpawnFlags.SEARCH_PATH, null);
-    } 
-
-    // Next method remove symlinks from local gtk 4 config
-    _remSymlinkLocalGtk4() {
-        const command_rm_1 = `rm -rf $HOME/.config/gtk-4.0/assets`;
-        GLib.spawn_async(null, ['sh', '-c', command_rm_1], null, GLib.SpawnFlags.SEARCH_PATH, null);
-        const command_rm_2 = `rm -f $HOME/.config/gtk-4.0/gtk-dark.css`;
-        GLib.spawn_async(null, ['sh', '-c', command_rm_2], null, GLib.SpawnFlags.SEARCH_PATH, null);
-        const command_rm_3 = `rm -f $HOME/.config/gtk-4.0/gtk.css`;
-        GLib.spawn_async(null, ['sh', '-c', command_rm_3], null, GLib.SpawnFlags.SEARCH_PATH, null);
     }
 
     // Next method set the user shell theme

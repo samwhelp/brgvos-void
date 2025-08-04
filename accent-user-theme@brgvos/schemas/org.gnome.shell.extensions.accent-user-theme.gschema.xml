@@ -2,12 +2,7 @@
 <schemalist gettext-domain="accent-color-user-theme-extension">
     <schema id="org.gnome.shell.extensions.accent-user-theme"
             path="/org/gnome/shell/extensions/accent-user-theme/">
-        <key type="b" name="set-link-gtk4">
-            <default>false</default>
-            <summary>Create link to gtk4 local config</summary>
-            <description>Enables or disables create link to gtk4 local config for theming libadwaita</description>
-        </key>
-        
+    
         <!-- Add keys for custom themes -->
         <key type="s" name="blue-theme-light">
             <default>"Fluent-round-Light"</default>

@@ -20,6 +20,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+
 export default class AccentDirsPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         const preferences = this.getSettings();
@@ -27,16 +28,6 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
             title: _('General'),
             iconName: 'dialog-information-symbolic',
         });
-        const GeneralGroup = new Adw.PreferencesGroup({
-            title: _('General'),
-            description: _('Configure General Options'),
-        });
-        page.add(GeneralGroup);
-        const setLinkGTK4 = new Adw.SwitchRow({
-            title: _('Create link to gtk4 local config'),
-            subtitle: _('Enables or disables create link to gtk4 local config for theming libadwaita'),
-        });
-        GeneralGroup.add(setLinkGTK4);
         // Add custom light theme selection group
         const ThemeGroupLight = new Adw.PreferencesGroup({
             title: _('Custom User Themes Light'),
@@ -63,7 +54,6 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
             ThemeGroupLight.add(row);
         });
         // Add custom dark theme selection group
-                // Add custom light theme selection group
         const ThemeGroupDark = new Adw.PreferencesGroup({
             title: _('Custom User Themes Dark'),
             description: _('Select custom user shell theme for each accent color'),
@@ -89,9 +79,10 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
             ThemeGroupDark.add(row);
         });
         window.add(page);
-        preferences.bind('set-link-gtk4', setLinkGTK4, 'active', Gio.SettingsBindFlags.DEFAULT);
         return Promise.resolve();
     }
+
+    // Next method load the themes in declarated dirs an then return the list with themes
     _getAvailableUserThemes() {
         const themes = new Set();
         const directories = [
@@ -116,17 +107,25 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
         });
         return Array.from(themes).sort();
     }
+
+    // Next method is used to check if in a path exist a theme (check if index.theme file exist)
     _isValidUserTheme(path) {
         return GLib.file_test(path + '/index.theme', GLib.FileTest.EXISTS);
     }
+
+    // Next return a list with themes
     _createUserThemeModel(themes) {
         return new Gtk.StringList({ strings: themes });
     }
+
+    // Next method return theme selected used for Ligh scheme
     _getSelectedIndexLight(preferences, color, themes) {
         const savedTheme = preferences.get_string(`${color}-theme-light`);
         const theme = savedTheme;
         return Math.max(0, themes.indexOf(theme));
     }
+    
+    // Next method return theme selected used for Dark scheme
     _getSelectedIndexDark(preferences, color, themes) {
         const savedTheme = preferences.get_string(`${color}-theme-dark`);
         const theme = savedTheme;
