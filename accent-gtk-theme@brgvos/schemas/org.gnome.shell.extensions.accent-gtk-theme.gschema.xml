@@ -2,10 +2,10 @@
 <schemalist gettext-domain="accent-color-gtk-theme-extension">
     <schema id="org.gnome.shell.extensions.accent-gtk-theme"
             path="/org/gnome/shell/extensions/accent-gtk-theme/">
-        <key type="b" name="change-app-colors">
-            <default>true</default>
-            <summary>Whether to change gtk theme based on accent color</summary>
-            <description>Enables or disables changing app gtk theme based on accent color</description>
+        <key type="b" name="set-link-gtk4">
+            <default>false</default>
+            <summary>Create link to gtk4 local config</summary>
+            <description>Enables or disables create link to gtk4 local config for theming libadwaita</description>
         </key>
         
         <!-- Add keys for custom themes -->
