@@ -20,6 +20,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+
 export default class AccentDirsPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         const preferences = this.getSettings();
@@ -32,11 +33,11 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
             description: _('Configure General Options'),
         });
         page.add(GeneralGroup);
-        const changeAppColors = new Adw.SwitchRow({
-            title: _('Gtk Theme'),
-            subtitle: _('Match app gtk theme with accent color (Fluent gtk themes only).'),
+        const setLinkGTK4 = new Adw.SwitchRow({
+            title: _('Create link to gtk4 local config'),
+            subtitle: _('Enables or disables create link to gtk4 local config for theming libadwaita'),
         });
-        GeneralGroup.add(changeAppColors);
+        GeneralGroup.add(setLinkGTK4);
         // Add custom light theme selection group
         const ThemeGroupLight = new Adw.PreferencesGroup({
             title: _('Custom Gtk Themes Light'),
@@ -88,9 +89,10 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
             ThemeGroupDark.add(row);
         });
         window.add(page);
-        preferences.bind('change-app-colors', changeAppColors, 'active', Gio.SettingsBindFlags.DEFAULT);
+        preferences.bind('set-link-gtk4', setLinkGTK4, 'active', Gio.SettingsBindFlags.DEFAULT);
         return Promise.resolve();
     }
+
     _getAvailableGtkThemes() {
         const themes = new Set();
         const directories = [
@@ -115,17 +117,21 @@ export default class AccentDirsPreferences extends ExtensionPreferences {
         });
         return Array.from(themes).sort();
     }
+
     _isValidGtkTheme(path) {
         return GLib.file_test(path + '/index.theme', GLib.FileTest.EXISTS);
     }
+
     _createGtkThemeModel(themes) {
         return new Gtk.StringList({ strings: themes });
     }
+
     _getSelectedIndexLight(preferences, color, themes) {
         const savedTheme = preferences.get_string(`${color}-theme-light`);
         const theme = savedTheme;
         return Math.max(0, themes.indexOf(theme));
     }
+    
     _getSelectedIndexDark(preferences, color, themes) {
         const savedTheme = preferences.get_string(`${color}-theme-dark`);
         const theme = savedTheme;
