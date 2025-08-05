@@ -21,9 +21,7 @@ export default class SchemeColorCursorThemeExtension extends Extension {
     // some declarations
     _settings;
     _preferences;
-    _accentColorChangedId = 0;
     _colorSchemeChangedId = 0;
-    _customThemeChangedId = 0;
     cursorThemes = Object.values({});
 
     // Next method is run when the extension is enabled
@@ -48,13 +46,9 @@ export default class SchemeColorCursorThemeExtension extends Extension {
     // Next metod is run when the estension is disabled
     disable() {
         // Disconnect the signal handler
-        if (this._settings && this._accentColorChangedId) {
-            this._settings.disconnect(this._accentColorChangedId);
-            this._accentColorChangedId = 0;
-        }
-        if (this._preferences && this._customThemeChangedId) {
-            this._preferences.disconnect(this._customThemeChangedId);
-            this._customThemeChangedId = 0;
+        if (this._settings && this._colorSchemeChangedId) {
+            this._settings.disconnect(this._colorSchemeChangedId);
+            this._colorSchemeChangedId = 0;
         }
         // Clear the cursorThemes array
         this.cursorThemes = [];
