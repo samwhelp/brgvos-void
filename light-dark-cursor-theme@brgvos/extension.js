@@ -18,12 +18,15 @@
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import Gio from 'gi://Gio';
 export default class SchemeColorCursorThemeExtension extends Extension {
+    // some declarations
     _settings;
     _preferences;
     _accentColorChangedId = 0;
     _colorSchemeChangedId = 0;
     _customThemeChangedId = 0;
     cursorThemes = Object.values({});
+
+    // Next method is run when the extension is enabled
     enable() {
         // Get the interface settings
         this._settings = new Gio.Settings({
@@ -41,6 +44,8 @@ export default class SchemeColorCursorThemeExtension extends Extension {
         // Initial theme update
         this._onSchemeColorChanged();
     }
+
+    // Next metod is run when the estension is disabled
     disable() {
         // Disconnect the signal handler
         if (this._settings && this._accentColorChangedId) {
@@ -59,6 +64,8 @@ export default class SchemeColorCursorThemeExtension extends Extension {
         this._settings = null;
         this._preferences = null;
     }
+
+    // Next metod is called when color scheme is changed
     _onSchemeColorChanged() {
         if(this._settings?.get_string("color-scheme") === 'prefer-dark')
         {
@@ -83,6 +90,8 @@ export default class SchemeColorCursorThemeExtension extends Extension {
             this._setCursorTheme(cursorTheme);
         }
     }
+    
+    // Next method set cursor theme
     _setCursorTheme(themeName) {
         // Set the cursor theme
         this._settings?.set_string("cursor-theme", themeName);
