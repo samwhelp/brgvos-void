@@ -20,6 +20,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+
 export default class CursorDirsPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         const preferences = this.getSettings();
@@ -27,20 +28,10 @@ export default class CursorDirsPreferences extends ExtensionPreferences {
             title: _('General'),
             iconName: 'dialog-information-symbolic',
         });
-        const GeneralGroup = new Adw.PreferencesGroup({
-            title: _('General'),
-            description: _('Configure General Options'),
-        });
-        page.add(GeneralGroup);
-        const changeCursorColors = new Adw.SwitchRow({
-            title: _('Cursor Themes'),
-            subtitle: _('Match cursor theme with color scheme (Fluent cursors theme only).'),
-        });
-        GeneralGroup.add(changeCursorColors);
         // Add custom cursor theme light selection group
         const ThemeGroupLight = new Adw.PreferencesGroup({
-            title: _('Custom Cursor Theme Light'),
-            description: _('Select custom cursor theme for color scheme light'),
+            title: _('Custom Light Cursor Theme'),
+            description: _('Select custom cursor theme for light color scheme'),
         });
         page.add(ThemeGroupLight);
         // Get available cursor themes light
@@ -63,8 +54,8 @@ export default class CursorDirsPreferences extends ExtensionPreferences {
         });
         // Add custom cursor theme dark selection group
         const ThemeGroupDark = new Adw.PreferencesGroup({
-            title: _('Custom Cursor Theme Dark'),
-            description: _('Select custom cursor theme for color scheme dark'),
+            title: _('Custom Dark Cursor Theme'),
+            description: _('Select custom cursor theme for dark color scheme'),
         });
         page.add(ThemeGroupDark);
         // Get available cursor themes dark
@@ -86,9 +77,10 @@ export default class CursorDirsPreferences extends ExtensionPreferences {
             ThemeGroupDark.add(row);
         });
         window.add(page);
-        preferences.bind('change-cursor-colors', changeCursorColors, 'active', Gio.SettingsBindFlags.DEFAULT);
         return Promise.resolve();
     }
+
+    // Next method load the themes in declarated dirs an then return the list with themes
     _getAvailableCursorThemes() {
         const themes = new Set();
         const directories = [
@@ -113,17 +105,25 @@ export default class CursorDirsPreferences extends ExtensionPreferences {
         });
         return Array.from(themes).sort();
     }
+
+    // Next method is used to check if in a path exist a theme (check if index.theme file exist)
     _isValidCursorTheme(path) {
         return GLib.file_test(path + '/index.theme', GLib.FileTest.EXISTS);
     }
+
+    // Next return a list with themes
     _createCursorThemeModel(themes) {
         return new Gtk.StringList({ strings: themes });
     }
+
+     // Next method return theme selected used for Ligh scheme
     _getSelectedIndexLight(preferences, color, themes) {
         const savedTheme = preferences.get_string(`default`);
         const theme = savedTheme;
         return Math.max(0, themes.indexOf(theme));
     }
+
+     // Next method return theme selected used for Dark scheme
     _getSelectedIndexDark(preferences, color, themes) {
         const savedTheme = preferences.get_string(`prefer-dark`);
         const theme = savedTheme;
