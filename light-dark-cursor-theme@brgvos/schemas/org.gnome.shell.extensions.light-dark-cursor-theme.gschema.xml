@@ -2,12 +2,7 @@
 <schemalist gettext-domain="light-dark-cursor-theme-extension">
     <schema id="org.gnome.shell.extensions.light-dark-cursor-theme"
             path="/org/gnome/shell/extensions/light-dark-cursor-theme/">
-        <key type="b" name="change-cursor-colors">
-            <default>true</default>
-            <summary>Whether to change cursor theme based on color scheme</summary>
-            <description>Enables or disables changing cursor theme based on color scheme</description>
-        </key>
-        
+   
         <!-- Add keys for custom themes -->
         <key type="s" name="default">
             <default>"Fluent-cursors"</default>
