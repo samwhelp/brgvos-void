@@ -733,11 +733,11 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/user-themegnome-shell-extensions.gcampax.github.com.v64.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dingrastersoft.com.v76.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/appindicatorsupportrgcjonas.gmail.com.v60.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-icons-theme@brgvos.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-gtk-theme@brgvos.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-user-theme@brgvos.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/light-dark-cursor-theme@brgvos.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/set-notification-position@brgvos.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-icons-theme.brgvos.v1.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-gtk-theme.brgv.v1.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-user-theme.brgvos.v1.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/light-dark-cursor-theme.brgvos.v1.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/set-notification-position.brgvos.v1.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/loc@brgvos.com.zip
 
 
