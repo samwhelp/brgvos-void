@@ -84,7 +84,7 @@ nix-channel --update
 # check the list with channels 
 nix-channel --list
 # add the dir were is nix application in .bash_profile
-echo 'export XDG_DATA_DIRS="$HOME/.nix-profile/share:$XDG_DATA_DIRS"' >> ~/.bash_profile
+echo 'export XDG_DATA_DIRS="$HOME/.nix-profile/share:$XDG_DATA_DIRS"' >> ~/.profile
 # example to install - pgmodeler
 nix-env -iA nixpkgs.pgmodeler
 # start the application
