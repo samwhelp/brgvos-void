@@ -80,9 +80,17 @@ export default class AccentColorGtkThemeExtension extends Extension {
             this._settings.disconnect(this._accentColorChangedId);
             this._accentColorChangedId = 0;
         }
+        if (this._settings && this._colorSchemeChangedId) {
+            this._settings.disconnect(this._colorSchemeChangedId);
+            this._colorSchemeChangedId = 0;
+        }
         if (this._preferences && this._stateSwitchChangedId) {
             this._preferences.disconnect(this._stateSwitchChangedId);
             this._stateSwitchChangedId = 0;
+        }
+        if (this._preferences && this._pathThemeChangedId) {
+            this._preferences.disconnect(this._pathThemeChangedId);
+            this._pathThemeChangedId = 0;
         }
         // Clear the gtkThemes array
         this.gtkThemesDark = [];
@@ -144,7 +152,7 @@ export default class AccentColorGtkThemeExtension extends Extension {
     // Next method create symlinks to local gtk 4 config
     _createSymlinkLocalGtk4(themeName) {
         const command_0 = 'mkdir -p $HOME/.config/gtk-4.0';
-        GLib.spawn_async(null, ['sh', '-c', command_0], null, GLib.SpawnFlags.SEARCH_PATH, null);        
+        GLib.spawn_async(null, ['sh', '-c', command_0], null, GLib.SpawnFlags.SEARCH_PATH, null);
         const setPathTheme = this._preferences?.get_string(`set-theme-path`);
         const command_1 = `ln -sf ${setPathTheme}/${themeName}/gtk-4.0/assets $HOME/.config/gtk-4.0/assets`;
         GLib.spawn_async(null, ['sh', '-c', command_1], null, GLib.SpawnFlags.SEARCH_PATH, null);
