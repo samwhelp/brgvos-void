@@ -18,7 +18,7 @@ It is suggested to use Void Linux or other based by this distribution, also BRGV
 To build the iso image is necessary to use a Void Linux distribution where we run next commands:  
 
 ```bash
-git clone https://github.com/florintanasa/brgvos-void.git
+git clone --remote-submodules https://github.com/florintanasa/brgvos-void.git
 cd brgvos-void
 sudo ./build_brgvos.sh
 ```  
