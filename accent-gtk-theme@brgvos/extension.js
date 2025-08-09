@@ -162,7 +162,6 @@ export default class AccentColorGtkThemeExtension extends Extension {
         // Create symbolic link at $HOME/.config/gtk-4.0/gtk.css
         const link_1 = pathRelative+'/gtk.css';
         const target_1 = setPathTheme+'/'+themeName+'/gtk-4.0/gtk.css';
-        // next request not do the symbolic link for gtk.css
         this._createSymbolicLink(target_1, link_1);
         // Create symbolic link at $HOME/.config/gtk-4.0/gtk-dark.css
         const link_2 = pathRelative+'/gtk-dark.css';
