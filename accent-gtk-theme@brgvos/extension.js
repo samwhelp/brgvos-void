@@ -149,27 +149,46 @@ export default class AccentColorGtkThemeExtension extends Extension {
         }
     }
 
-    // Next method create symlinks to local gtk 4 config
+    // Next method create symlinks to user local gtk 4 config
     _createSymlinkLocalGtk4(themeName) {
-        const command_0 = 'mkdir -p $HOME/.config/gtk-4.0';
-        GLib.spawn_async(null, ['sh', '-c', command_0], null, GLib.SpawnFlags.SEARCH_PATH, null);
+        // Get the path where is the theme installed
         const setPathTheme = this._preferences?.get_string(`set-theme-path`);
-        const command_1 = `ln -sf ${setPathTheme}/${themeName}/gtk-4.0/assets $HOME/.config/gtk-4.0/assets`;
-        GLib.spawn_async(null, ['sh', '-c', command_1], null, GLib.SpawnFlags.SEARCH_PATH, null);
-        const command_2 = `ln -sf ${setPathTheme}/${themeName}/gtk-4.0/gtk-dark.css $HOME/.config/gtk-4.0/gtk-dark.css`;
-        GLib.spawn_async(null, ['sh', '-c', command_2], null, GLib.SpawnFlags.SEARCH_PATH, null);
-        const command_3 = `ln -sf ${setPathTheme}/${themeName}/gtk-4.0/gtk.css $HOME/.config/gtk-4.0/gtk.css`;
-        GLib.spawn_async(null, ['sh', '-c', command_3], null, GLib.SpawnFlags.SEARCH_PATH, null);
+        // Relative path to directory
+        const relativePath = '.config/gtk-4.0';
+        const dirFile = this._createFullPath(relativePath);
+        const pathRelative = dirFile.get_path();
+        //Create directory if not exist
+        this._createDirectoryInHomeDir(dirFile);
+        // Create symbolic link at $HOME/.config/gtk-4.0/gtk.css
+        const link_1 = pathRelative+'/gtk.css';
+        const target_1 = setPathTheme+'/'+themeName+'/gtk-4.0/gtk.css';
+        // next request not do the symbolic link for gtk.css
+        this._createSymbolicLink(target_1, link_1);
+        // Create symbolic link at $HOME/.config/gtk-4.0/gtk-dark.css
+        const link_2 = pathRelative+'/gtk-dark.css';
+        const target_2 = setPathTheme+'/'+themeName+'/gtk-4.0/gtk-dark.css';
+        this._createSymbolicLink(target_2, link_2);
+        // Create symbolic link at $HOME/.config/gtk-4.0/assets
+        const link_3 = pathRelative+'/assets';
+        const target_3 = setPathTheme+'/'+themeName+'/gtk-4.0/assets';
+        this._createSymbolicLink(target_3, link_3);
     }
 
     // Next method remove symlinks from local gtk 4 config
     _remSymlinkLocalGtk4() {
-        const command_rm_1 = `rm -rf $HOME/.config/gtk-4.0/assets`;
-        GLib.spawn_async(null, ['sh', '-c', command_rm_1], null, GLib.SpawnFlags.SEARCH_PATH, null);
-        const command_rm_2 = `rm -f $HOME/.config/gtk-4.0/gtk-dark.css`;
-        GLib.spawn_async(null, ['sh', '-c', command_rm_2], null, GLib.SpawnFlags.SEARCH_PATH, null);
-        const command_rm_3 = `rm -f $HOME/.config/gtk-4.0/gtk.css`;
-        GLib.spawn_async(null, ['sh', '-c', command_rm_3], null, GLib.SpawnFlags.SEARCH_PATH, null);
+        // Relative path to directory
+        const relativePath = '.config/gtk-4.0';
+        const dirFile = this._createFullPath(relativePath);
+        const pathRelative = dirFile.get_path();
+        // Remove symbolic link at $HOME/.config/gtk-4.0/gtk.css
+        const link_1 = pathRelative+'/gtk.css';
+        this._removeSymbolicLink(link_1);
+        // Remove symbolic link at $HOME/.config/gtk-4.0/gtk-dark.css
+        const link_2 = pathRelative+'/gtk-dark.css';
+        this._removeSymbolicLink(link_2);
+        // Remove symbolic link at $HOME/.config/gtk-4.0/assets
+        const link_3 = pathRelative+'/assets';
+        this._removeSymbolicLink(link_3);
     }
     
     // Next method set the theme
@@ -177,4 +196,49 @@ export default class AccentColorGtkThemeExtension extends Extension {
         // Set the gtk theme
         this._settings?.set_string("gtk-theme", themeName);
     }
+
+    // Next method return the full path for $HOME/.config/gtk-4.0
+    _createFullPath(relativePath) {
+        // Get the user's home directory
+        const homeDir = GLib.get_home_dir();
+        // Construct the full path
+        const fullPath = GLib.build_filenamev([homeDir, relativePath]);
+        // Create a Gio.File object for the directory
+        const dirFile = Gio.File.new_for_path(fullPath);
+        return dirFile;
+    }
+
+    //Next method create directory with parents (like 'mkdir -p')
+    _createDirectoryInHomeDir(dirFile) {
+        // Check if the path not exist
+        if (!dirFile.query_exists(null)) {
+            // Create the directory with parents
+            dirFile.make_directory_with_parents(null);
+        }
+    }
+
+    //Next method create symbolic link to the target
+    _createSymbolicLink(targetPath, linkPath) {
+        // Create a Gio.File object for the link
+        const linkFile = Gio.File.new_for_path(linkPath);
+        // Check if the link already exists
+        if (linkFile.query_exists(null)) {
+            return;
+        }
+        // Create the symbolic link
+        linkFile.make_symbolic_link(targetPath, null);
+    }
+
+    //Next method remove/delete symbolic link
+    _removeSymbolicLink(linkPath) {
+        // Create a Gio.File object for the link
+        const linkFile = Gio.File.new_for_path(linkPath);
+        // Check if the link exists
+        if (!linkFile.query_exists(null)) {
+            return;
+        }
+        // Remove the symbolic link
+        linkFile.delete(null);
+    }
+
 }
