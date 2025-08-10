@@ -17,7 +17,7 @@
  */
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import Gio from 'gi://Gio';
-const GLib = imports.gi.GLib;
+import GLib from 'gi://GLib';
 
 export default class AccentColorGtkThemeExtension extends Extension {
     _settings;
