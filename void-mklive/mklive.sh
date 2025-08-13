@@ -839,6 +839,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" tar -Jxf /tmp/icons/Fluent-pink.tar.xz -C /usr/share/icons
     chroot "$ROOTFS" tar -Jxf /tmp/icons/Fluent-purple.tar.xz -C /usr/share/icons
     chroot "$ROOTFS" tar -Jxf /tmp/icons/Fluent-red.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/Fluent-teal.tar.xz -C /usr/share/icons
     chroot "$ROOTFS" tar -Jxf /tmp/icons/Fluent-yellow.tar.xz -C /usr/share/icons
     
     # extract Fluent themes
