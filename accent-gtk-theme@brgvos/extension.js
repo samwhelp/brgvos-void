@@ -171,6 +171,13 @@ export default class AccentColorGtkThemeExtension extends Extension {
         const link_3 = pathRelative+'/assets';
         const target_3 = setPathTheme+'/'+themeName+'/gtk-4.0/assets';
         this._createSymbolicLink(target_3, link_3);
+        // Create symbolic link at $HOME/.config/gtk-4.0/ windows-assets for MacTahoe theme
+        const onlyThemeName = themeName.split("-",1);
+        if(onlyThemeName == 'MacTahoe') {
+            const link_4 = pathRelative+'/windows-assets';
+            const target_4 = setPathTheme+'/'+themeName+'/gtk-4.0/windows-assets';
+            this._createSymbolicLink(target_4, link_4);
+        }
     }
 
     // Next method remove symlinks from local gtk 4 config
@@ -179,15 +186,21 @@ export default class AccentColorGtkThemeExtension extends Extension {
         const relativePath = '.config/gtk-4.0';
         const dirFile = this._createFullPath(relativePath);
         const pathRelative = dirFile.get_path();
-        // Remove symbolic link at $HOME/.config/gtk-4.0/gtk.css
+        // Remove symbolic link $HOME/.config/gtk-4.0/gtk.css
         const link_1 = pathRelative+'/gtk.css';
         this._removeSymbolicLink(link_1);
-        // Remove symbolic link at $HOME/.config/gtk-4.0/gtk-dark.css
+        // Remove symbolic link $HOME/.config/gtk-4.0/gtk-dark.css
         const link_2 = pathRelative+'/gtk-dark.css';
         this._removeSymbolicLink(link_2);
-        // Remove symbolic link at $HOME/.config/gtk-4.0/assets
+        // Remove symbolic link $HOME/.config/gtk-4.0/assets
         const link_3 = pathRelative+'/assets';
         this._removeSymbolicLink(link_3);
+        // Remove symbolic link $HOME/.config/gtk-4.0/windows-assets if exist
+        const link_4 = pathRelative+'/windows-assets';
+        const linkWindowsAssets =  Gio.File.new_for_path(link_4);
+        if (linkWindowsAssets.query_exists(null)) {
+            this._removeSymbolicLink(link_4);
+        }
     }
     
     // Next method set the theme
