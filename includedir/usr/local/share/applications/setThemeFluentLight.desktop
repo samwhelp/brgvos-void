@@ -1,0 +1,18 @@
+[Desktop Entry]
+Type=Application
+Icon=bottles_wine
+NoDisplay=false
+Exec=/usr/local/bin/setThemeFluentLight.sh
+Path=/usr/local/bin/
+Terminal=false
+X-GNOME-UsesNotifications=false
+Categories=Settings;
+Name[en]=Fluent Light
+Name[ro]=Fluent Luminoasă
+Name[ro_RO]=Fluent Luminoasă
+Comment[en]=Set the theme od desktop to Fluent Light
+Comment[ro]=Setează tema desktopului în Fluent luminoasă
+Comment[ro_RO]=Setează tema desktopului în Fluent luminoasă
+Hidden=false
+StartupNotify=false
+
