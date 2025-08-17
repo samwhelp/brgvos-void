@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Icon=stock_weather-sunny
+NoDisplay=false
+Exec=/usr/local/bin/setThemeWhiteSurLight.sh
+Path=/usr/local/bin/
+Terminal=false
+X-GNOME-UsesNotifications=false
+Categories=Settings;
+Name[en]=WhiteSur Light
+Name[ro]=WhiteSur Luminoasă
+Name[ro_RO]=WhiteSur Luminoasă
+Comment[en]=Set the desktop theme to  WhiteSur light
+Comment[ro]=Setează tema desktopului în WhiteSur luminoasă
+Comment[ro_RO]=Setează tema desktopului în WhiteSur luminoasă
+Hidden=false
+StartupNotify=false
+Name[ro_RO.UTF-8]=WhiteSur Luminoasă
+Comment[ro_RO.UTF-8]=Setează tema desktopului în WhiteSur luminoasă
+Name=WhiteSur Luminoasă
+Comment=Setează tema desktopului în WhiteSur luminoasă
+
