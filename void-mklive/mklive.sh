@@ -435,7 +435,7 @@ generate_squashfs() {
     # Find out required size for the rootfs and create an ext3fs image off it.
     ROOTFS_SIZE=$(du --apparent-size -sm "$ROOTFS"|awk '{print $1}')
     mkdir -p "$BUILDDIR/tmp/LiveOS"
-    truncate -s "$((ROOTFS_SIZE+ROOTFS_SIZE))M" \
+    truncate -s "$((ROOTFS_SIZE+ROOTFS_SIZE+ROOTFS_SIZE))M" \
 	    "$BUILDDIR"/tmp/LiveOS/ext3fs.img >/dev/null 2>&1
     mkdir -p "$BUILDDIR/tmp-rootfs"
     mkfs.ext3 -F -m1 "$BUILDDIR/tmp/LiveOS/ext3fs.img" >/dev/null 2>&1
@@ -734,10 +734,13 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dingrastersoft.com.v76.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/appindicatorsupportrgcjonas.gmail.com.v60.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-icons-themebrgvos.v2.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-gtk-themebrgvos.v4.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-gtk-themebrgvos.v6.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-user-themebrgvos.v2.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/light-dark-cursor-themebrgvos.v1.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/set-notification-positionbrgvos.v2.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dash-to-dockmicxgx.gmail.com.v101.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/logomenuaryan_k.v37.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/space-barluchrioh.v33.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/loc@brgvos.com.zip
 
 
@@ -778,9 +781,12 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-icons-theme@brgvos /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-gtk-theme@brgvos /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-user-theme@brgvos /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos  /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/set-notification-position@brgvos  /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/loc@brgvos.com  /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/set-notification-position@brgvos /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/logomenu@aryan_k /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/space-bar@luchrioh /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/loc@brgvos.com /usr/share/gnome-shell/extensions/
     
     # create directory schemas for extensions 
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/arcmenu@arcmenu.com/schemas
@@ -802,6 +808,9 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/accent-user-theme@brgvos/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/set-notification-position@brgvos/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/loc@brgvos.com/schemas
 
     # compile schemas for extensions 
@@ -824,6 +833,9 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/accent-user-theme@brgvos/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/set-notification-position@brgvos/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/loc@brgvos.com/schemas
 
     # add permissions to the user to read extensions
@@ -842,6 +854,66 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" tar -Jxf /tmp/icons/Fluent-teal.tar.xz -C /usr/share/icons
     chroot "$ROOTFS" tar -Jxf /tmp/icons/Fluent-yellow.tar.xz -C /usr/share/icons
     
+    # extract MacTahoe icons and MacTahoe cursors
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-blue-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-blue-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-blue.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-cursors.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-dark-cursors.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-green-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-green-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-green.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-grey-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-grey-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-grey.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-nord-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-nord-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-nord.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-orange-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-orange-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-orange.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-purple-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-purple-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-purple.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-red-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-red-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-red.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-yellow-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-yellow-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-yellow.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe.tar.xz -C /usr/share/icons
+
+    # extract WhiteSur icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-green-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-green-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-green.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-grey-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-grey-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-grey.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-nord-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-nord-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-nord.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-orange-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-orange-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-orange.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-pink-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-pink-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-pink.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-purple-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-purple-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-purple.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-red-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-red-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-red.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-yellow-dark.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-yellow-light.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-yellow.tar.xz -C /usr/share/icons
+    chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur.tar.xz -C /usr/share/icons
+
     # extract Fluent themes
     chroot "$ROOTFS" tar -Jxf /tmp/themes/Fluent-round-green.tar.xz -C /usr/share/themes
     chroot "$ROOTFS" tar -Jxf /tmp/themes/Fluent-round-grey.tar.xz -C /usr/share/themes
@@ -852,6 +924,86 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" tar -Jxf /tmp/themes/Fluent-round-teal.tar.xz -C /usr/share/themes
     chroot "$ROOTFS" tar -Jxf /tmp/themes/Fluent-round-yellow.tar.xz -C /usr/share/themes
     chroot "$ROOTFS" tar -Jxf /tmp/themes/Fluent-round.tar.xz -C /usr/share/themes
+
+    # extract MacTahoe themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-blue.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-green.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-grey.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-nord.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-orange.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-pink.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-purple.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-red.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-solid-blue.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-solid-green.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-solid-grey.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-solid-nord.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-solid-orange.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-solid-pink.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-solid-purple.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-solid-red.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-solid-yellow.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-solid.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-yellow.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-blue.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-green.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-grey.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-nord.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-orange.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-pink.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-purple.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-red.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-solid-blue.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-solid-green.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-solid-grey.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-solid-nord.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-solid-orange.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-solid-pink.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-solid-purple.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-solid-red.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-solid-yellow.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-solid.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light-yellow.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light.tar.xz -C /usr/share/themes
+
+    # extract WhiteSur themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-blue.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-green.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-grey.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-orange.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-pink.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-purple.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-red.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-solid-blue.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-solid-green.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-solid-grey.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-solid-orange.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-solid-pink.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-solid-purple.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-solid-red.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-solid-yellow.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-solid.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-yellow.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-blue.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-green.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-grey.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-orange.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-pink.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-purple.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-red.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-solid-blue.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-solid-green.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-solid-grey.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-solid-orange.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-solid-pink.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-solid-purple.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-solid-red.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-solid-yellow.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-solid.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light-yellow.tar.xz -C /usr/share/themes
+    chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light.tar.xz -C /usr/share/themes
 
     # add custom icon for arcmenu
     chroot "$ROOTFS" cp /tmp/icons/brgvos-logo.svg /usr/share/gnome-shell/extensions/arcmenu@arcmenu.com/icons/
