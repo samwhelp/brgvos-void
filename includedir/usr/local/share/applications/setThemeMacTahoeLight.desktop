@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Icon=daytime-sunrise-symbolic
+NoDisplay=false
+Exec=/usr/local/bin/setThemeMacTahoeLight.sh
+Path=/usr/local/bin/
+Terminal=false
+X-GNOME-UsesNotifications=false
+Categories=Settings;
+Name[en]=MacTahoe Light
+Name[ro]=MacTahoe Luminoasă
+Name[ro_RO]=MacTahoe Luminoasă
+Comment[en]=Set the desktop theme to  MacTahoe light
+Comment[ro]=Setează tema desktopului în MacTahoe luminoasă
+Comment[ro_RO]=Setează tema desktopului în MacTahoe luminoasă
+Hidden=false
+StartupNotify=false
+Name[ro_RO.UTF-8]=MacTahoe Luminoasă
+Comment[ro_RO.UTF-8]=Setează tema desktopului în MacTahoe luminoasă
+Name=MacTahoe Luminoasă
+Comment=Setează tema desktopului în MacTahoe luminoasă
+
