@@ -171,9 +171,9 @@ export default class AccentColorGtkThemeExtension extends Extension {
         const link_3 = pathRelative+'/assets';
         const target_3 = setPathTheme+'/'+themeName+'/gtk-4.0/assets';
         this._createSymbolicLink(target_3, link_3);
-        // Create symbolic link at $HOME/.config/gtk-4.0/windows-assets for MacTahoe theme
-        const onlyThemeName = themeName.split("-",1);
-        if(onlyThemeName == 'MacTahoe') {
+        // Create symbolic link at $HOME/.config/gtk-4.0/windows-assets for MacTahoe or WhiteSur theme, for Fluent is not needed
+        const onlyThemeName = themeName.split("-",1); // take  from full name only the name, at the first char "-"
+        if(onlyThemeName == 'MacTahoe' || onlyThemeName == 'WhiteSur') {
             const link_4 = pathRelative+'/windows-assets';
             const target_4 = setPathTheme+'/'+themeName+'/gtk-4.0/windows-assets';
             this._createSymbolicLink(target_4, link_4);
