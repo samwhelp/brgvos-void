@@ -1,3 +1,4 @@
 [org/gnome/shell]
+disabled-extensions=['dash-to-dock@micxgx.gmail.com', 'logomenu@aryan_k', 'space-bar@luchrioh']
 enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'set-notification-position@brgvos','light-dark-cursor-theme@brgvos', 'accent-icons-theme@brgvos', 'accent-gtk-theme@brgvos', 'accent-user-theme@brgvos', 'arcmenu@arcmenu.com', 'blur-my-shell@aunetx','ProxySwitcher@flannaghan.com', 'customize-ibus@hollowman.ml', 'dash-to-panel@jderose9.github.com', 'openweather-extension@penguin-teal.github.io', 'loc@brgvos.com', 'lockkeys@vaina.lt', 'tiling-assistant@leleat-on-github', 'mediacontrols@cliffniff.github.com', 'clipboard-indicator@tudmotu.com', 'appindicatorsupport@rgcjonas.gmail.com', 'ding@rastersoft.com', 'accent-directories@taiwbi.com']
-favorite-apps=['org.gnome.Console.desktop', 'org.gnome.Nautilus.desktop', 'firefox.desktop', 'libreoffice-writer.desktop', 'libreoffice-calc.desktop']
+favorite-apps=['org.gnome.Console.desktop', 'org.gnome.Nautilus.desktop', 'firefox.desktop', 'org.gnome.Evolution.desktop', 'libreoffice-writer.desktop', 'libreoffice-calc.desktop']
