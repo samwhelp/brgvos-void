@@ -12,7 +12,7 @@ The work was do it for our needs (Gene Bank research institute from Suceava, Rom
 |:------------------------------------------------------:|:------------------------------------------------------:|
 |![BRGV-OS 1](./screenshots/screenshot_2.png "BRGV-OS 1")|![BRGV-OS 2](./screenshots/screenshot_3.png "BRGV-OS 2")|
 
-In BRGV-OS have now 10 themes, 2 for users what prefers Windows style and 8 for the user what prefers Mac style, look at next movie:  
+BRGV-OS have now 10 themes, 2 for users what prefers Windows style and 8 for the user what prefers Mac style, look at next movie:  
     
 
 [<img src="https://img.youtube.com/vi/AmnI4f94C8A/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/AmnI4f94C8A?autoplay=1&mute=1)|
