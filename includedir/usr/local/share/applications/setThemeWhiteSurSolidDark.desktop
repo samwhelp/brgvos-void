@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Icon=weather-clear-night-210
+NoDisplay=false
+Exec=/usr/local/bin/setThemeWhiteSurSolidDark.sh
+Path=/usr/local/bin/
+Terminal=false
+X-GNOME-UsesNotifications=false
+Categories=Settings;
+Name[en]=WhiteSur Solid Dark
+Name[ro]=WhiteSur Solid Întunecoasă
+Name[ro_RO]=WhiteSur Solid Întunecoasă
+Comment[en]=Set the desktop theme to WhiteSur solid dark
+Comment[ro]=Setează tema desktopului în WhiteSur solid întunecoasă
+Comment[ro_RO]=Setează tema desktopului în WhiteSur solid întunecoasă
+Hidden=false
+StartupNotify=false
+Name[ro_RO.UTF-8]=WhiteSur Solid Întunecoasă
+Comment[ro_RO.UTF-8]=Setează tema desktopului în WhiteSur solid întunecoasă
+Name=WhiteSur Solid Întunecoasă
+Comment=Setează tema desktopului în WhiteSur solid întunecoasă
+
