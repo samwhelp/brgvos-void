@@ -26,6 +26,6 @@ name='suse-yast.directory'
 translate=true
 
 [org/gnome/desktop/app-folders/folders/d7380670-600e-4906-96ec-401c6285bf4f]
-apps=['setThemeMacTahoeDark.desktop', 'setThemeMacTahoeLight.desktop', 'setThemeFluentLight.desktop', 'setThemeFluentDark.desktop', 'setThemeWhiteSurDarl.desktop', 'setThemeWhiteSurLight.desktop']
+apps=['setThemeFluentLight.desktop', 'setThemeFluentDark.desktop', 'setThemeMacTahoeLight.desktop', 'setThemeMacTahoeSolidLight.desktop', 'setThemeMacTahoeDark.desktop', 'setThemeMacTahoeSolidDark.desktop', 'setThemeWhiteSurLight.desktop', 'setThemeWhiteSurSolidLight.desktop', 'setThemeWhiteSurDark.desktop', 'setThemeWhiteSurSolidDark.desktop']
 name='Setări'
 translate=false
