@@ -90,6 +90,10 @@ dconf write /org/gnome/shell/extensions/light-dark-cursor-theme/prefer-dark "'Ma
 # set position on panel for openweatherrefined
 dconf write /org/gnome/shell/extensions/openweatherrefined/position-in-panel "'center'"
 
+# set space-bar appearence
+dconf write /org/gnome/shell/extensions/space-bar/appearance/active-workspace-text-color "'rgb(255,255,255)'"
+dconf write /org/gnome/shell/extensions/space-bar/appearance/inactive-workspace-text-color "'rgb(222,221,218)'"
+
 # in Wayland we can't restart gnome-shell so next message work only X
 #killall -HUP gnome-shell
 
