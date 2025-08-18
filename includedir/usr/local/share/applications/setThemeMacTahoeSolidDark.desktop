@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Icon=daytime-sunset-symbolic
+NoDisplay=false
+Exec=/usr/local/bin/setThemeMacTahoeSolidDark.sh
+Path=/usr/local/bin/
+Terminal=false
+X-GNOME-UsesNotifications=false
+Categories=Settings;
+Name[en]=MacTahoe Solid Dark
+Name[ro]=MacTahoe Solid Întunecoasă
+Name[ro_RO]=MacTahoe Solid Întunecoasă
+Comment[en]=Set the desktop theme to MacTahoe solid dark
+Comment[ro]=Setează tema desktopului în MacTahoe solid întunecoasă
+Comment[ro_RO]=Setează tema desktopului în MacTahoe solid întunecoasă
+Hidden=false
+StartupNotify=false
+Name[ro_RO.UTF-8]=MacTahoe Solid Întunecoasă
+Comment[ro_RO.UTF-8]=Setează tema desktopului în MacTahoe solid întunecoasă
+Name=MacTahoe Solid Întunecoasă
+Comment=Setează tema desktopului în MacTahoe solid întunecoasă
+
