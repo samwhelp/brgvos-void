@@ -43,6 +43,14 @@ Next videos is a example...
 |[<img src="https://img.youtube.com/vi/QVdH_dGIyOQ/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/QVdH_dGIyOQ?autoplay=1&mute=1)|[<img src="https://img.youtube.com/vi/HZfKh0V6aOo/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/HZfKh0V6aOo?autoplay=1&mute=1)|[<img src="https://img.youtube.com/vi/SnHjbCFt-qw/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/SnHjbCFt-qw?autoplay=1&mute=1)|  
   
 
+## First time update and upgrade the packages
+
+Because is a rolling distribution first time we make the update and upgrade to the packages:  
+
+```bash
+sudo xbps-install -Su
+```
+
 ## How to install applications
 
 Using `xbs` packages manager:
@@ -89,7 +97,7 @@ nix-channel --update
 # check the list with channels 
 nix-channel --list
 # add the dir were is nix application in .bash_profile
-echo 'export XDG_DATA_DIRS="$HOME/.nix-profile/share:$XDG_DATA_DIRS"' >> ~/.profile
+echo 'export XDG_DATA_DIRS="$HOME/.nix-profile/share:$XDG_DATA_DIRS"' >> ~/.bash_profile
 # example to install - pgmodeler
 nix-env -iA nixpkgs.pgmodeler
 # start the application
