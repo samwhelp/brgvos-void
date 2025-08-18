@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Icon=weather-clear-night-210
+NoDisplay=false
+Exec=/usr/local/bin/setThemeWhiteSurDark.sh
+Path=/usr/local/bin/
+Terminal=false
+X-GNOME-UsesNotifications=false
+Categories=Settings;
+Name[en]=WhiteSur Dark
+Name[ro]=WhiteSur Întunecoasă
+Name[ro_RO]=WhiteSur Întunecoasă
+Comment[en]=Set the desktop theme to WhiteSur dark
+Comment[ro]=Setează tema desktopului în WhiteSur întunecoasă
+Comment[ro_RO]=Setează tema desktopului în WhiteSur întunecoasă
+Hidden=false
+StartupNotify=false
+Name[ro_RO.UTF-8]=WhiteSur Întunecoasă
+Comment[ro_RO.UTF-8]=Setează tema desktopului în WhiteSur întunecoasă
+Name=WhiteSur Întunecoasă
+Comment=Setează tema desktopului în WhiteSur întunecoasă
+
