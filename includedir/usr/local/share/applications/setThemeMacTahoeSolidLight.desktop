@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Icon=daytime-sunrise-symbolic
+NoDisplay=false
+Exec=/usr/local/bin/setThemeMacTahoeSolidLight.sh
+Path=/usr/local/bin/
+Terminal=false
+X-GNOME-UsesNotifications=false
+Categories=Settings;
+Name[en]=MacTahoe Solid Light
+Name[ro]=MacTahoe Solid Luminoasă
+Name[ro_RO]=MacTahoe Solid Luminoasă
+Comment[en]=Set the desktop theme to  MacTahoe solid light
+Comment[ro]=Setează tema desktopului în MacTahoe solid luminoasă
+Comment[ro_RO]=Setează tema desktopului în MacTahoe solid luminoasă
+Hidden=false
+StartupNotify=false
+Name[ro_RO.UTF-8]=MacTahoe Solid Luminoasă
+Comment[ro_RO.UTF-8]=Setează tema desktopului în MacTahoe solid luminoasă
+Name=MacTahoe Solid Luminoasă
+Comment=Setează tema desktopului în MacTahoe solid luminoasă
+
