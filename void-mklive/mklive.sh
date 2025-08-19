@@ -734,7 +734,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dingrastersoft.com.v76.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/appindicatorsupportrgcjonas.gmail.com.v60.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-icons-themebrgvos.v2.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-gtk-themebrgvos.v6.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-gtk-themebrgvos.v7.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-user-themebrgvos.v2.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/light-dark-cursor-themebrgvos.v1.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/set-notification-positionbrgvos.v2.shell-extension.zip
