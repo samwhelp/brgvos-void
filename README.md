@@ -45,7 +45,7 @@ Next videos is a example...
 
 ## First time update and upgrade the packages
 
-Because is a rolling distribution first time we make the update and upgrade to the packages:  
+Since it is a rolling (continuous) distribution, it is necessary that, the first time we login to update and upgrade the packages:  
 
 ```bash
 sudo xbps-install -Su
