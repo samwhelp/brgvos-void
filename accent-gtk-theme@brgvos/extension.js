@@ -159,24 +159,48 @@ export default class AccentColorGtkThemeExtension extends Extension {
         const pathRelative = dirFile.get_path();
         //Create directory if not exist
         this._createDirectoryInHomeDir(dirFile);
+        
         // Create symbolic link at $HOME/.config/gtk-4.0/gtk.css
-        const link_1 = pathRelative+'/gtk.css';
-        const target_1 = setPathTheme+'/'+themeName+'/gtk-4.0/gtk.css';
-        this._createSymbolicLink(target_1, link_1);
+        //const link_1 = pathRelative+'/gtk.css';
+        //const target_1 = setPathTheme+'/'+themeName+'/gtk-4.0/gtk.css';
+        //this._createSymbolicLink(target_1, link_1);
+        
+        // Copy file gtk.css to $HOME/.config/gtk-4.0/gtk.css
+        const source_1 = setPathTheme+'/'+themeName+'/gtk-4.0/gtk.css';
+        const destination_1 = pathRelative+'/gtk.css';
+        this._copyFileOrDirectory(source_1, destination_1);
+        
         // Create symbolic link at $HOME/.config/gtk-4.0/gtk-dark.css
-        const link_2 = pathRelative+'/gtk-dark.css';
-        const target_2 = setPathTheme+'/'+themeName+'/gtk-4.0/gtk-dark.css';
-        this._createSymbolicLink(target_2, link_2);
+        //const link_2 = pathRelative+'/gtk-dark.css';
+        //const target_2 = setPathTheme+'/'+themeName+'/gtk-4.0/gtk-dark.css';
+        //this._createSymbolicLink(target_2, link_2);
+
+        // Copy file gtk-dark.css to $HOME/.config/gtk-4.0/gtk-dark.css
+        const source_2 = setPathTheme+'/'+themeName+'/gtk-4.0/gtk-dark.css';
+        const destination_2 = pathRelative+'/gtk-dark.css';
+        this._copyFileOrDirectory(source_2, destination_2);
+
         // Create symbolic link at $HOME/.config/gtk-4.0/assets
-        const link_3 = pathRelative+'/assets';
-        const target_3 = setPathTheme+'/'+themeName+'/gtk-4.0/assets';
-        this._createSymbolicLink(target_3, link_3);
+        //const link_3 = pathRelative+'/assets';
+        //const target_3 = setPathTheme+'/'+themeName+'/gtk-4.0/assets';
+        //this._createSymbolicLink(target_3, link_3);
+
+        // Copy assests directory to $HOME/.config/gtk-4.0/assets
+        const source_3 = setPathTheme+'/'+themeName+'/gtk-4.0/assets';
+        const destination_3 = pathRelative+'/assets';
+        //this._copyFileOrDirectory(source_3, destination_3);
+        this._copyRecursive(source_3, destination_3);
+
         // Create symbolic link at $HOME/.config/gtk-4.0/windows-assets for MacTahoe or WhiteSur theme, for Fluent is not needed
         const onlyThemeName = themeName.split("-",1); // take  from full name only the name, at the first char "-"
         if(onlyThemeName == 'MacTahoe' || onlyThemeName == 'WhiteSur') {
-            const link_4 = pathRelative+'/windows-assets';
-            const target_4 = setPathTheme+'/'+themeName+'/gtk-4.0/windows-assets';
-            this._createSymbolicLink(target_4, link_4);
+            //const link_4 = pathRelative+'/windows-assets';
+            //const target_4 = setPathTheme+'/'+themeName+'/gtk-4.0/windows-assets';
+            //this._createSymbolicLink(target_4, link_4);
+            const source_4 = setPathTheme+'/'+themeName+'/gtk-4.0/windows-assets';
+            const destination_4 = pathRelative+'/windows-assets';
+            //this._copyFileOrDirectory(source_4, destination_4);
+            this._copyRecursive(source_4, destination_4);
         }
     }
 
@@ -186,20 +210,38 @@ export default class AccentColorGtkThemeExtension extends Extension {
         const relativePath = '.config/gtk-4.0';
         const dirFile = this._createFullPath(relativePath);
         const pathRelative = dirFile.get_path();
+        
         // Remove symbolic link $HOME/.config/gtk-4.0/gtk.css
-        const link_1 = pathRelative+'/gtk.css';
-        this._removeSymbolicLink(link_1);
+        //const link_1 = pathRelative+'/gtk.css';
+        //this._removeSymbolicLink(link_1);
+        
+        // Delete file $HOME/.config/gtk-4.0/gtk.css
+        const path_1 = pathRelative+'/gtk.css';
+        this._deleteFileOrDirectory(path_1);
+        
         // Remove symbolic link $HOME/.config/gtk-4.0/gtk-dark.css
-        const link_2 = pathRelative+'/gtk-dark.css';
-        this._removeSymbolicLink(link_2);
+        //const link_2 = pathRelative+'/gtk-dark.css';
+        //this._removeSymbolicLink(link_2);
+        
+        // Delete file $HOME/.config/gtk-4.0/gtk-dark.css
+        const path_2 = pathRelative+'/gtk-dark.css';
+        this._deleteFileOrDirectory(path_2);
+
         // Remove symbolic link $HOME/.config/gtk-4.0/assets
-        const link_3 = pathRelative+'/assets';
-        this._removeSymbolicLink(link_3);
-        // Remove symbolic link $HOME/.config/gtk-4.0/windows-assets if exist
-        const link_4 = pathRelative+'/windows-assets';
-        const linkWindowsAssets =  Gio.File.new_for_path(link_4);
-        if (linkWindowsAssets.query_exists(null)) {
-            this._removeSymbolicLink(link_4);
+        //const link_3 = pathRelative+'/assets';
+        //this._removeSymbolicLink(link_3);
+        
+        // Delete directory $HOME/.config/gtk-4.0/assets
+        const path_3 = pathRelative+'/assets';
+        //this._deleteFileOrDirectory(path_3);
+        this._deleteRecursive(path_3);
+
+        // Delete directory $HOME/.config/gtk-4.0/windows-assets if exist
+        const path_4 = pathRelative+'/windows-assets';
+        const pathWindowsAssets =  Gio.File.new_for_path(path_4);
+        if (pathWindowsAssets.query_exists(null)) {
+            //this._removeSymbolicLink(path_4);
+            this._deleteRecursive(path_4);
         }
     }
     
@@ -251,6 +293,83 @@ export default class AccentColorGtkThemeExtension extends Extension {
         }
         // Remove the symbolic link
         linkFile.delete(null);
+    }
+
+    // Next method copy a file or a directory
+    _copyFileOrDirectory(sourcePath, destinationPath) {
+        // Create a Gio.File objects
+        const sourceFileDirectory = Gio.File.new_for_path(sourcePath);
+        const destinationFileDirectory = Gio.File.new_for_path(destinationPath);
+        // Check if the file/directory already exists or the source not exist, if is true do nothing
+        if (destinationFileDirectory.query_exists(null) || !sourceFileDirectory.query_exists(null)) {
+            return;
+        }
+        // Copy file or directory
+        sourceFileDirectory.copy_async(destinationFileDirectory,
+            Gio.FileCopyFlags.NONE, 
+            null, 
+            null, 
+            null, (sourceFileDirectory, result) => {
+                sourceFileDirectory.copy_finish(result);
+            });
+    }
+
+    // Next method delete a file or a directory
+    _deleteFileOrDirectory(path) {
+        // Create a Gio.File object for the file/directory
+        const deletFileDirectory = Gio.File.new_for_path(path);
+        // Check if the file/directory exist, if not exist do nothig
+        if (!deletFileDirectory.query_exists(null)) {
+            return;
+        }
+        deletFileDirectory.delete_async(null, null, (deletFileDirectory, result) => {
+            deletFileDirectory.delete_finish(result);
+        });
+    }
+
+    _copyRecursive(srcPath, destPath) {
+        let src = Gio.File.new_for_path(srcPath);
+        let dest = Gio.File.new_for_path(destPath);
+
+        let info = src.query_info('standard::type', Gio.FileQueryInfoFlags.NONE, null);
+
+        if (info.get_file_type() === Gio.FileType.DIRECTORY) {
+            // Ensure target dir exists
+            try {
+                dest.make_directory_with_parents(null);
+            } catch (e) {
+                // ignore if already exists
+                }
+
+            let enumerator = src.enumerate_children('standard::name,standard::type',
+                                                Gio.FileQueryInfoFlags.NONE, null);
+            let childInfo;
+            while ((childInfo = enumerator.next_file(null)) !== null) {
+                let childSrc = src.get_child(childInfo.get_name());
+                let childDest = dest.get_child(childInfo.get_name());
+                this._copyRecursive(childSrc.get_path(), childDest.get_path());
+            }
+        } else {
+            // Copy single file, overwrite if exists
+            src.copy(dest, Gio.FileCopyFlags.OVERWRITE, null, null);
+        }
+    }
+
+    _deleteRecursive(path) {
+        let file = Gio.File.new_for_path(path);
+        // Check if the file/directory exist, if not exist do nothig
+        if (file.query_exists(null)) {
+            let info = file.query_info('standard::type', Gio.FileQueryInfoFlags.NONE, null);
+            if (info.get_file_type() === Gio.FileType.DIRECTORY) { // check if the path is a directory 
+                let enumerator = file.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);
+                let childInfo;
+                while ((childInfo = enumerator.next_file(null)) !== null) {
+                    let childPath = GLib.build_filenamev([path, childInfo.get_name()]);
+                    this._deleteRecursive(childPath);
+                }
+            }
+            file.delete(null);
+        }
     }
 
 }
