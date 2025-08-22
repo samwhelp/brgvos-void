@@ -1,15 +1,25 @@
 #!/usr/bin/env bash
 
+. ./void-mklive/lib.sh
+
+# Check for root permissions.
+if [ "$(id -u)" -ne 0 ]; then
+    die "Must be run as root, exiting..."
+fi
+
 # set the date and time
 data=$(date +'%d%m%Y_%H%M%S')
 
 # change the owner for includedir
+info_msg "Change the owner to root for 'includedir' directory"
 chown root:root -R includedir
 
 # change working directory
+info_msg "Change working directory to 'void-mklive'" 
 cd void-mklive
 
-# flag used for build the iso
+# Read the flags used for build the iso
+info_msg "Read the flags used for build the iso"
 arch=$(cat ../arch)
 variant=$(cat ../variant)
 keymap=$(cat ../keymap)
@@ -17,11 +27,39 @@ locale=$(cat ../locale)
 root_shell=$(cat ../root_shell)
 linux_version=$(cat ../linux_version)
 title=$(cat ../title)
-kernel_arg=$(cat ../kernel_arg)
-other_pkg=$(cat ../other_pkg)
 service=$(cat ../services)
 
-# run void linux script to build iso file image with our distribution
+# Prepare variables for Romanian language
+if [ "$locale" = ro_RO.UTF-8 ]; then
+    info_msg "Prepare variables for Romanian language"
+    other_pkg=$(cat ../other_pkg)
+    other_pkg+=$(cat ../other_pkg_ro)
+    kernel_arg=$(cat ../kernel_arg_ro)
+fi
+
+# Prepare variables and change the name of menu for English USA language
+if [ "$locale" = en_US.UTF-8 ]; then
+    # Change the name of menus in Gnome
+    info_msg "Change the name of menus in Gnome"
+    sed -i "s/name='Setări teme'/name='Themes settings'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/name='Birou'/name='Office'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/'name': 'Sistem'/'name': 'System'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
+    sed -i "s/'name': 'Birou'/'name': 'Office'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
+    sed -i "s/'name': 'Grafică'/'name': 'Graphics'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
+    sed -i "s/'name': 'Accesorii'/'name': 'Accessories'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
+    sed -i "s/'name': 'Setări teme'/'name': 'Themes settings'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
+    # Change the default keyboard in Gnome from 'ro' to 'us' 
+    info_msg "Change the default keyboard in Gnome from 'ro' to 'us'"
+    sed -i "s/sources=\[('xkb', 'ro'), ('xkb', 'us')]\s*/sources=[('xkb', 'us'), ('xkb', 'ro')]/g"  ../includedir/etc/dconf/db/local.d/01-input-sources
+    # Prepare variables for English USA language
+    info_msg "Prepare variables for English USA language"
+    other_pkg=$(cat ../other_pkg)
+    other_pkg+=$(cat ../other_pkg_en_US)
+    kernel_arg=$(cat ../kernel_arg_en_US)
+fi
+
+# Run void linux script to build iso file image
+info_msg "Now I run 'mkiso.sh' with the flags prepared before"
 sudo ./mkiso.sh \
 -a $arch \
 -b $variant \
@@ -38,12 +76,40 @@ sudo ./mkiso.sh \
 -o $title'_'$variant'_'$locale'_'$arch'_'$data.iso \
 -I ../includedir
 
-#create hash file
-HASH=`sha256sum $title'_'$variant'_'$locale'_'$arch'_'$data.iso`
-echo $HASH > $title'_'$variant'_'$locale'_'$arch'_'$data.sha256
+# Create hash file and move the files to iso directory
+if [ -e $title'_'$variant'_'$locale'_'$arch'_'$data.iso ]
+    then
+        info_msg "Create hash file and move the files to '../iso' directory"
+        HASH=`sha256sum $title'_'$variant'_'$locale'_'$arch'_'$data.iso`
+        echo $HASH > $title'_'$variant'_'$locale'_'$arch'_'$data.sha256
+        mv $title'_'$variant'_'$locale'_'$arch'_'$data.iso ../iso
+        mv $title'_'$variant'_'$locale'_'$arch'_'$data.sha256 ../iso
+    else
+        echo "File $title'_'$variant'_'$locale'_'$arch'_'$data.iso not exist, so not create the sha256 file for this"
+fi
 
-# change back the owner for includedir
+# Revert to the default Romania language
+if [ "$locale" = en_US.UTF-8 ]; then
+    info_msg "Revert to the default Romania language"
+    sed -i "s/name='Themes settings'/name='Setări teme'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/name='Office'/name='Birou'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/'name': 'System'/'name': 'Sistem'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
+    sed -i "s/'name': 'Office'/'name': 'Birou'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
+    sed -i "s/'name': 'Graphics'/'name': 'Grafică'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
+    sed -i "s/'name': 'Accessories'/'name': 'Accesorii'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
+    sed -i "s/'name': 'Themes settings'/'name': 'Setări teme'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
+    sed -i "s/sources=\[('xkb', 'us'), ('xkb', 'ro')]\s*/sources=[('xkb', 'ro'), ('xkb', 'us')]/g"  ../includedir/etc/dconf/db/local.d/01-input-sources
+fi
+
+# Change back the owner for includedir and iso directories
+info_msg "Change back the owner for 'includedir' and 'iso' directories"
 cd ..
 chown florin:florin -R includedir
+chown florin:florin -R iso
 
+# Run sync to be sure the file was finished to written
+info_msg "Run sync to be sure the file was finished to written"
 sync
+
+# Final message
+printf "Next files exist in './iso' directory:\n$(ls ./iso)\n"
