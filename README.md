@@ -20,7 +20,7 @@ The name **BRGV** is an acronym from Romanian "**B**anca de **R**esurse **G**ene
 ## How to build
 
 It is suggested to use Void Linux or others based by this distribution, also **BRGV-OS** work :)  
-Default start the build for Romanian language, if you wish to build for international English USA language edit file `locale` and change from `ro_RO.UTF-8` to `en_US.UTF-8` and also edit file `keymap` and change from `ro` to `us.  
+Default start the build for Romanian language, if you wish to build for international English USA language edit file `locale` and change from `ro_RO.UTF-8` to `en_US.UTF-8` and also edit file `keymap` and change from `ro` to `us`.  
 That's it.  
 If you wish to build for your language, take a look at file `build_brgvos.sh` how I do it from English USA language and Romanian language. 
 To build the iso image, it is necessary to use a Void Linux distribution or **BRGV-OS** where we run next commands:  
