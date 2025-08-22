@@ -602,6 +602,8 @@ STEP_COUNT=10
 [ "${#INCLUDE_DIRS[@]}" -gt 0 ] && STEP_COUNT=$((STEP_COUNT+1))
 [ "${#IGNORE_PKGS[@]}" -gt 0 ] && STEP_COUNT=$((STEP_COUNT+1))
 [ -n "$ROOT_SHELL" ] && STEP_COUNT=$((STEP_COUNT+1))
+# Check if variable VARIANT is not null
+[ -n "$VARIANT" ] && STEP_COUNT=$((STEP_COUNT+1))
 
 : ${SYSLINUX_DATADIR:="$VOIDTARGETDIR"/usr/lib/syslinux}
 : ${GRUB_DATADIR:="$VOIDTARGETDIR"/usr/share/grub}
@@ -699,8 +701,10 @@ fi
 if [ "$VARIANT" = gnome ]; then
     print_step "Prepare GNOME desktop..."
     # print the path for $ROOTFS
+    info_msg "List the working path"
     echo $ROOTFS
     # delete default extensions installed
+    info_msg "Delete some default extensions installed"
     chroot "$ROOTFS" rm -rf /usr/share/gnome-shell/extensions/auto-move-windows@gnome-shell-extensions.gcampax.github.com
     chroot "$ROOTFS" rm -rf /usr/share/gnome-shell/extensions/apps-menu@gnome-shell-extensions.gcampax.github.com
     chroot "$ROOTFS" rm -rf /usr/share/gnome-shell/extensions/launch-new-instance@gnome-shell-extensions.gcampax.github.com
@@ -716,9 +720,11 @@ if [ "$VARIANT" = gnome ]; then
 
     # install gext global to be used for enable the extensions
     # is not used to install because leave dev and proc mounted on $ROOTFS and the mklive crash
+    info_msg "Install 'gnome-extensions-cli' global to be used for enable the extensions"
     chroot "$ROOTFS" pipx install gnome-extensions-cli --global
     
     # install extensions first version
+    info_msg "Install extensions from includedir"
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/arcmenuarcmenu.com.v66.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/blur-my-shellaunetx.v68.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/ProxySwitcherflannaghan.com.v25.shell-extension.zip
@@ -764,6 +770,7 @@ if [ "$VARIANT" = gnome ]; then
     #chroot "$ROOTFS" gext -F install arcmenu@arcmenu.com
 
     # move estension from user to system this for first version
+    info_msg "Move estension from 'root' user to system '/usr/share/gnome-shell/extensions/'"
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/arcmenu@arcmenu.com /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/blur-my-shell@aunetx /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/ProxySwitcher@flannaghan.com /usr/share/gnome-shell/extensions/
@@ -789,6 +796,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/loc@brgvos.com /usr/share/gnome-shell/extensions/
     
     # create directory schemas for extensions 
+    info_msg "Create directory schemas for extensions"
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/arcmenu@arcmenu.com/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/blur-my-shell@aunetx/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/ProxySwitcher@flannaghan.com/schemas
@@ -814,6 +822,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/loc@brgvos.com/schemas
 
     # compile schemas for extensions 
+    info_msg "Compile schemas for extensions" 
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/arcmenu@arcmenu.com/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/blur-my-shell@aunetx/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/ProxySwitcher@flannaghan.com/schemas
@@ -836,12 +845,14 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/loc@brgvos.com/schemas
+    #chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/loc@brgvos.com/schemas
 
     # add permissions to the user to read extensions
+    info_msg "Add permissions to the user to read extensions"
     chroot "$ROOTFS" chmod -R 755 /usr/share/gnome-shell/extensions/
 
     # extract Fluent icons and Fluent cursors
+    info_msg "Extract Fluent icons and Fluent cursors"
     chroot "$ROOTFS" tar -Jxf /tmp/icons/01-Fluent.tar.xz -C /usr/share/icons
     chroot "$ROOTFS" tar -Jxf /tmp/icons/Fluent-cursors.tar.xz -C /usr/share/icons
     chroot "$ROOTFS" tar -Jxf /tmp/icons/Fluent-dark-cursors.tar.xz -C /usr/share/icons
@@ -855,6 +866,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" tar -Jxf /tmp/icons/Fluent-yellow.tar.xz -C /usr/share/icons
     
     # extract MacTahoe icons and MacTahoe cursors
+    info_msg "Extract MacTahoe icons and MacTahoe cursors"
     chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-blue-dark.tar.xz -C /usr/share/icons
     chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-blue-light.tar.xz -C /usr/share/icons
     chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe-blue.tar.xz -C /usr/share/icons
@@ -886,6 +898,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" tar -Jxf /tmp/icons/MacTahoe.tar.xz -C /usr/share/icons
 
     # extract WhiteSur icons
+    info_msg "Extract WhiteSur icons"
     chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-dark.tar.xz -C /usr/share/icons
     chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-green-dark.tar.xz -C /usr/share/icons
     chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur-green-light.tar.xz -C /usr/share/icons
@@ -915,6 +928,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" tar -Jxf /tmp/icons/WhiteSur.tar.xz -C /usr/share/icons
 
     # extract Fluent themes
+    info_msg "Extract Fluent themes"
     chroot "$ROOTFS" tar -Jxf /tmp/themes/Fluent-round-green.tar.xz -C /usr/share/themes
     chroot "$ROOTFS" tar -Jxf /tmp/themes/Fluent-round-grey.tar.xz -C /usr/share/themes
     chroot "$ROOTFS" tar -Jxf /tmp/themes/Fluent-round-orange.tar.xz -C /usr/share/themes
@@ -926,6 +940,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" tar -Jxf /tmp/themes/Fluent-round.tar.xz -C /usr/share/themes
 
     # extract MacTahoe themes
+    info_msg "Extract MacTahoe themes"
     chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-blue.tar.xz -C /usr/share/themes
     chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-green.tar.xz -C /usr/share/themes
     chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Dark-grey.tar.xz -C /usr/share/themes
@@ -968,6 +983,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" tar -Jxf /tmp/themes/MacTahoe-Light.tar.xz -C /usr/share/themes
 
     # extract WhiteSur themes
+    info_msg "Extract WhiteSur themes"
     chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-blue.tar.xz -C /usr/share/themes
     chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-green.tar.xz -C /usr/share/themes
     chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Dark-grey.tar.xz -C /usr/share/themes
@@ -1006,15 +1022,19 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" tar -Jxf /tmp/themes/WhiteSur-Light.tar.xz -C /usr/share/themes
 
     # add custom icon for arcmenu
+    info_msg "Add BRGV-OS icon for arcmenu"
     chroot "$ROOTFS" cp /tmp/icons/brgvos-logo.svg /usr/share/gnome-shell/extensions/arcmenu@arcmenu.com/icons/
 
     # update dconf settings for extensions
+    info_msg "Update dconf settings for extensions"
     chroot "$ROOTFS" dconf update
 
     # setup flathub
+    info_msg "Setup flathub"
     chroot "$ROOTFS" flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
     # set plymouth theme for BRGV-OS
+    info_msg "Set plymouth theme for BRGV-OS"
     chroot "$ROOTFS" plymouth-set-default-theme -R brgvos
 
     sleep 10
