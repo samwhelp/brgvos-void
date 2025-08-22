@@ -1,8 +1,8 @@
 # BRGV-OS
 
-BRGV-OS is a custom [Void Linux](https://voidlinux.org/) based distribution that aims to facilitate developers and users to transitioning from Windows to Linux by maintaining familiar operational habits and workflows.  
-The name BRGV mean in Romanian "Banca de Resurse Genetice Vegetale" (shortly in English Gene Bank), an OS mean of course Operating System.  
-The work was do it for our needs (Gene Bank research institute from Suceava, Romania), especially for open source software what run in Linux, but anyone can modify for their needs.  
+**BRGV-OS** is a custom [Void Linux](https://voidlinux.org/) based distribution that aims to facilitate developers, researchers and users to transitioning from Windows to Linux by maintaining familiar operational habits and workflows.  
+This work was do it for our job needs at Gene Bank research institute from Suceava, Romania, but anyone can modify for their needs.  
+The name **BRGV** is an acronym from Romanian "**B**anca de **R**esurse **G**enetice **V**egetale" (shortly in English Gene Bank), and **OS** mean, of course, **O**perating **S**ystem.  
   
 |                     Theme Light                                     |                         Theme Dark                               |
 |:-------------------------------------------------------------------:|:----------------------------------------------------------------:|
@@ -12,15 +12,18 @@ The work was do it for our needs (Gene Bank research institute from Suceava, Rom
 |:------------------------------------------------------:|:------------------------------------------------------:|
 |![BRGV-OS 1](./screenshots/screenshot_2.png "BRGV-OS 1")|![BRGV-OS 2](./screenshots/screenshot_3.png "BRGV-OS 2")|
 
-BRGV-OS have now 10 themes, 2 for users what prefers Windows style and 8 for the user what prefers Mac style, look at next movie:  
+**BRGV-OS** have now 10 themes, 2 for users what prefers Windows style and 8 for the user what prefers Mac style, look at next movie:  
     
 
 [<img src="https://img.youtube.com/vi/YwH5UtWPND8/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/YwH5UtWPND8?autoplay=1&mute=1)|
 
 ## How to build
 
-It is suggested to use Void Linux or other based by this distribution, also BRGV-OS work :)  
-To build the iso image is necessary to use a Void Linux distribution where we run next commands:  
+It is suggested to use Void Linux or others based by this distribution, also **BRGV-OS** work :)  
+Default start the build for Romanian language, if you wish to build for international English USA language edit file `locale` and change from `ro_RO.UTF-8` to `en_US.UTF-8` and also edit file `keymap` and change from `ro` to `us.  
+That's it.  
+If you wish to build for your language, take a look at file `build_brgvos.sh` how I do it from English USA language and Romanian language. 
+To build the iso image, it is necessary to use a Void Linux distribution or **BRGV-OS** where we run next commands:  
 
 ```bash
 git clone --remote-submodules https://github.com/florintanasa/brgvos-void.git
@@ -28,14 +31,17 @@ cd brgvos-void
 sudo ./build_brgvos.sh
 ```  
   
-After that, if everythink works, we find the iso image is in directory `void-mklive`
+After that, if everything works ok, we find the iso image is in directory `iso build`.
   
 > [!IMPORTANT]  
-> In this moment the build is for romanian language only, but with few modifications can be buildid for anothers.  
+> In this moment the build is for ro_RO (Romanian language) and en_US (English USA language) , but with few modifications can be buildid for anothers.  
 > Exist iso images files for: ro_RO.UTF-8 and en_US.UTF-8.  
-> ISO file can be downloaded from [here](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/)
-  
-Test the result of ISO file in virtual machine.
+> ISO files can be downloaded from:  
+> here for **ro_RO** versions [![Download BRGV-OS en_US version](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_22082025_162548.iso/download)  
+> or  
+> here for **en_US** version [![Download BRGV-OS en_US version](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_22082025_164014.iso/download)  
+    
+Test the ISO file in virtual machine.
 Next videos is a example...  
 
 |    Installation in Romanian   |   Change the theme by accent color and scheme color    |Installation in English  |
@@ -98,13 +104,13 @@ nix-channel --update
 nix-channel --list
 # add the dir were is nix application in .bash_profile
 echo 'export XDG_DATA_DIRS="$HOME/.nix-profile/share:$XDG_DATA_DIRS"' >> ~/.bash_profile
+# add the dir were is nix application in .profile
+echo 'export XDG_DATA_DIRS="$HOME/.nix-profile/share:$XDG_DATA_DIRS"' >> ~/.profile
 # example to install - pgmodeler
 nix-env -iA nixpkgs.pgmodeler
 # start the application
 pgmodeler
 ```
-
-
 
 ## License
 
