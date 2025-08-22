@@ -23,7 +23,6 @@ openjdk17-jre
 openjdk17 
 spice-vdagent
 xf86-video-qxl
-firefox-i18n-ro
 gtk-engine-murrine
 gnome-themes-extra-gtk
 gnome-browser-connector 
@@ -31,7 +30,6 @@ libreoffice-xtensions
 libreoffice-writer 
 libreoffice-libgtk 
 libreoffice-impress 
-libreoffice-i18n-ro 
 libreoffice-common 
 libreoffice-calc 
 libreoffice-base 
@@ -39,12 +37,8 @@ libreoffice-math
 libreoffice-draw 
 libreoffice-postgresql 
 libreoffice-gnome 
-mythes-ro 
 libnumbertext 
 freefont-ttf 
-hunspell-ro_RO 
-hyphen-ro 
-manpages-ro 
 evolution 
 rhythmbox 
 shotwell 
