@@ -834,6 +834,7 @@ failed to install GRUB to $dev!\nCheck $LOG for errors." ${MSGBOXSIZE}
     chroot $TARGETDIR sed -i 's+#GRUB_BACKGROUND=/usr/share/void-artwork/splash.png+GRUB_BACKGROUND=/usr/share/brgvos-artwork/splash.png+g' /etc/default/grub >$LOG 2>&1
     chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >$LOG 2>&1
     chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 quiet splash"/g' /etc/default/grub >$LOG 2>&1
+    chroot $TARGETDIR sed -i -e '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >$LOG 2>&1
     echo "Running grub-mkconfig on $TARGETDIR..." >$LOG
     chroot $TARGETDIR grub-mkconfig -o /boot/grub/grub.cfg >$LOG 2>&1
     if [ $? -ne 0 ]; then
