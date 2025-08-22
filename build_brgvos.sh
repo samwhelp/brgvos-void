@@ -79,11 +79,11 @@ sudo ./mkiso.sh \
 # Create hash file and move the files to iso directory
 if [ -e $title'_'$variant'_'$locale'_'$arch'_'$data.iso ]
     then
-        info_msg "Create hash file and move the files to '../iso' directory"
+        info_msg "Create hash file and move the files to '../iso_build' directory"
         HASH=`sha256sum $title'_'$variant'_'$locale'_'$arch'_'$data.iso`
         echo $HASH > $title'_'$variant'_'$locale'_'$arch'_'$data.sha256
-        mv $title'_'$variant'_'$locale'_'$arch'_'$data.iso ../iso
-        mv $title'_'$variant'_'$locale'_'$arch'_'$data.sha256 ../iso
+        mv $title'_'$variant'_'$locale'_'$arch'_'$data.iso ../iso_build
+        mv $title'_'$variant'_'$locale'_'$arch'_'$data.sha256 ../iso_build
     else
         echo "File $title'_'$variant'_'$locale'_'$arch'_'$data.iso not exist, so not create the sha256 file for this"
 fi
@@ -102,14 +102,14 @@ if [ "$locale" = en_US.UTF-8 ]; then
 fi
 
 # Change back the owner for includedir and iso directories
-info_msg "Change back the owner for 'includedir' and 'iso' directories"
+info_msg "Change back the owner for 'includedir' and 'iso_build' directories"
 cd ..
 chown florin:florin -R includedir
-chown florin:florin -R iso
+chown florin:florin -R iso_build
 
 # Run sync to be sure the file was finished to written
 info_msg "Run sync to be sure the file was finished to written"
 sync
 
 # Final message
-printf "Next files exist in './iso' directory:\n$(ls ./iso)\n"
+printf "Next files exist in './iso_build' directory:\n$(ls ./iso_build)\n"
