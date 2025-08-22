@@ -1,5 +1,6 @@
 *.img
 *.iso
+*.sha256
 *.raw
 *.tar.gz
 *.box
