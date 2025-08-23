@@ -12,10 +12,10 @@ The name **BRGV** is an acronym from Romanian "**B**anca de **R**esurse **G**ene
 |:------------------------------------------------------:|:------------------------------------------------------:|
 |![BRGV-OS 1](./screenshots/screenshot_2.png "BRGV-OS 1")|![BRGV-OS 2](./screenshots/screenshot_3.png "BRGV-OS 2")|
 
-**BRGV-OS** have now 10 themes, 2 for users what prefers Windows style and 8 for the user what prefers Mac style, look at next movie:  
+**BRGV-OS** have now 10 themes, 2 for users what prefers Windows style and 8 for the users what prefers Mac style, look at next movie:  
     
 
-[<img src="https://img.youtube.com/vi/YwH5UtWPND8/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/YwH5UtWPND8?autoplay=1&mute=1)|
+[<img src="https://img.youtube.com/vi/YwH5UtWPND8/maxresdefault.jpg" width="800" height="600"/>](https://www.youtube.com/embed/YwH5UtWPND8?autoplay=1&mute=1)|
 
 ## How to build
 
