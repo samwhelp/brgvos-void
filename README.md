@@ -40,6 +40,11 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > here for **ro_RO** versions [![Download BRGV-OS en_US version](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_22082025_162548.iso/download)  
 > or  
 > here for **en_US** version [![Download BRGV-OS en_US version](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_22082025_164014.iso/download)  
+> and  
+> SHA256 files can be downloaded from:  
+> here for **ro_RO** versions [![Download BRGV-OS en_US version](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_22082025_162548.sha256/download)  
+> or  
+> here for **en_US** version [![Download BRGV-OS en_US version](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_22082025_164014.sha256/download)
     
 Test the ISO file in virtual machine.
 Next videos is a example...  
