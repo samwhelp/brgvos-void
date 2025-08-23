@@ -81,9 +81,9 @@ We can search the applications on https://flathub.org/ and then we can install m
 flatpak install flathub org.gnome.gitlab.somas.Apostrophe
 ```
 
-or we can use `gnome-software` Application Gui.
+or we can use `gnome-software` Software Gui.
 
-|                        OctoXBPS                             |                        Applications                           |
+|                        OctoXBPS                             |                        Software                           |
 |:-----------------------------------------------------------:|:-------------------------------------------------------------:|
 |![octoXBPS](./screenshots/screenshot_octoxbps.png "octoXBPS")|![Aplications](./screenshots/screenshot_app.png "Applications")|
 
