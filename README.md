@@ -128,3 +128,4 @@ The open-source software included in **BRGV-OS** is distributed in the hope that
 The work is in progress..
 
 <!-- https://github.com/scopatz/nanorc -->
+<!-- https://github.com/CarterLi/maple-font?tab=readme-ov-file -->
