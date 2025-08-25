@@ -11,14 +11,14 @@ gnome-extensions enable 'logomenu@aryan_k'
 gnome-extensions enable 'space-bar@luchrioh'
 
 # set interface to Light theme
-dconf write /org/gnome/desktop/interface/accent-color "'red'"
+dconf write /org/gnome/desktop/interface/accent-color "'slate'"
 dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
 dconf write /org/gnome/desktop/interface/cursor-theme "'MacTahoe-dark-cursors'"
-dconf write /org/gnome/desktop/interface/gtk-theme "'MacTahoe-Dark-red'"
-dconf write /org/gnome/desktop/interface/icon-theme "'MacTahoe-red-dark'"
+dconf write /org/gnome/desktop/interface/gtk-theme "'MacTahoe-Dark-grey'"
+dconf write /org/gnome/desktop/interface/icon-theme "'MacTahoe-grey-dark'"
 
 # set user theme for MacTahoe
-dconf write /org/gnome/shell/extensions/user-theme/name "'MacTahoe-Dark-red'"
+dconf write /org/gnome/shell/extensions/user-theme/name "'MacTahoe-Dark-grey'"
 
 # set theme for accent-gtk-theme
 dconf write /org/gnome/shell/extensions/accent-gtk-theme/blue-theme-dark "'MacTahoe-Dark-blue'"
@@ -86,6 +86,18 @@ dconf write /org/gnome/shell/extensions/accent-icons-theme/change-app-colors "fa
 # set MacTahoe light-dark-cursor-theme
 dconf write /org/gnome/shell/extensions/light-dark-cursor-theme/default "'MacTahoe-cursors'"
 dconf write /org/gnome/shell/extensions/light-dark-cursor-theme/prefer-dark "'MacTahoe-dark-cursors'"
+
+# set MacTahoe background
+dconf write /org/gnome/desktop/background/color-shading-type "'solid'"
+dconf write /org/gnome/desktop/background/picture-options "'zoom'"
+dconf write /org/gnome/desktop/background/picture-uri "'file:///usr/share/backgrounds/gnome/ios-l-s.jpg'"
+dconf write /org/gnome/desktop/background/picture-uri-dark "'file:///usr/share/backgrounds/gnome/ios-d-s.jpg'"
+dconf write /org/gnome/desktop/background/primary-color "'#ff0000'"
+dconf write /org/gnome/desktop/background/secondary-color "'#00ffff'"
+
+# set space-bar appearence
+dconf write /org/gnome/shell/extensions/space-bar/appearance/active-workspace-text-color "'rgb(255,255,255)'"
+dconf write /org/gnome/shell/extensions/space-bar/appearance/inactive-workspace-text-color "'rgb(222,221,218)'"
 
 # set position on panel for openweatherrefined
 dconf write /org/gnome/shell/extensions/openweatherrefined/position-in-panel "'center'"
