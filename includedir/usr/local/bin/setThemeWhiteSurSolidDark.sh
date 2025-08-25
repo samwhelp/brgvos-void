@@ -87,6 +87,14 @@ dconf write /org/gnome/shell/extensions/accent-icons-theme/change-app-colors "fa
 dconf write /org/gnome/shell/extensions/light-dark-cursor-theme/default "'MacTahoe-cursors'"
 dconf write /org/gnome/shell/extensions/light-dark-cursor-theme/prefer-dark "'MacTahoe-dark-cursors'"
 
+# set WhiteSur background
+dconf write /org/gnome/desktop/background/color-shading-type "'solid'"
+dconf write /org/gnome/desktop/background/picture-options "'zoom'"
+dconf write /org/gnome/desktop/background/picture-uri "'file:///usr/share/backgrounds/gnome/ios-l-r.jpg'"
+dconf write /org/gnome/desktop/background/picture-uri-dark "'file:///usr/share/backgrounds/gnome/ios-d-r.jpg'"
+dconf write /org/gnome/desktop/background/primary-color "'#ff0000'"
+dconf write /org/gnome/desktop/background/secondary-color "'#00ffff'"
+
 # set position on panel for openweatherrefined
 dconf write /org/gnome/shell/extensions/openweatherrefined/position-in-panel "'center'"
 
