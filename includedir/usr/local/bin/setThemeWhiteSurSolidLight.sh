@@ -11,14 +11,14 @@ gnome-extensions enable 'logomenu@aryan_k'
 gnome-extensions enable 'space-bar@luchrioh'
 
 # set interface to Light theme
-dconf write /org/gnome/desktop/interface/accent-color "'blue'"
+dconf write /org/gnome/desktop/interface/accent-color "'purple'"
 dconf write /org/gnome/desktop/interface/color-scheme "'default'"
 dconf write /org/gnome/desktop/interface/cursor-theme "'MacTahoe-cursors'"
-dconf write /org/gnome/desktop/interface/gtk-theme "'WhiteSur-Light-solid-blue'"
-dconf write /org/gnome/desktop/interface/icon-theme "'WhiteSur-light'"
+dconf write /org/gnome/desktop/interface/gtk-theme "'WhiteSur-Light-solid-purple'"
+dconf write /org/gnome/desktop/interface/icon-theme "'WhiteSur-purple-light'"
 
 # set user theme for WhiteSur
-dconf write /org/gnome/shell/extensions/user-theme/name "'WhiteSur-Ligt-solid-blue'"
+dconf write /org/gnome/shell/extensions/user-theme/name "'WhiteSur-Ligt-solid-purple'"
 
 # set theme for accent-gtk-theme
 dconf write /org/gnome/shell/extensions/accent-gtk-theme/blue-theme-dark "'WhiteSur-Dark-solid-blue'"
@@ -86,6 +86,14 @@ dconf write /org/gnome/shell/extensions/accent-icons-theme/change-app-colors "fa
 # set WhiteSur light-dark-cursor-theme
 dconf write /org/gnome/shell/extensions/light-dark-cursor-theme/default "'MacTahoe-cursors'"
 dconf write /org/gnome/shell/extensions/light-dark-cursor-theme/prefer-dark "'MacTahoe-dark-cursors'"
+
+# set WhiteSur background
+dconf write /org/gnome/desktop/background/color-shading-type "'solid'"
+dconf write /org/gnome/desktop/background/picture-options "'zoom'"
+dconf write /org/gnome/desktop/background/picture-uri "'file:///usr/share/backgrounds/gnome/ios-l-p.jpg'"
+dconf write /org/gnome/desktop/background/picture-uri-dark "'file:///usr/share/backgrounds/gnome/ios-d-p.jpg'"
+dconf write /org/gnome/desktop/background/primary-color "'#ff0000'"
+dconf write /org/gnome/desktop/background/secondary-color "'#00ffff'"
 
 # set position on panel for openweatherrefined
 dconf write /org/gnome/shell/extensions/openweatherrefined/position-in-panel "'center'"
