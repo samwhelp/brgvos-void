@@ -747,7 +747,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dash-to-dockmicxgx.gmail.com.v101.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/logomenuaryan_k.v37.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/space-barluchrioh.v33.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/loc@brgvos.com.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/caffeinepatapon.info.v57.shell-extension.zip
 
 
     # install extensions second version but is intercative
@@ -793,7 +793,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/logomenu@aryan_k /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/space-bar@luchrioh /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/loc@brgvos.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/caffeine@patapon.info /usr/share/gnome-shell/extensions/
     
     # create directory schemas for extensions 
     info_msg "Create directory schemas for extensions"
@@ -819,7 +819,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/loc@brgvos.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/caffeine@patapon.info/schemas
 
     # compile schemas for extensions 
     info_msg "Compile schemas for extensions" 
@@ -845,7 +845,7 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas
-    #chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/loc@brgvos.com/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/caffeine@patapon.info/schemas
 
     # add permissions to the user to read extensions
     info_msg "Add permissions to the user to read extensions"
