@@ -21,14 +21,20 @@ export LESS_TERMCAP_so=$'\e[01;33m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[1;4;31m'
 
-
-
 # Path to your oh-my-bash installation.
 export OSH="$HOME/.oh-my-bash"
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-bash is loaded.
-OSH_THEME="powerline-light"
+# set console font because when we start kernel with guiet splash
+# not load the font from rc.conf
+if [ $TERM = linux ]
+then
+    setfont ter-v20b
+    OSH_THEME="font"
+else
+     OSH_THEME="powerline-light"
+fi
 # If you set OSH_THEME to "random", you can ignore themes you don't like.
 # OMB_THEME_RANDOM_IGNORED=("powerbash10k" "wanelo")
 # You can also specify the list from which a theme is randomly selected:
