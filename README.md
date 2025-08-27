@@ -26,7 +26,7 @@ If you wish to build for your language, take a look at file `build_brgvos.sh` ho
 To build the iso image, it is necessary to use a Void Linux distribution or **BRGV-OS** where we run next commands:  
 
 ```bash
-git clone --remote-submodules https://github.com/florintanasa/brgvos-void.git
+git clone --recurse-submodules https://github.com/florintanasa/brgvos-void.git
 cd brgvos-void
 sudo ./build_brgvos.sh
 ```  
