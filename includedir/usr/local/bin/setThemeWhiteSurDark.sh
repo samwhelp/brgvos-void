@@ -94,6 +94,9 @@ dconf write /org/gnome/desktop/background/picture-uri-dark "'file:///usr/share/b
 dconf write /org/gnome/desktop/background/primary-color "'#ff0000'"
 dconf write /org/gnome/desktop/background/secondary-color "'#00ffff'"
 
+# set preferences position for buttons on windows
+dconf write /org/gnome/desktop/wm/preferences/button-layout "'close,minimize,maximize:appmenu'"
+
 # set position on panel for openweatherrefined
 dconf write /org/gnome/shell/extensions/openweatherrefined/position-in-panel "'center'"
 

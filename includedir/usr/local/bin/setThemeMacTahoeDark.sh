@@ -95,6 +95,9 @@ dconf write /org/gnome/desktop/background/picture-uri-dark "'file:///usr/share/b
 dconf write /org/gnome/desktop/background/primary-color "'#ff0000'"
 dconf write /org/gnome/desktop/background/secondary-color "'#00ffff'"
 
+# set preferences position for buttons on windows
+dconf write /org/gnome/desktop/wm/preferences/button-layout "'close,minimize,maximize:appmenu'"
+
 # set space-bar appearence
 dconf write /org/gnome/shell/extensions/space-bar/appearance/active-workspace-text-color "'rgb(255,255,255)'"
 dconf write /org/gnome/shell/extensions/space-bar/appearance/inactive-workspace-text-color "'rgb(222,221,218)'"
