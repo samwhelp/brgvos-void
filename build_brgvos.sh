@@ -43,6 +43,10 @@ if [ "$locale" = en_US.UTF-8 ]; then
     info_msg "Change the name of menus in Gnome"
     sed -i "s/name='Setări teme'/name='Themes settings'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
     sed -i "s/name='Birou'/name='Office'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/name='Grafică'/name='Graphics'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/name='Programare'/name='Programming'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/name='Accesorii'/name='Accessories'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/'name': 'Programare'/'name': 'Programming'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
     sed -i "s/'name': 'Sistem'/'name': 'System'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
     sed -i "s/'name': 'Birou'/'name': 'Office'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
     sed -i "s/'name': 'Grafică'/'name': 'Graphics'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
@@ -93,6 +97,10 @@ if [ "$locale" = en_US.UTF-8 ]; then
     info_msg "Revert to the default Romania language"
     sed -i "s/name='Themes settings'/name='Setări teme'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
     sed -i "s/name='Office'/name='Birou'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/name='Graphics'/name='Grafică'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/name='Programming'/name='Programare'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/name='Accessories'/name='Accesorii'/g" ../includedir/etc/dconf/db/local.d/27-app-folders
+    sed -i "s/'name': 'Programming'/'name': 'Programare'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
     sed -i "s/'name': 'System'/'name': 'Sistem'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
     sed -i "s/'name': 'Office'/'name': 'Birou'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
     sed -i "s/'name': 'Graphics'/'name': 'Grafică'/g" ../includedir/etc/dconf/db/local.d/12-extensions-arcmenu
