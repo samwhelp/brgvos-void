@@ -59,7 +59,26 @@ Next videos is a example...
 Since it is a rolling (continuous) distribution, it is necessary that, the first time we login to update and upgrade the packages:  
 
 ```bash
-sudo xbps-install -Su
+sudo xbps-install -Syu
+```
+
+## Enable your locale
+
+ISO file en_US have only English USA locales enabled and the ISO file ro_RO, start with 28.08.2025, have ro_RO and en_US locales enable.  
+If you download en_US version, and if you wish to add your locale run next commands:
+  
+```bash
+sudo nano /etc/default/libc-locales
+# the uncomment you language and save with Ctrl+s and quit with Ctrl+x
+# reconfigure all packages
+sudo xbps-reconfigure -a -f
+# then is better to reboot
+# now you can set Gnome your locale
+# if you wish to set your language to be system language
+# set LANG=xxxx în /etc/locale.conf
+sudo nano /etc/locale.conf
+# the uncomment you language and save with Ctrl+s and quit with Ctrl+x
+# then reboot
 ```
 
 ## How to install applications
