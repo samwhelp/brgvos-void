@@ -1,11 +1,9 @@
 #!/bin/bash
 
-# This file is normally executed at first log in
+# This file is executed at log in
 
-if [ -e $HOME/.runoance ]
+if [ ! -e $HOME/.runoance ]
 then
-    echo "Do nothing"
-else
     flatpak override --user --filesystem=xdg-config/gtk-3.0
     flatpak override --user --filesystem=xdg-config/gtk-4.0
     touch $HOME/.runoance
@@ -21,7 +19,7 @@ else
     ### If you wish to reset flatpak commands run next       ###
     ### flatpak override --user --reset                      ###
     ###                                                      ###
-    ############################################################OD
+    ############################################################
 
 EOF
 fi
