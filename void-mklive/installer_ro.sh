@@ -596,7 +596,11 @@ set_locale() {
         sed -i -e "s|LANG=.*|LANG=$LOCALE|g" $TARGETDIR/etc/locale.conf
         # Uncomment locale from /etc/default/libc-locales and regenerate it.
         sed -e "/${LOCALE}/s/^\#//" -i $TARGETDIR/etc/default/libc-locales
-        echo "Running xbps-reconfigure -f glibc-locales ..." >$LOG
+        # enable also locale for English USA, in general romanian people prefer English
+        if [ $LOCALE != en_US.UTF-8 ]; then
+            sed -e "/en_US.UTF-8/s/^\#//" -i $TARGETDIR/etc/default/libc-locales
+        fi
+        echo "Rulez xbps-reconfigure -f glibc-locales ..." >$LOG
         chroot $TARGETDIR xbps-reconfigure -f glibc-locales >$LOG 2>&1
     fi
 }
