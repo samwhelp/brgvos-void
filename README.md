@@ -15,7 +15,7 @@ The name **BRGV** is an acronym from Romanian "**B**anca de **R**esurse **G**ene
 **BRGV-OS** have now 10 themes, 2 for users what prefers Windows style and 8 for the users what prefers Mac style, look at next movie:  
     
 
-[<img src="https://img.youtube.com/vi/YwH5UtWPND8/maxresdefault.jpg" width="800" height="600"/>](https://www.youtube.com/embed/YwH5UtWPND8?autoplay=1&mute=1)|
+[<img src="https://img.youtube.com/vi/EDnMTKS-B8k/maxresdefault.jpg" width="960" height="510"/>](https://www.youtube.com/embed/EDnMTKS-B8k?autoplay=1&mute=1)|
 
 ## How to build
 
@@ -37,14 +37,14 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > In this moment the build is for ro_RO (Romanian language) and en_US (English USA language) , but with few modifications can be buildid for anothers.  
 > Exist iso images files for: ro_RO.UTF-8 and en_US.UTF-8.  
 > ISO files can be downloaded from:  
-> here [![Download BRGV-OS iso ro_RO version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_22082025_162548.iso/download) for **ro_RO** versions   
+> here [![Download BRGV-OS iso ro_RO version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_28082025_102305.iso/download) for **ro_RO** versions   
 > or  
-> here [![Download BRGV-OS iso en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_22082025_164014.iso/download) for **en_US** version   
+> here [![Download BRGV-OS iso en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_28082025_095553.iso/download) for **en_US** version   
 > and  
 > SHA256 files can be downloaded from:  
-> here [![Download BRGV-OS sha256 ro_RO version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_22082025_162548.sha256/download) for **ro_RO** versions  
+> here [![Download BRGV-OS sha256 ro_RO version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_28082025_102305.sha256/download) for **ro_RO** versions  
 > or  
-> here [![Download BRGV-OS sha256 en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_22082025_164014.sha256/download) for **en_US** version 
+> here [![Download BRGV-OS sha256 en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_28082025_095553.sha256/download) for **en_US** version 
     
 Test the ISO file in virtual machine.
 Next videos is a example...  
