@@ -163,6 +163,10 @@ install_packages() {
     # Enable choosen UTF-8 locale and generate it into the target rootfs.
     if [ -f "$ROOTFS"/etc/default/libc-locales ]; then
         sed -e "s/\#\(${LOCALE}.*\)/\1/g" -i "$ROOTFS"/etc/default/libc-locales
+        # enable also locale for English USA if we choose other language
+        if [ $LOCALE != en_US.UTF-8 ]; then
+            sed -e "s/\#\(en_US.UTF-8.*\)/\1/g" -i "$ROOTFS"/etc/default/libc-locales
+        fi
     fi
 
     if XBPS_ARCH=$BASE_ARCH "$XBPS_QUERY_CMD" -r "$ROOTFS" dkms >/dev/null 2>&1; then
