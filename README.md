@@ -170,6 +170,20 @@ nix-env -iA nixpkgs.pgmodeler
 # start the application
 pgmodeler
 ```
+Using `xbps-src` to install from sources.  
+Some packages exist only in source repository, like google-chrome. 
+
+```bash
+git clone https://github.com/void-linux/void-packages.git
+cd void-package
+./xbps-src binary-bootstrap
+# some packages is nonfree like google-chrome
+echo XBPS_ALLOW_RESTRICTED=yes >> etc/conf
+# build the package
+./xbps-src pkg google-chrome  
+# install the package
+sudo xbps-install -R hostdir/binpkgs/nonfree google-chrome
+```
 
 ## License
 
