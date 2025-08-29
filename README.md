@@ -62,6 +62,41 @@ Since it is a rolling (continuous) distribution, it is necessary that, the first
 sudo xbps-install -Syu
 ```
 
+## NVIDIA driver
+If we install NVIDIA driver we loose wayland session and remain only Xorg.
+To install NVIDIA driver is necessary to add repository nonfree:  
+```bash
+sudo xbps-install -S void-repo-nonfree
+# update the packages
+sudo xbps-install -Su
+# search for the drivers
+xbps-query -Rs nvidia
+# check your card at NVIDIA site https://www.nvidia.com/en-us/geforce/drivers/ what version of driver needs
+# at mine 580, so the last driver is good
+# install the driver
+sudo xbps-install nvidia
+```
+Edit a conf file to tell the kernel do not load nouveau and load nvidia with some options and parameters:
+
+```bash
+sudo nano /etc/modprobe.d/nvidia.conf
+```
+and next lines and save:
+
+```txt
+# not load nouveau driver
+blacklist nouveau
+# set drm for nvidia
+options nvidia-drm modeset=1
+# without this I have black screen on console tty
+options nvidia-drm fbdev=1
+# preserve video memory after suspend
+options nvidia NVreg_PreserveVideoMemoryAllocations=1
+options nvidia NVreg_TemporaryFilePath=/var/tmp
+```
+
+After that the Plymouth not work.
+
 ## Enable your locale
 
 ISO file en_US have only English USA locales enabled and the ISO file ro_RO, start with 28.08.2025, have ro_RO and en_US locales enable.  
