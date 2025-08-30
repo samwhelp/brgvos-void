@@ -99,12 +99,12 @@ After that the Plymouth not work.
 
 ## Enable your locale
 
-ISO file en_US have only English USA locales enabled and the ISO file ro_RO, start with 28.08.2025, have ro_RO and en_US locales enable.  
+ISO file en_US have only English USA locales enabled and the ISO file ro_RO, start with 28.08.2025, have ro_RO and en_US locales enabled.  
 If you download en_US version, and if you wish to add your locale run next commands:
   
 ```bash
 sudo nano /etc/default/libc-locales
-# the uncomment you language and save with Ctrl+s and quit with Ctrl+x
+# thn uncomment your locales language and save with Ctrl+s and quit with Ctrl+x
 # reconfigure all packages
 sudo xbps-reconfigure -a -f
 # then is better to reboot
