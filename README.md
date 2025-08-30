@@ -112,7 +112,9 @@ sudo xbps-reconfigure -a -f
 # if you wish to set your language to be system language
 # set LANG=xxxx în /etc/locale.conf
 sudo nano /etc/locale.conf
-# the uncomment you language and save with Ctrl+s and quit with Ctrl+x
+# after this set your languages, expl. for Romanian language
+# LANG=ro_RO.UTF-8
+# then save with Ctrl+s and quit with Ctrl+x
 # then reboot
 ```
 
