@@ -206,9 +206,15 @@ This project is licensed under the GNU GENERAL PUBLIC LICENSE - see the [LICENSE
 The open-source software included in **BRGV-OS** is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**.
 
 ## The following "ingredients" are also included in BRGV-OS
-
+  
+https://github.com/vinceliuice/Fluent-gtk-theme  
+https://github.com/vinceliuice/Fluent-icon-theme  
+https://github.com/vinceliuice/WhiteSur-gtk-theme  
+https://github.com/vinceliuice/WhiteSur-icon-theme  
+https://github.com/vinceliuice/MacTahoe-gtk-theme  
+https://github.com/vinceliuice/MacTahoe-icon-theme  
 https://github.com/ohmybash/oh-my-bash  
-https://github.com/scopatz/nanorc 
+https://github.com/scopatz/nanorc  
 https://github.com/CarterLi/maple-font?tab=readme-ov-file  
 https://github.com/Anduin2017/AnduinOS/tree/1.4/src/mods/20-deskmon-mod  
 https://4kwallpapers.com/windows-11-stock-wallpapers/  
