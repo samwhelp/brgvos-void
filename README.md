@@ -17,13 +17,23 @@ The name **BRGV** is an acronym from Romanian "**B**anca de **R**esurse **G**ene
 
 [<img src="https://img.youtube.com/vi/EDnMTKS-B8k/maxresdefault.jpg" width="960" height="510"/>](https://www.youtube.com/embed/EDnMTKS-B8k?autoplay=1&mute=1)
 
+For theme management I wrote the following extensions, scripts and menus:
+
+* [Accent gtk theme](https://extensions.gnome.org/extension/8497/accent-gtk-theme/), it is a Gnome extension that changes the gtk app theme, based on the accent color chosen by the user in Gnome Settings, Appearance screen and by preferred color schema Light or Dark, source code [here](https://github.com/florintanasa/accent-gtk-theme);
+* [Accent icons theme](https://extensions.gnome.org/extension/8499/accent-icons-theme/), it is a Gnome extension that changes the icons themes, based on the accent color chosen by the user in Gnome Settings (gnome-control-center), Appearance screen and by preferred color schema Light or Dark, source code [here](https://github.com/florintanasa/accent-icons-theme);
+* [Accent user theme](https://extensions.gnome.org/extension/8498/accent-user-theme/), it is a Gnome extension that changes the user's theme based on the accent color chosen by the user in Gnome Settings, Appearance screen and by preferred color schema Light or Dark, source code [here](https://github.com/florintanasa/accent-user-theme);
+* [Light/Dark cursor theme](https://extensions.gnome.org/extension/8496/lightdark-cursor-theme/), it is a Gnome extension that changes the cursor themes, based on the preferred color schema Light or Dark, source code [here](https://github.com/florintanasa/light-dark-cursor-theme);
+* And 10 [scripts](https://github.com/florintanasa/brgvos-void/tree/main/includedir/usr/local/bin), these are called by 10 [menus](https://github.com/florintanasa/brgvos-void/tree/main/includedir/usr/local/share/applications).
+  
+Also **BRGV-OS** have another extension [Set Notification Banner Position](https://extensions.gnome.org/extension/8495/set-notification-banner-position/), it is a Gnome extension that changes the position of the banner notification on the sreen, source code [here](https://github.com/florintanasa/set-notification-position).
+
 ## How to build
 
-It is suggested to use Void Linux or others based by this distribution, also **BRGV-OS** work :)  
+It is suggested to use **Void Linux** or others based by this distribution, also **BRGV-OS** work :)  
 Default start the build for Romanian language, if you wish to build for international English USA language edit file `locale` and change from `ro_RO.UTF-8` to `en_US.UTF-8` and also edit file `keymap` and change from `ro` to `us`.  
 That's it.  
-If you wish to build for your language, take a look at file `build_brgvos.sh` how I do it from English USA language and Romanian language. 
-To build the iso image, it is necessary to use a Void Linux distribution or **BRGV-OS** where we run next commands:  
+If you wish to build for your language, take a look at file `build_brgvos.sh` how I do it from English USA language and Romanian language.
+To build the iso image, it is necessary to use a based **Void Linux** distribution or **BRGV-OS** (is a spin **Void Linux**) where we run next commands:  
 
 ```bash
 git clone --recurse-submodules https://github.com/florintanasa/brgvos-void.git
@@ -195,8 +205,16 @@ This project is licensed under the GNU GENERAL PUBLIC LICENSE - see the [LICENSE
 
 The open-source software included in **BRGV-OS** is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**.
 
+## The following "ingredients" are also included in BRGV-OS
+
+https://github.com/ohmybash/oh-my-bash  
+https://github.com/scopatz/nanorc 
+https://github.com/CarterLi/maple-font?tab=readme-ov-file  
+https://github.com/Anduin2017/AnduinOS/tree/1.4/src/mods/20-deskmon-mod  
+https://4kwallpapers.com/windows-11-stock-wallpapers/  
+  
+---
+  
 The work is in progress..
 
-<!-- https://github.com/scopatz/nanorc -->
-<!-- https://github.com/CarterLi/maple-font?tab=readme-ov-file -->
-<!-- https://4kwallpapers.com/windows-11-stock-wallpapers/ -->
+
