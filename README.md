@@ -212,6 +212,8 @@ https://github.com/scopatz/nanorc
 https://github.com/CarterLi/maple-font?tab=readme-ov-file  
 https://github.com/Anduin2017/AnduinOS/tree/1.4/src/mods/20-deskmon-mod  
 https://4kwallpapers.com/windows-11-stock-wallpapers/  
+https://4kwallpapers.com/ios-26-carplay-wallpapers/  
+https://4kwallpapers.com/macos-tahoe-26-stock-wallpapers/  
   
 ---
   
