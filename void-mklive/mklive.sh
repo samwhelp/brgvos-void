@@ -730,20 +730,20 @@ if [ "$VARIANT" = gnome ]; then
     # install extensions first version
     info_msg "Install extensions from includedir"
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/arcmenuarcmenu.com.v66.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/blur-my-shellaunetx.v68.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/blur-my-shellaunetx.v69.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/ProxySwitcherflannaghan.com.v25.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/clipboard-indicatortudmotu.com.v68.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/customize-ibushollowman.ml.v91.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/customize-ibushollowman.ml.v92.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dash-to-paneljderose9.github.com.v68.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/lockkeysvaina.lt.v61.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/lockkeysvaina.lt.v63.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/mediacontrolscliffniff.github.com.v38.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/network-statsgnome.noroadsleft.xyz.v27.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/openweather-extensionpenguin-teal.github.io.v18.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/tiling-assistantleleat-on-github.v52.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/user-themegnome-shell-extensions.gcampax.github.com.v64.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dingrastersoft.com.v76.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dingrastersoft.com.v80.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/appindicatorsupportrgcjonas.gmail.com.v60.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-icons-themebrgvos.v2.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-icons-themebrgvos.v3.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-gtk-themebrgvos.v7.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-user-themebrgvos.v2.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/light-dark-cursor-themebrgvos.v1.shell-extension.zip
@@ -754,24 +754,11 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/caffeinepatapon.info.v57.shell-extension.zip
 
 
-    # install extensions second version but is intercative
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/arcmenuarcmenu.com.v66.shell-extension.zip -d /usr/share/gnome-shell/extensions/
+    # install extensions second version but is intercative - I leave as example
     #chroot "$ROOTFS" unzip -q /tmp/extensions/blur-my-shellaunetx.v68.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/ProxySwitcherflannaghan.com.v25.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/clipboard-indicatortudmotu.com.v68.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/customize-ibushollowman.ml.v91.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/dash-to-paneljderose9.github.com.v68.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/lockkeysvaina.lt.v61.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/mediacontrolscliffniff.github.com.v38.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/network-statsgnome.noroadsleft.xyz.v27.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/openweather-extensionpenguin-teal.github.io.v18.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/tiling-assistantleleat-on-github.v52.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/user-themegnome-shell-extensions.gcampax.github.com.v64.shell-extension.zip -d /usr/share/gnome-shell/extensions/
-    #chroot "$ROOTFS" unzip -q /tmp/extensions/appindicatorsupportrgcjonas.gmail.com.v60.shell-extension.zip -d /usr/share/gnome-shell/extensions/
 
     # work also but crash mklive because can't unmount the dev and proc remain accesated by dbus
     #chroot "$ROOTFS" gext -F install blur-my-shell@aunetx
-    #chroot "$ROOTFS" gext -F install arcmenu@arcmenu.com
 
     # move estension from user to system this for first version
     info_msg "Move estension from 'root' user to system '/usr/share/gnome-shell/extensions/'"
