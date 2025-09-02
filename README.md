@@ -1,5 +1,13 @@
 # BRGV-OS ![Downloads total  BRGV-OS](https://img.shields.io/sourceforge/dt/brgv-os.svg)
 
+<!-- Begin  Tag -->
+<div class="sf-root" data-id="3889194" data-badge="oss-rising-star-white" data-metadata="achievement=oss-rising-star" style="width:125px">
+    <a href="https://sourceforge.net/projects/brgv-os/" target="_blank">BRGV-OS</a>
+</div>
+<script>(function () {var sc=document.createElement('script');sc.async=true;sc.src='https://b.sf-syn.com/badge_js?sf_id=3889194';var p=document.getElementsByTagName('script')[0];p.parentNode.insertBefore(sc, p);})();
+</script>
+<!-- End  Tag -->
+
 **BRGV-OS** is a custom [Void Linux](https://voidlinux.org/) based distribution that aims to facilitate developers, researchers and users to transitioning from Windows to Linux by maintaining familiar operational habits and workflows.  
 This work was do it for our job needs at Gene Bank research institute from Suceava, Romania, but anyone can modify for their needs.  
 The name **BRGV** is an acronym from Romanian "**B**anca de **R**esurse **G**enetice **V**egetale" (shortly in English Gene Bank), and **OS** mean, of course, **O**perating **S**ystem.  
