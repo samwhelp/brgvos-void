@@ -1,7 +1,7 @@
 # BRGV-OS [<img src="https://img.shields.io/sourceforge/dt/brgv-os.svg" />](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/) [<img src="./screenshots/bandage_sourceforge_dark.png" width="106" height="106" />](https://sourceforge.net/projects/brgv-os/)
 
-**BRGV-OS** is a custom [Void Linux](https://voidlinux.org/) based distribution that aims to facilitate developers, researchers and users to transitioning from Windows to Linux by maintaining familiar operational habits and workflows.  
-This work was do it for our job needs at Gene Bank research institute from Suceava, Romania, but anyone can modify for their needs.  
+**BRGV-OS** is a custom [Void Linux](https://voidlinux.org/) based distribution that aims to facilitate developers, researchers and users to transitioning from Windows or MacOS to Linux by maintaining familiar operational habits and workflows.  
+This work was do it for our job needs at Gene Bank research institute from Suceava, Romania, but anyone can use or modify for their needs.  
 The name **BRGV** is an acronym from Romanian "**B**anca de **R**esurse **G**enetice **V**egetale" (shortly in English Gene Bank), and **OS** mean, of course, **O**perating **S**ystem.  
   
 |                     Theme Light                                     |                         Theme Dark                               |
@@ -29,7 +29,7 @@ Also **BRGV-OS** have another extension [Set Notification Banner Position](https
 
 ## How to build
 
-It is suggested to use **Void Linux** or others based by this distribution, also **BRGV-OS** work :)  
+It is suggested to use **Void Linux** or an others based on this distribution, also **BRGV-OS** work :)  
 Default start the build for Romanian language, if you wish to build for international English USA language edit file `locale` and change from `ro_RO.UTF-8` to `en_US.UTF-8` and also edit file `keymap` and change from `ro` to `us`.  
 That's it.  
 If you wish to build for your language, take a look at file `build_brgvos.sh` how I do it from English USA language and Romanian language.
@@ -66,7 +66,7 @@ Next videos is a example...
 
 ## First time update and upgrade the packages
 
-Since it is a rolling (continuous) distribution, it is necessary that, the first time we login to update and upgrade the packages:  
+Since it is a rolling (continuous) distribution, it is necessary that, after the first time we log in, running commands to update and upgrade the packages:  
 
 ```bash
 sudo xbps-install -Syu
