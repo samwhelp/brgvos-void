@@ -445,7 +445,7 @@ menu_filesystems() {
         dev=$(cat $ANSWER)
         DIALOG --title " Select the filesystem type for $dev " \
             --menu "$MENULABEL" ${MENUSIZE} \
-            "btrfs" "Oracle's Btrfs" \
+            "btrfs" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
             "ext2" "Linux ext2 (no journaling)" \
             "ext3" "Linux ext3 (journal)" \
             "ext4" "Linux ext4 (journal)" \
@@ -1131,7 +1131,7 @@ failed to create filesystem $fstype on $dev!\ncheck $LOG for errors." ${MSGBOXSI
 failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
             DIE 1
         fi
-        # Check if is mounted HDD or SSD
+        # Check if was mounted HDD or SSD
         disk_name=$(echo "$dev" | cut -d '/' -f3)
         disk_type=$(cat /sys/block/$disk_name/queue/rotational)
         # Prepare options for mount command for HDD or SSD
