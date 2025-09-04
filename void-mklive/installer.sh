@@ -1131,6 +1131,32 @@ failed to create filesystem $fstype on $dev!\ncheck $LOG for errors." ${MSGBOXSI
 failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
             DIE 1
         fi
+        # Check if is mounted HDD or SSD
+        disk_name=$(echo "$dev" | cut -d '/' -f3)
+        disk_type=$(cat /sys/block/$disk_name/queue/rotational)
+        # Prepare options for mount command for HDD or SSD
+        if [ "$disk_type" -eq 1 ]; then
+            # options for HDD
+            options="compress=zstd,noatime,space_cache=v2"
+        else
+            # options for SSD
+            options="compress=zstd,noatime,space_cache=v2,discard=async,ssd"
+        fi
+        # Create subvolume @, @home, @var_log, @var_lib and @snapshots
+        if [ "$fstype" = "btrfs" ]; then
+        btrfs subvolume create $TARGETDIR/@ >$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@home >$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@var_log >$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@var_lib >$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@snapshots >$LOG 2>&1
+        umount $TARGETDIR >$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@ $dev $TARGETDIR >$LOG 2>&1
+        mkdir -p $TARGETDIR/{home,var/log,var/lib,.snapshots} >$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@home $dev $TARGETDIR/home >$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@snapshots $dev $TARGETDIR/.snapshots >$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@var_log $dev $TARGETDIR/var/log >$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@var_lib $dev $TARGETDIR/var/lib >$LOG 2>&1
+        fi
         # Add entry to target fstab
         uuid=$(blkid -o value -s UUID "$dev")
         if [ "$fstype" = "f2fs" -o "$fstype" = "btrfs" -o "$fstype" = "xfs" ]; then
@@ -1138,7 +1164,15 @@ failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
         else
             fspassno=1
         fi
-        echo "UUID=$uuid $mntpt $fstype defaults 0 $fspassno" >>$TARGET_FSTAB
+        if [ "$fstype" = "btrfs" ]; then
+            echo "UUID=$uuid / $fstype $options,subvol=@ 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$uuid /home $fstype $options,subvol=@home 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$uuid /.snapshots $fstype $options,subvol=@snapshots 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$uuid /var/log $fstype $options,subvol=@var_log 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$uuid /var/lib $fstype $options,subvol=@var_lib 0 $fspassno" >>$TARGET_FSTAB
+        else
+            echo "UUID=$uuid $mntpt $fstype defaults 0 $fspassno" >>$TARGET_FSTAB
+        fi
     done
 
     # mount all filesystems in target rootfs
