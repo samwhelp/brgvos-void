@@ -445,7 +445,7 @@ menu_filesystems() {
         dev=$(cat $ANSWER)
         DIALOG --title " Selectează tipul de sistem de fișiere pentru $dev " \
             --menu "$MENULABEL" ${MENUSIZE} \
-            "btrfs" "Oracle's Btrfs" \
+            "btrfs" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
             "ext2" "Linux ext2 (fără jurnalizare)" \
             "ext3" "Linux ext3 (cu jurnalizare)" \
             "ext4" "Linux ext4 (cu jurnalizare)" \
@@ -1136,7 +1136,7 @@ a eșuat crearea sistemului de fișiere $fstype în $dev!\nverificați $LOG pent
 a eșuat montarea $dev în ${mntpt}! verificați $LOG pentru erori." ${MSGBOXSIZE}
             DIE 1
         fi
-        # Check if is mounted HDD or SSD
+        # Check if was mounted HDD or SSD
         disk_name=$(echo "$dev" | cut -d '/' -f3)
         disk_type=$(cat /sys/block/$disk_name/queue/rotational)
         # Prepare options for mount command for HDD or SSD
