@@ -1157,8 +1157,6 @@ a eșuat montarea $dev în ${mntpt}! verificați $LOG pentru erori." ${MSGBOXSIZ
         umount $TARGETDIR >$LOG 2>&1
         mount -t $fstype -o $options,subvol=@ $dev $TARGETDIR >$LOG 2>&1
         mkdir -p $TARGETDIR/{home,var/log,var/lib,.snapshots} >$LOG 2>&1
-        #mkdir -p $TARGETDIR/var/log >$LOG 2>&1
-        #mkdir -p $TARGETDIR/var/lib >$LOG 2>&1
         mount -t $fstype -o $options,subvol=@home $dev $TARGETDIR/home >$LOG 2>&1
         mount -t $fstype -o $options,subvol=@snapshots $dev $TARGETDIR/.snapshots >$LOG 2>&1
         mount -t $fstype -o $options,subvol=@var_log $dev $TARGETDIR/var/log >$LOG 2>&1
