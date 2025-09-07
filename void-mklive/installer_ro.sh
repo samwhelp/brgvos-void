@@ -44,7 +44,7 @@ FILESYSTEMS_DONE=
 MIRROR_DONE=
 
 TARGETDIR=/mnt/target
-LOG=/dev/tty8
+LOG=/dev/tty9
 CONF_FILE=/tmp/.brgvos-installer.conf
 if [ ! -f $CONF_FILE ]; then
     touch -f $CONF_FILE
@@ -515,7 +515,7 @@ Pentru sistemele EFI, GPT este obligatoriu și trebuie creată o partiție\n
 FAT32 cu cel puțin 100MB cu tipul de partiție \`EFI System'. Aceasta va fi 
 utilizată ca partiție de sistem EFI. Această partiție trebuie să aibă\n punctul de montare \`/boot/efi'.\n\n
 Este necesară cel puțin o partiție pentru rootfs (/). Pentru această partiție,  
-sunt necesari cel puțin 8 GB, dar se recomandă mai mult.\n
+sunt necesari cel puțin 12GB, dar se recomandă mai mult.\n
 Partiția rootfs ar trebui să aibă tipul de partiție \`Linux Filesystem'.\n
 Pentru swap, RAM*2 ar trebui să fie suficient și ar trebui utilizat tipul \n
 de partiție \`Linux swap'.\n\n
