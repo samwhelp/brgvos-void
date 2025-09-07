@@ -72,6 +72,9 @@ Since it is a rolling (continuous) distribution, it is necessary that, after the
 sudo xbps-install -Syu
 ```
 
+> [!INFO]  
+> For how to install, configure and use the BRGV-OS read on [Wiki](https://github.com/florintanasa/brgvos-void/wiki) 
+
 ## NVIDIA driver
 If we install NVIDIA driver we loose wayland session and remain only Xorg.
 To install NVIDIA driver is necessary to add repository nonfree:  
