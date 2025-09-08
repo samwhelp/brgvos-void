@@ -1137,8 +1137,9 @@ a eșuat montarea $dev în ${mntpt}! verificați $LOG pentru erori." ${MSGBOXSIZ
             DIE 1
         fi
         # Check if was mounted HDD or SSD
-        disk_name=$(echo "$dev" | cut -d '/' -f3)
+        disk_name=$(echo "$dev" | cut -d '/' -f3 | sed 's/[0-9]\+$//')
         disk_type=$(cat /sys/block/$disk_name/queue/rotational)
+        echo "1 - HDD, 0 - SDD, discul selectat este de tipul $disk_type" >$LOG
         # Prepare options for mount command for HDD or SSD
         if [ "$disk_type" -eq 1 ]; then
             # options for HDD
