@@ -1,6 +1,6 @@
 # BRGV-OS [<img src="https://img.shields.io/sourceforge/dt/brgv-os.svg" />](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/) [<img src="./screenshots/bandage_sourceforge_dark.png" width="106" height="106" />](https://sourceforge.net/projects/brgv-os/)
 
-**BRGV-OS** is a custom [Void Linux](https://voidlinux.org/) based distribution that aims to facilitate developers, researchers and users to transitioning from Windows or MacOS to Linux by maintaining familiar operational habits and workflows.  
+**BRGV-OS** is a custom [Void Linux](https://voidlinux.org/) based distribution that aims to facilitate developers, researchers and users to transitioning from Windows&#174; or MacOS&#174; to Linux&#174; by maintaining familiar operational habits and workflows.  
 This work was do it for our job needs at Gene Bank research institute from Suceava, Romania, but anyone can use or modify for their needs.  
 The name **BRGV** is an acronym from Romanian "**B**anca de **R**esurse **G**enetice **V**egetale" (shortly in English Gene Bank), and **OS** mean, of course, **O**perating **S**ystem.  
   
@@ -12,20 +12,20 @@ The name **BRGV** is an acronym from Romanian "**B**anca de **R**esurse **G**ene
 |:------------------------------------------------------:|:------------------------------------------------------:|
 |![BRGV-OS 1](./screenshots/screenshot_2.png "BRGV-OS 1")|![BRGV-OS 2](./screenshots/screenshot_3.png "BRGV-OS 2")|
 
-**BRGV-OS** have now 10 themes, 2 for users what prefers Windows style and 8 for the users what prefers Mac style, look at next movie:  
+**BRGV-OS** have now 10 themes, 2 for users what prefers classical style and 8 for the users what prefers Unix&#174; style, look at next movie:  
     
 
 [<img src="https://img.youtube.com/vi/EDnMTKS-B8k/maxresdefault.jpg" width="960" height="510"/>](https://www.youtube.com/embed/EDnMTKS-B8k?autoplay=1&mute=1)
 
 For theme management I wrote the following extensions, scripts and menus:
 
-* [Accent gtk theme](https://extensions.gnome.org/extension/8497/accent-gtk-theme/), it is a Gnome extension that changes the gtk app theme, based on the accent color chosen by the user in Gnome Settings, Appearance screen and by preferred color schema Light or Dark, source code [here](https://github.com/florintanasa/accent-gtk-theme);
-* [Accent icons theme](https://extensions.gnome.org/extension/8499/accent-icons-theme/), it is a Gnome extension that changes the icons themes, based on the accent color chosen by the user in Gnome Settings (gnome-control-center), Appearance screen and by preferred color schema Light or Dark, source code [here](https://github.com/florintanasa/accent-icons-theme);
-* [Accent user theme](https://extensions.gnome.org/extension/8498/accent-user-theme/), it is a Gnome extension that changes the user's theme based on the accent color chosen by the user in Gnome Settings, Appearance screen and by preferred color schema Light or Dark, source code [here](https://github.com/florintanasa/accent-user-theme);
-* [Light/Dark cursor theme](https://extensions.gnome.org/extension/8496/lightdark-cursor-theme/), it is a Gnome extension that changes the cursor themes, based on the preferred color schema Light or Dark, source code [here](https://github.com/florintanasa/light-dark-cursor-theme);
+* [Accent gtk theme](https://extensions.gnome.org/extension/8497/accent-gtk-theme/), it is a `Gnome™` extension that changes the gtk app theme, based on the accent color chosen by the user in `Gnome Settings`, `Appearance screen` and by preferred `color schema`, `Light` or `Dark`, source code [here](https://github.com/florintanasa/accent-gtk-theme);
+* [Accent icons theme](https://extensions.gnome.org/extension/8499/accent-icons-theme/), it is a `Gnome™` extension that changes the icons themes, based on the `accent color` chosen by the user in `Gnome Settings` (gnome-control-center), `Appearance` screen and by preferred `color schema`, `Light` or `Dark`, source code [here](https://github.com/florintanasa/accent-icons-theme);
+* [Accent user theme](https://extensions.gnome.org/extension/8498/accent-user-theme/), it is a `Gnome™` extension that changes the user's theme based on the accent color chosen by the user in `Gnome Settings`, `Appearance` screen and by preferred `color schema`, `Light` or `Dark`, source code [here](https://github.com/florintanasa/accent-user-theme);
+* [Light/Dark cursor theme](https://extensions.gnome.org/extension/8496/lightdark-cursor-theme/), it is a `Gnome™` extension that changes the cursor themes, based on the preferred `color schema`, `Light` or `Dark`, source code [here](https://github.com/florintanasa/light-dark-cursor-theme);
 * And 10 [scripts](https://github.com/florintanasa/brgvos-void/tree/main/includedir/usr/local/bin), these are called by 10 [menus](https://github.com/florintanasa/brgvos-void/tree/main/includedir/usr/local/share/applications).
   
-Also **BRGV-OS** have another extension [Set Notification Banner Position](https://extensions.gnome.org/extension/8495/set-notification-banner-position/), it is a Gnome extension that changes the position of the banner notification on the sreen, source code [here](https://github.com/florintanasa/set-notification-position).
+Also **BRGV-OS** have another extension [Set Notification Banner Position](https://extensions.gnome.org/extension/8495/set-notification-banner-position/), it is a `Gnome™` extension that changes the position of the banner notification on the sreen, source code [here](https://github.com/florintanasa/set-notification-position).
 
 ## How to build
 
@@ -56,24 +56,9 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > or  
 > here [![Download BRGV-OS sha256 en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_07092025_114100.sha256/download) for **en_US** version 
     
-Test the ISO file in virtual machine.
-Next videos is a example...  
-
-|    Installation in Romanian   |   Change the theme by accent color and scheme color    |Installation in English  |
-|:-----------------------------:|:------------------------------------------------------:|:------------------------:|
-|[<img src="https://img.youtube.com/vi/QVdH_dGIyOQ/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/QVdH_dGIyOQ?autoplay=1&mute=1)|[<img src="https://img.youtube.com/vi/HZfKh0V6aOo/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/HZfKh0V6aOo?autoplay=1&mute=1)|[<img src="https://img.youtube.com/vi/SnHjbCFt-qw/maxresdefault.jpg" width="400" height="280"/>](https://www.youtube.com/embed/SnHjbCFt-qw?autoplay=1&mute=1)|  
-  
-
-## First time update and upgrade the packages
-
-Since it is a rolling (continuous) distribution, it is necessary that, after the first time we log in, running commands to update and upgrade the packages:  
-
-```bash
-sudo xbps-install -Syu
-```
-
+ 
 > [!NOTE]  
-> For how to install, configure and use the BRGV-OS read on [Wiki](https://github.com/florintanasa/brgvos-void/wiki) 
+> For how to install, configure and use the **BRGV-OS** read on [Wiki](https://github.com/florintanasa/brgvos-void/wiki) 
 
 
 ## License
