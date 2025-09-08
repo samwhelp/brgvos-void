@@ -1132,16 +1132,17 @@ failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
             DIE 1
         fi
         # Check if was mounted HDD or SSD
-        disk_name=$(echo "$dev" | cut -d '/' -f3 | sed 's/[0-9]\+$//')
+        disk_name=$(lsblk -ndo pkname "$dev")
         disk_type=$(cat /sys/block/$disk_name/queue/rotational)
-        echo "1 - HDD, 0 - SDD, selected disk is type $disk_type" >$LOG
         # Prepare options for mount command for HDD or SSD
         if [ "$disk_type" -eq 1 ]; then
             # options for HDD
             options="compress=zstd,noatime,space_cache=v2"
+            echo "Options used for mount and fstab $options" >$LOG
         else
             # options for SSD
             options="compress=zstd,noatime,space_cache=v2,discard=async,ssd"
+            echo "Options used for mount and fstab $options" >$LOG
         fi
         # Create subvolume @, @home, @var_log, @var_lib and @snapshots
         if [ "$fstype" = "btrfs" ]; then
