@@ -10,6 +10,9 @@ fi
 # set the date and time
 data=$(date +'%d%m%Y_%H%M%S')
 
+# get user name
+username=$(logname)
+
 # change the owner for includedir
 info_msg "Change the owner to root for 'includedir' directory"
 chown root:root -R includedir
@@ -86,6 +89,11 @@ if [ -e $title'_'$variant'_'$locale'_'$arch'_'$data.iso ]
         info_msg "Create hash file and move the files to '../iso_build' directory"
         HASH=`sha256sum $title'_'$variant'_'$locale'_'$arch'_'$data.iso`
         echo $HASH > $title'_'$variant'_'$locale'_'$arch'_'$data.sha256
+        # Run sync to be sure the file was finished to written
+        info_msg "Run sync to be sure the file was finished to written"
+        sync
+        # Move the files to '../iso_build' directory
+        info_msg "Move the files to '../iso_build' directory"
         mv $title'_'$variant'_'$locale'_'$arch'_'$data.iso ../iso_build
         mv $title'_'$variant'_'$locale'_'$arch'_'$data.sha256 ../iso_build
     else
@@ -112,8 +120,8 @@ fi
 # Change back the owner for includedir and iso directories
 info_msg "Change back the owner for 'includedir' and 'iso_build' directories"
 cd ..
-chown florin:florin -R includedir
-chown florin:florin -R iso_build
+chown $username:$username -R includedir
+chown $username:$username -R iso_build
 
 # Run sync to be sure the file was finished to written
 info_msg "Run sync to be sure the file was finished to written"
