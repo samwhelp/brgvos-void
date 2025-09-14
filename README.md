@@ -56,11 +56,9 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > or  
 > here [![Download BRGV-OS sha256 en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_08092025_201847.sha256/download) for **en_US** version 
     
- 
 > [!NOTE]  
-> For how to install, configure and use the **BRGV-OS** read on [Wiki](https://github.com/florintanasa/brgvos-void/wiki) 
-
-
+> $\textcolor{orange}{For\ how\ to\ install,\ configure\ and\ use\ the\ \textbf {BRGV-OS}\ read\ on}$ [Wiki](https://github.com/florintanasa/brgvos-void/wiki) 
+  
 ## License
 
 This project is licensed under the GNU GENERAL PUBLIC LICENSE - see the [LICENSE](LICENSE) file for details
@@ -91,5 +89,6 @@ https://4kwallpapers.com/macos-tahoe-26-stock-wallpapers/
 ---
   
 The work is in progress..
+
 
 
