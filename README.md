@@ -1,4 +1,4 @@
-# BRGV-OS [<img src="https://img.shields.io/sourceforge/dt/brgv-os.svg" />](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/) [<img src="./screenshots/bandage_sourceforge_dark.png" width="106" height="106" />](https://sourceforge.net/projects/brgv-os/)
+# $\textcolor{cyan}{BRGV-OS}$ [<img src="https://img.shields.io/sourceforge/dt/brgv-os.svg" />](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/) [<img src="./screenshots/bandage_sourceforge_dark.png" width="106" height="106" />](https://sourceforge.net/projects/brgv-os/)
 
 **BRGV-OS** is a custom [Void Linux](https://voidlinux.org/) based distribution that aims to facilitate developers, researchers and users to transitioning from Windows&#174; or MacOS&#174; to Linux&#174; by maintaining familiar operational habits and workflows.  
 This work was do it for our job needs at Gene Bank research institute from Suceava, Romania, but anyone can use or modify for their needs.  
@@ -27,7 +27,7 @@ For theme management I wrote the following extensions, scripts and menus:
   
 Also **BRGV-OS** have another extension [Set Notification Banner Position](https://extensions.gnome.org/extension/8495/set-notification-banner-position/), it is a `Gnome™` extension that changes the position of the banner notification on the sreen, source code [here](https://github.com/florintanasa/set-notification-position).
 
-## How to build
+## $\textcolor{teal}{How\ to\ build}$
 
 It is suggested to use **Void Linux** or an others based on this distribution, also **BRGV-OS** work :)  
 Default start the build for Romanian language, if you wish to build for international English USA language edit file `locale` and change from `ro_RO.UTF-8` to `en_US.UTF-8` and also edit file `keymap` and change from `ro` to `us`.  
@@ -59,15 +59,15 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > [!NOTE]  
 > ### $\textcolor{orange}{For\ how\ to\ install,\ configure\ and\ use\ the\ \textbf {BRGV-OS}\ read\ on}$ [Wiki](https://github.com/florintanasa/brgvos-void/wiki) 
   
-## License
+## $\textcolor{teal}{License}$
 
 This project is licensed under the GNU GENERAL PUBLIC LICENSE - see the [LICENSE](LICENSE) file for details
 
-## Warning 
+## $\textcolor{red}{Warning}$ 
 
 The open-source software included in **BRGV-OS** is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**.
 
-## The following "ingredients" are also included in BRGV-OS
+## $\textcolor{teal}{The following "ingredients" are also included in BRGV-OS}$
   
 https://github.com/vinceliuice/Fluent-gtk-theme  
 https://github.com/vinceliuice/Fluent-icon-theme  
