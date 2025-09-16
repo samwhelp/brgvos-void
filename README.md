@@ -57,6 +57,13 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > here [![Download BRGV-OS sha256 en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_08092025_201847.sha256/download) for **en_US** version 
     
 > [!NOTE]  
+> For `btrfs` option, installer script detect if used disk is a HDD or SSD (to prepare mount options) and automatically creates the following subvolumes:
+> * @, which will be mounted at /;
+> * @home, which will be mounted at /home;
+> * @var_log, which will be mounted at /var/log;
+> * @var_lib, which will be mounted at /var/lib;
+> * @snapshots, which will be mounted at /.snapshots.
+> 
 > ### $\textcolor{orange}{For\ how\ to\ install,\ configure\ and\ use\ the\ \textbf {BRGV-OS}\ read\ on}$ [Wiki](https://github.com/florintanasa/brgvos-void/wiki) 
   
 ## $\textcolor{teal}{License}$
