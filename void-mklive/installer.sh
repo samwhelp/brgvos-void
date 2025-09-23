@@ -43,8 +43,13 @@ NETWORK_DONE=
 FILESYSTEMS_DONE=
 MIRROR_DONE=
 
+# set the date and time
+date_time=$(date +'%d%m%Y_%H%M%S')
+
 TARGETDIR=/mnt/target
-LOG=/dev/tty9
+#LOG=/dev/tty9
+LOG="/tmp/install_brgvos_$date_time.log"
+touch -f $LOG
 CONF_FILE=/tmp/.brgvos-installer.conf
 if [ ! -f $CONF_FILE ]; then
     touch -f $CONF_FILE
@@ -446,6 +451,7 @@ menu_filesystems() {
         DIALOG --title " Select the filesystem type for $dev " \
             --menu "$MENULABEL" ${MENUSIZE} \
             "btrfs" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
+            "btrfs_lvm" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
             "ext2" "Linux ext2 (no journaling)" \
             "ext3" "Linux ext3 (journal)" \
             "ext4" "Linux ext4 (journal)" \
@@ -595,8 +601,8 @@ set_locale() {
         sed -i -e "s|LANG=.*|LANG=$LOCALE|g" $TARGETDIR/etc/locale.conf
         # Uncomment locale from /etc/default/libc-locales and regenerate it.
         sed -e "/${LOCALE}/s/^\#//" -i $TARGETDIR/etc/default/libc-locales
-        echo "Running xbps-reconfigure -f glibc-locales ..." >$LOG
-        chroot $TARGETDIR xbps-reconfigure -f glibc-locales >$LOG 2>&1
+        echo "Running xbps-reconfigure -f glibc-locales ..." >>$LOG
+        chroot $TARGETDIR xbps-reconfigure -f glibc-locales >>$LOG 2>&1
     fi
 }
 
@@ -823,20 +829,20 @@ set_bootloader() {
     if [ -n "$EFI_SYSTEM" ]; then
         grub_args="--target=$EFI_TARGET --efi-directory=/boot/efi --bootloader-id=brgvos_grub --recheck"
     fi
-    echo "Running grub-install $grub_args $dev..." >$LOG
-    chroot $TARGETDIR grub-install $grub_args $dev >$LOG 2>&1
+    echo "Running grub-install $grub_args $dev..." >>$LOG
+    chroot $TARGETDIR grub-install $grub_args $dev >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
 failed to install GRUB to $dev!\nCheck $LOG for errors." ${MSGBOXSIZE}
         DIE 1
     fi
-    echo "Preparing the Logo and name in the grub menu $TARGETDIR..." >$LOG
-    chroot $TARGETDIR sed -i 's+#GRUB_BACKGROUND=/usr/share/void-artwork/splash.png+GRUB_BACKGROUND=/usr/share/brgvos-artwork/splash.png+g' /etc/default/grub >$LOG 2>&1
-    chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >$LOG 2>&1
-    chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 quiet splash"/g' /etc/default/grub >$LOG 2>&1
-    chroot $TARGETDIR sed -i -e '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >$LOG 2>&1
-    echo "Running grub-mkconfig on $TARGETDIR..." >$LOG
-    chroot $TARGETDIR grub-mkconfig -o /boot/grub/grub.cfg >$LOG 2>&1
+    echo "Preparing the Logo and name in the grub menu $TARGETDIR..." >>$LOG
+    chroot $TARGETDIR sed -i 's+#GRUB_BACKGROUND=/usr/share/void-artwork/splash.png+GRUB_BACKGROUND=/usr/share/brgvos-artwork/splash.png+g' /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 quiet splash"/g' /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i -e '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >>$LOG 2>&1
+    echo "Running grub-mkconfig on $TARGETDIR..." >>$LOG
+    chroot $TARGETDIR grub-mkconfig -o /boot/grub/grub.cfg >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}ERROR${RESET}: \
 failed to run grub-mkconfig!\nCheck $LOG for errors." ${MSGBOXSIZE}
@@ -849,7 +855,7 @@ test_network() {
     NETWORK_DONE=
 
     rm -f otime && \
-        xbps-uhelper fetch https://repo-default.voidlinux.org/current/otime >$LOG 2>&1
+        xbps-uhelper fetch https://repo-default.voidlinux.org/current/otime >>$LOG 2>&1
     local status=$?
     rm -f otime
 
@@ -962,19 +968,19 @@ configure_net_static() {
 
     set -- $(cat $ANSWER)
     ip=$1; gw=$2; dns1=$3; dns2=$4
-    echo "running: ip link set dev $dev up" >$LOG
-    ip link set dev $dev up >$LOG 2>&1
+    echo "running: ip link set dev $dev up" >>$LOG
+    ip link set dev $dev up >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} Failed to bring $dev interface." ${MSGBOXSIZE}
         return 1
     fi
-    echo "running: ip addr add $ip dev $dev" >$LOG
-    ip addr add $ip dev $dev >$LOG 2>&1
+    echo "running: ip addr add $ip dev $dev" >>$LOG
+    ip addr add $ip dev $dev >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} Failed to set ip to the $dev interface." ${MSGBOXSIZE}
         return 1
     fi
-    ip route add default via $gw >$LOG 2>&1
+    ip route add default via $gw >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} failed to setup your gateway." ${MSGBOXSIZE}
         return 1
@@ -1082,14 +1088,14 @@ create_filesystems() {
         if [ "$fstype" = "swap" ]; then
             swapoff $dev >/dev/null 2>&1
             if [ "$mkfs" -eq 1 ]; then
-                mkswap $dev >$LOG 2>&1
+                mkswap $dev >>$LOG 2>&1
                 if [ $? -ne 0 ]; then
                     DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
 failed to create swap on ${dev}!\ncheck $LOG for errors." ${MSGBOXSIZE}
                     DIE 1
                 fi
             fi
-            swapon $dev >$LOG 2>&1
+            swapon $dev >>$LOG 2>&1
             if [ $? -ne 0 ]; then
                 DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
 failed to activate swap on $dev!\ncheck $LOG for errors." ${MSGBOXSIZE}
@@ -1103,33 +1109,71 @@ failed to activate swap on $dev!\ncheck $LOG for errors." ${MSGBOXSIZE}
 
         if [ "$mkfs" -eq 1 ]; then
             case "$fstype" in
-            btrfs) MKFS="mkfs.btrfs -f"; modprobe btrfs >$LOG 2>&1;;
-            ext2) MKFS="mke2fs -F"; modprobe ext2 >$LOG 2>&1;;
-            ext3) MKFS="mke2fs -F -j"; modprobe ext3 >$LOG 2>&1;;
-            ext4) MKFS="mke2fs -F -t ext4"; modprobe ext4 >$LOG 2>&1;;
-            f2fs) MKFS="mkfs.f2fs -f"; modprobe f2fs >$LOG 2>&1;;
-            vfat) MKFS="mkfs.vfat -F32"; modprobe vfat >$LOG 2>&1;;
-            xfs) MKFS="mkfs.xfs -f -i sparse=0"; modprobe xfs >$LOG 2>&1;;
+            btrfs) MKFS="mkfs.btrfs -f"; modprobe btrfs >>$LOG 2>&1;;
+            btrfs_lvm) MKFS="mkfs.btrfs -f"; modprobe btrfs >>$LOG 2>&1;;
+            ext2) MKFS="mke2fs -F"; modprobe ext2 >>$LOG 2>&1;;
+            ext3) MKFS="mke2fs -F -j"; modprobe ext3 >>$LOG 2>&1;;
+            ext4) MKFS="mke2fs -F -t ext4"; modprobe ext4 >>$LOG 2>&1;;
+            f2fs) MKFS="mkfs.f2fs -f"; modprobe f2fs >>$LOG 2>&1;;
+            vfat) MKFS="mkfs.vfat -F32"; modprobe vfat >>$LOG 2>&1;;
+            xfs) MKFS="mkfs.xfs -f -i sparse=0"; modprobe xfs >>$LOG 2>&1;;
             esac
-            TITLE="Check $LOG for details ..."
-            INFOBOX "Creating filesystem $fstype on $dev for $mntpt ..." 8 60
-            echo "Running $MKFS $dev..." >$LOG
-            $MKFS $dev >$LOG 2>&1; rv=$?
-            if [ $rv -ne 0 ]; then
-                DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
+            # Calculate total memory in GB
+            mem_total=$(free -t -g | grep -oP '\d+' | sed '10!d')
+            # Calculate swap need, usaly 2*RAM
+            sawp_need=$(($mem_total*2))
+            sawp_need+="G"
+            # Prepare LVM
+            if [ "$fstype" = "btrfs_lvm" ]; then
+                pvcreate $dev >>$LOG 2>&1
+                vgcreate vg0 $dev >>$LOG 2>&1
+                lvcreate --yes --name swap -L $sawp_need vg0 >>$LOG 2>&1
+                lvcreate --yes --name brgvos -l +100%FREE vg0 >>$LOG 2>&1
+                TITLE="Check $LOG for details ..."
+                INFOBOX "Creating filesystem $fstype on /dev/mapper/vg0-brgvos for $mntpt ..." 8 60
+                echo "Running $MKFS -L brgvos /dev/mapper/vg0-brgvos..." >>$LOG
+                $MKFS -L brgvos /dev/mapper/vg0-brgvos >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
 failed to create filesystem $fstype on $dev!\ncheck $LOG for errors." ${MSGBOXSIZE}
-                DIE 1
+                    DIE 1
+                fi
+                TITLE="Check $LOG for details ..."
+                INFOBOX "Creating filesystem $fstype on /dev/mapper/vg0-swap for $mntpt ..." 8 60
+                echo "Running $MKFS -L brgvos /dev/mapper/vg0-swap..." >>$LOG
+                mkswap /dev/mapper/vg0-swap >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
+failed to create filesystem swap on /dev/mapper/vg0-swap!\ncheck $LOG for errors." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                else
+                    TITLE="Check $LOG for details ..."
+                    INFOBOX "Creating filesystem $fstype on $dev for $mntpt ..." 8 60
+                    echo "Running $MKFS $dev..." >>$LOG
+                    $MKFS $dev >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
+failed to create filesystem $fstype on $dev!\ncheck $LOG for errors." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                
             fi
         fi
         # Mount rootfs the first one.
         [ "$mntpt" != "/" ] && continue
         mkdir -p $TARGETDIR
-        echo "Mounting $dev on $mntpt ($fstype)..." >$LOG
-        mount -t $fstype $dev $TARGETDIR >$LOG 2>&1
-        if [ $? -ne 0 ]; then
-            DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
+        if [ "$fstype" = "btrfs_lvm" ]; then
+            echo "Mounting /dev/mapper/vg0-brgvos on $mntpt ($fstype)..." >>$LOG
+            mount /dev/mapper/vg0-brgvos $TARGETDIR >>$LOG 2>&1
+            else
+                echo "Mounting $dev on $mntpt ($fstype)..." >>$LOG
+                mount -t $fstype $dev $TARGETDIR >>$LOG 2>&1
+            if [ $? -ne 0 ]; then
+                DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
 failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
-            DIE 1
+                DIE 1
+            fi
         fi
         # Check if was mounted HDD or SSD
         disk_name=$(lsblk -ndo pkname "$dev")
@@ -1138,30 +1182,43 @@ failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
         if [ "$disk_type" -eq 1 ]; then
             # options for HDD
             options="compress=zstd,noatime,space_cache=v2"
-            echo "Options used for mount and fstab $options" >$LOG
+            echo "Options used for mount and fstab $options" >>$LOG
         else
             # options for SSD
             options="compress=zstd,noatime,space_cache=v2,discard=async,ssd"
-            echo "Options used for mount and fstab $options" >$LOG
+            echo "Options used for mount and fstab $options" >>$LOG
         fi
         # Create subvolume @, @home, @var_log, @var_lib and @snapshots
         if [ "$fstype" = "btrfs" ]; then
-        btrfs subvolume create $TARGETDIR/@ >$LOG 2>&1
-        btrfs subvolume create $TARGETDIR/@home >$LOG 2>&1
-        btrfs subvolume create $TARGETDIR/@var_log >$LOG 2>&1
-        btrfs subvolume create $TARGETDIR/@var_lib >$LOG 2>&1
-        btrfs subvolume create $TARGETDIR/@snapshots >$LOG 2>&1
-        umount $TARGETDIR >$LOG 2>&1
-        mount -t $fstype -o $options,subvol=@ $dev $TARGETDIR >$LOG 2>&1
-        mkdir -p $TARGETDIR/{home,var/log,var/lib,.snapshots} >$LOG 2>&1
-        mount -t $fstype -o $options,subvol=@home $dev $TARGETDIR/home >$LOG 2>&1
-        mount -t $fstype -o $options,subvol=@snapshots $dev $TARGETDIR/.snapshots >$LOG 2>&1
-        mount -t $fstype -o $options,subvol=@var_log $dev $TARGETDIR/var/log >$LOG 2>&1
-        mount -t $fstype -o $options,subvol=@var_lib $dev $TARGETDIR/var/lib >$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@ >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@home >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@var_log >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@var_lib >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@snapshots >>$LOG 2>&1
+        umount $TARGETDIR >>$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@ $dev $TARGETDIR >>$LOG 2>&1
+        mkdir -p $TARGETDIR/{home,var/log,var/lib,.snapshots} >>$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@home $dev $TARGETDIR/home >>$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@snapshots $dev $TARGETDIR/.snapshots >>$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@var_log $dev $TARGETDIR/var/log >>$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@var_lib $dev $TARGETDIR/var/lib >>$LOG 2>&1
+        elif [ "$fstype" = "btrfs_lvm" ]; then
+        btrfs subvolume create $TARGETDIR/@ >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@home >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@var_log >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@var_lib >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@snapshots >>$LOG 2>&1
+        umount $TARGETDIR >>$LOG 2>&1
+        mount -t btrfs -o $options,subvol=@ /dev/mapper/vg0-brgvos $TARGETDIR >>$LOG 2>&1
+        mkdir -p $TARGETDIR/{home,var/log,var/lib,.snapshots} >>$LOG 2>&1
+        mount -t btrfs -o $options,subvol=@home /dev/mapper/vg0-brgvos $TARGETDIR/home >>$LOG 2>&1
+        mount -t btrfs -o $options,subvol=@snapshots /dev/mapper/vg0-brgvos $TARGETDIR/.snapshots >>$LOG 2>&1
+        mount -t btrfs -o $options,subvol=@var_log /dev/mapper/vg0-brgvos $TARGETDIR/var/log >>$LOG 2>&1
+        mount -t btrfs -o $options,subvol=@var_lib /dev/mapper/vg0-brgvos $TARGETDIR/var/lib >>$LOG 2>&1
         fi
         # Add entry to target fstab
         uuid=$(blkid -o value -s UUID "$dev")
-        if [ "$fstype" = "f2fs" -o "$fstype" = "btrfs" -o "$fstype" = "xfs" ]; then
+        if [ "$fstype" = "f2fs" -o "$fstype" = "btrfs" -o "$fstype" = "btrfs_lvm" -o "$fstype" = "xfs" ]; then
             fspassno=0
         else
             fspassno=1
@@ -1172,6 +1229,16 @@ failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
             echo "UUID=$uuid /.snapshots $fstype $options,subvol=@snapshots 0 $fspassno" >>$TARGET_FSTAB
             echo "UUID=$uuid /var/log $fstype $options,subvol=@var_log 0 $fspassno" >>$TARGET_FSTAB
             echo "UUID=$uuid /var/lib $fstype $options,subvol=@var_lib 0 $fspassno" >>$TARGET_FSTAB
+        elif [ "$fstype" = "btrfs_lvm" ]; then
+            ROOT_UUID=$(blkid -s UUID -o value /dev/mapper/vg0-brgvos)
+            SWAP_UUID=$(blkid -s UUID -o value /dev/mapper/vg0-swap)
+            
+            echo "UUID=$ROOT_UUID / btrfs $options,subvol=@ 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$ROOT_UUID /home btrfs $options,subvol=@home 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$ROOT_UUID /.snapshots btrfs $options,subvol=@snapshots 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$ROOT_UUID /var/log btrfs $options,subvol=@var_log 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$ROOT_UUID /var/lib btrfs $options,subvol=@var_lib 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$SWAP_UUID none swap defaults 0 $fspassno" >>$TARGET_FSTAB
         else
             echo "UUID=$uuid $mntpt $fstype defaults 0 $fspassno" >>$TARGET_FSTAB
         fi
@@ -1185,8 +1252,8 @@ failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
         shift 6
         [ "$mntpt" = "/" -o "$fstype" = "swap" ] && continue
         mkdir -p ${TARGETDIR}${mntpt}
-        echo "Mounting $dev on $mntpt ($fstype)..." >$LOG
-        mount -t $fstype $dev ${TARGETDIR}${mntpt} >$LOG 2>&1
+        echo "Mounting $dev on $mntpt ($fstype)..." >>$LOG
+        mount -t $fstype $dev ${TARGETDIR}${mntpt} >>$LOG 2>&1
         if [ $? -ne 0 ]; then
             DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
 failed to mount $dev on $mntpt! check $LOG for errors." ${MSGBOXSIZE}
@@ -1206,8 +1273,8 @@ failed to mount $dev on $mntpt! check $LOG for errors." ${MSGBOXSIZE}
 mount_filesystems() {
     for f in sys proc dev; do
         [ ! -d $TARGETDIR/$f ] && mkdir $TARGETDIR/$f
-        echo "Mounting $TARGETDIR/$f..." >$LOG
-        mount --rbind /$f $TARGETDIR/$f >$LOG 2>&1
+        echo "Mounting $TARGETDIR/$f..." >>$LOG
+        mount --rbind /$f $TARGETDIR/$f >>$LOG 2>&1
     done
 }
 
@@ -1218,19 +1285,19 @@ umount_filesystems() {
         local dev=$2; local fstype=$3
         shift 6
         if [ "$fstype" = "swap" ]; then
-            echo "Disabling swap space on $dev..." >$LOG
-            swapoff $dev >$LOG 2>&1
+            echo "Disabling swap space on $dev..." >>$LOG
+            swapoff $dev >>$LOG 2>&1
             continue
         fi
     done
-    echo "Unmounting $TARGETDIR..." >$LOG
-    umount -R $TARGETDIR >$LOG 2>&1
+    echo "Unmounting $TARGETDIR..." >>$LOG
+    umount -R $TARGETDIR >>$LOG 2>&1
 }
 
 log_and_count() {
     local progress whole tenth
     while read line; do
-        echo "$line" >$LOG
+        echo "$line" >>$LOG
         copy_count=$((copy_count + 1))
         progress=$((1000 * copy_count / copy_total))
         if [ "$progress" != "$copy_progress" ]; then
@@ -1398,18 +1465,18 @@ ${BOLD}Do you want to continue?${RESET}" 20 80 || return
         # Remove modified sddm.conf to let sddm use the defaults.
         rm -f $TARGETDIR/etc/sddm.conf
         # Remove live user.
-        echo "Removing $USERNAME live user from targetdir ..." >$LOG
-        chroot $TARGETDIR userdel -r $USERNAME >$LOG 2>&1
+        echo "Removing $USERNAME live user from targetdir ..." >>$LOG
+        chroot $TARGETDIR userdel -r $USERNAME >>$LOG 2>&1
         rm -f $TARGETDIR/etc/sudoers.d/99-void-live
         sed -i "s,GETTY_ARGS=\"--noclear -a $USERNAME\",GETTY_ARGS=\"--noclear\",g" $TARGETDIR/etc/sv/agetty-tty1/conf
         TITLE="Check $LOG for details ..."
         INFOBOX "Rebuilding initramfs for target ..." 4 60
-        echo "Rebuilding initramfs for target ..." >$LOG
+        echo "Rebuilding initramfs for target ..." >>$LOG
         # mount required fs
         mount_filesystems
         chroot $TARGETDIR dracut --no-hostonly --add-drivers "ahci" --force >>$LOG 2>&1
         INFOBOX "Removing temporary packages from target ..." 4 60
-        echo "Removing temporary packages from target ..." >$LOG
+        echo "Removing temporary packages from target ..." >>$LOG
         TO_REMOVE="dialog xtools-minimal xmirror"
         # only remove espeakup and brltty if it wasn't enabled in the live environment
         if ! [ -e "/var/service/espeakup" ]; then
@@ -1546,7 +1613,7 @@ menu_source() {
 }
 
 menu_mirror() {
-    xmirror 2>$LOG && MIRROR_DONE=1
+    xmirror 2>>$LOG && MIRROR_DONE=1
 }
 
 menu() {
