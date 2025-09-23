@@ -43,8 +43,13 @@ NETWORK_DONE=
 FILESYSTEMS_DONE=
 MIRROR_DONE=
 
+# set the date and time
+date_time=$(date +'%d%m%Y_%H%M%S')
+
 TARGETDIR=/mnt/target
-LOG=/dev/tty9
+#LOG=/dev/tty9
+LOG="/tmp/install_brgvos_$date_time.log"
+touch -f $LOG
 CONF_FILE=/tmp/.brgvos-installer.conf
 if [ ! -f $CONF_FILE ]; then
     touch -f $CONF_FILE
@@ -88,9 +93,9 @@ RESET="\Zn"
 # Properties shared per widget.
 MENULABEL="${BOLD}Folosiți tastele SUS și JOS pentru a naviga în meniu. \
 Folosiți TAB pentru a comuta între butoane și ENTER pentru a selecta.${RESET}"
-MENUSIZE="14 60 0"
+MENUSIZE="14 70 0"
 INPUTSIZE="8 60"
-MSGBOXSIZE="8 70"
+MSGBOXSIZE="8 80"
 YESNOSIZE="$INPUTSIZE"
 WIDGET_SIZE="10 70"
 
@@ -446,6 +451,7 @@ menu_filesystems() {
         DIALOG --title " Selectează tipul de sistem de fișiere pentru $dev " \
             --menu "$MENULABEL" ${MENUSIZE} \
             "btrfs" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
+            "btrfs_lvm" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
             "ext2" "Linux ext2 (fără jurnalizare)" \
             "ext3" "Linux ext3 (cu jurnalizare)" \
             "ext4" "Linux ext4 (cu jurnalizare)" \
@@ -600,8 +606,8 @@ set_locale() {
         if [ $LOCALE != en_US.UTF-8 ]; then
             sed -e "/en_US.UTF-8/s/^\#//" -i $TARGETDIR/etc/default/libc-locales
         fi
-        echo "Rulez xbps-reconfigure -f glibc-locales ..." >$LOG
-        chroot $TARGETDIR xbps-reconfigure -f glibc-locales >$LOG 2>&1
+        echo "Rulez xbps-reconfigure -f glibc-locales ..." >>$LOG
+        chroot $TARGETDIR xbps-reconfigure -f glibc-locales >>$LOG 2>&1
     fi
 }
 
@@ -828,20 +834,20 @@ set_bootloader() {
     if [ -n "$EFI_SYSTEM" ]; then
         grub_args="--target=$EFI_TARGET --efi-directory=/boot/efi --bootloader-id=brgvos_grub --recheck"
     fi
-    echo "Se instalează grub $grub_args $dev..." >$LOG
-    chroot $TARGETDIR grub-install $grub_args $dev >$LOG 2>&1
+    echo "Se instalează grub $grub_args $dev..." >>$LOG
+    chroot $TARGETDIR grub-install $grub_args $dev >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
 instalarea GRUB a eșuat $dev!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
         DIE 1
     fi
-    echo "Pregătesc Logo-ul și denumirea în meniul grub $TARGETDIR..." >$LOG
-    chroot $TARGETDIR sed -i 's+#GRUB_BACKGROUND=/usr/share/void-artwork/splash.png+GRUB_BACKGROUND=/usr/share/brgvos-artwork/splash.png+g' /etc/default/grub >$LOG 2>&1
-    chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >$LOG 2>&1
-    chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 quiet splash"/g' /etc/default/grub >$LOG 2>&1
-    chroot $TARGETDIR sed -i -e '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >$LOG 2>&1
-    echo "Rularea grub-mkconfig pe $TARGETDIR..." >$LOG
-    chroot $TARGETDIR grub-mkconfig -o /boot/grub/grub.cfg >$LOG 2>&1
+    echo "Pregătesc Logo-ul și denumirea în meniul grub $TARGETDIR..." >>$LOG
+    chroot $TARGETDIR sed -i 's+#GRUB_BACKGROUND=/usr/share/void-artwork/splash.png+GRUB_BACKGROUND=/usr/share/brgvos-artwork/splash.png+g' /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 quiet splash"/g' /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i -e '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >>$LOG 2>&1
+    echo "Rularea grub-mkconfig pe $TARGETDIR..." >>$LOG
+    chroot $TARGETDIR grub-mkconfig -o /boot/grub/grub.cfg >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}EROARE${RESET}: \
 nu se poate executa grub-mkconfig!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
@@ -854,7 +860,7 @@ test_network() {
     NETWORK_DONE=
 
     rm -f otime && \
-        xbps-uhelper fetch https://repo-default.voidlinux.org/current/otime >$LOG 2>&1
+        xbps-uhelper fetch https://repo-default.voidlinux.org/current/otime >>$LOG 2>&1
     local status=$?
     rm -f otime
 
@@ -967,19 +973,19 @@ configure_net_static() {
 
     set -- $(cat $ANSWER)
     ip=$1; gw=$2; dns1=$3; dns2=$4
-    echo "rulez: ip link set dev $dev up" >$LOG
-    ip link set dev $dev up >$LOG 2>&1
+    echo "rulez: ip link set dev $dev up" >>$LOG
+    ip link set dev $dev up >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} Nu s-a putut aduce interfața $dev." ${MSGBOXSIZE}
         return 1
     fi
-    echo "rulez: ip addr add $ip dev $dev" >$LOG
-    ip addr add $ip dev $dev >$LOG 2>&1
+    echo "rulez: ip addr add $ip dev $dev" >>$LOG
+    ip addr add $ip dev $dev >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} Nu s-a putut seta adresa IP pentru interfața $dev." ${MSGBOXSIZE}
         return 1
     fi
-    ip route add default via $gw >$LOG 2>&1
+    ip route add default via $gw >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} nu s-a putut configura gateway-ul." ${MSGBOXSIZE}
         return 1
@@ -1087,14 +1093,14 @@ create_filesystems() {
         if [ "$fstype" = "swap" ]; then
             swapoff $dev >/dev/null 2>&1
             if [ "$mkfs" -eq 1 ]; then
-                mkswap $dev >$LOG 2>&1
+                mkswap $dev >>$LOG 2>&1
                 if [ $? -ne 0 ]; then
                     DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
 nu s-a putut crea swap în ${dev}!\nverificați $LOG pentru erori." ${MSGBOXSIZE}
                     DIE 1
                 fi
             fi
-            swapon $dev >$LOG 2>&1
+            swapon $dev >>$LOG 2>&1
             if [ $? -ne 0 ]; then
                 DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
 nu s-a putut activa swap în $dev!\nverificați $LOG pentru erori." ${MSGBOXSIZE}
@@ -1108,33 +1114,71 @@ nu s-a putut activa swap în $dev!\nverificați $LOG pentru erori." ${MSGBOXSIZE
 
         if [ "$mkfs" -eq 1 ]; then
             case "$fstype" in
-            btrfs) MKFS="mkfs.btrfs -f"; modprobe btrfs >$LOG 2>&1;;
-            ext2) MKFS="mke2fs -F"; modprobe ext2 >$LOG 2>&1;;
-            ext3) MKFS="mke2fs -F -j"; modprobe ext3 >$LOG 2>&1;;
-            ext4) MKFS="mke2fs -F -t ext4"; modprobe ext4 >$LOG 2>&1;;
-            f2fs) MKFS="mkfs.f2fs -f"; modprobe f2fs >$LOG 2>&1;;
-            vfat) MKFS="mkfs.vfat -F32"; modprobe vfat >$LOG 2>&1;;
-            xfs) MKFS="mkfs.xfs -f -i sparse=0"; modprobe xfs >$LOG 2>&1;;
+            btrfs) MKFS="mkfs.btrfs -f"; modprobe btrfs >>$LOG 2>&1;;
+            btrfs_lvm) MKFS="mkfs.btrfs -f"; modprobe btrfs >>$LOG 2>&1;;
+            ext2) MKFS="mke2fs -F"; modprobe ext2 >>$LOG 2>&1;;
+            ext3) MKFS="mke2fs -F -j"; modprobe ext3 >>$LOG 2>&1;;
+            ext4) MKFS="mke2fs -F -t ext4"; modprobe ext4 >>$LOG 2>&1;;
+            f2fs) MKFS="mkfs.f2fs -f"; modprobe f2fs >>$LOG 2>&1;;
+            vfat) MKFS="mkfs.vfat -F32"; modprobe vfat >>$LOG 2>&1;;
+            xfs) MKFS="mkfs.xfs -f -i sparse=0"; modprobe xfs >>$LOG 2>&1;;
             esac
-            TITLE="Verificați $LOG pentru detalii ..."
-            INFOBOX "Crearea sistemului de fișiere $fstype în $dev pentru $mntpt ..." 8 60
-            echo "Execut $MKFS $dev..." >$LOG
-            $MKFS $dev >$LOG 2>&1; rv=$?
-            if [ $rv -ne 0 ]; then
-                DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
-a eșuat crearea sistemului de fișiere $fstype în $dev!\nverificați $LOG pentru erori." ${MSGBOXSIZE}
-                DIE 1
+            # Calculate total memory in GB
+            mem_total=$(free -t -g | grep -oP '\d+' | sed '10!d')
+            # Calculate swap need, usaly 2*RAM
+            sawp_need=$(($mem_total*2))
+            sawp_need+="G"
+            # Prepare LVM
+            if [ "$fstype" = "btrfs_lvm" ]; then
+                pvcreate $dev >>$LOG 2>&1
+                vgcreate vg0 $dev >>$LOG 2>&1
+                lvcreate --yes --name swap -L $sawp_need vg0 >>$LOG 2>&1
+                lvcreate --yes --name brgvos -l +100%FREE vg0 >>$LOG 2>&1
+                TITLE="Verificați $LOG pentru detalii..."
+                INFOBOX "Crearea sistemului de fișiere btrfs în /dev/mapper/vg0-brgvos..." 8 80
+                echo "Rulez $MKFS -L brgvos /dev/mapper/vg0-brgvos..." >>$LOG
+                $MKFS -L brgvos /dev/mapper/vg0-brgvos >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
+a eșuat crearea sistemului de fișiere btrfs în /dev/mapper/vg0-brgvos!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                TITLE="Verificați $LOG pentru detalii..."
+                INFOBOX "Crearea sistemului de fișiere swap în /dev/mapper/vg0-swap..." 8 80
+                echo "Rulez $MKFS -L brgvos /dev/mapper/vg0-swap..." >>$LOG
+                mkswap /dev/mapper/vg0-swap >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
+a eșuat crearea sistemului de fișiere swap în /dev/mapper/vg0-swap!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                else
+                    TITLE="Verificați $LOG pentru detalii..."
+                    INFOBOX "Crearea sistemuli de fișiere $fstype în $dev pentru $mntpt ..." 8 80
+                    echo "Rulez $MKFS $dev..." >>$LOG
+                    $MKFS $dev >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
+a eșuat crearea sistemului de fișiere $fstype în $dev!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                
             fi
         fi
         # Mount rootfs the first one.
         [ "$mntpt" != "/" ] && continue
         mkdir -p $TARGETDIR
-        echo "Montez $dev în $mntpt ($fstype)..." >$LOG
-        mount -t $fstype $dev $TARGETDIR >$LOG 2>&1
-        if [ $? -ne 0 ]; then
-            DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
-a eșuat montarea $dev în ${mntpt}! verificați $LOG pentru erori." ${MSGBOXSIZE}
-            DIE 1
+        if [ "$fstype" = "btrfs_lvm" ]; then
+            echo "Montez /dev/mapper/vg0-brgvos în $mntpt (btrfs)..." >>$LOG
+            mount /dev/mapper/vg0-brgvos $TARGETDIR >>$LOG 2>&1
+            else
+                echo "Montez $dev în $mntpt ($fstype)..." >>$LOG
+                mount -t $fstype $dev $TARGETDIR >>$LOG 2>&1
+            if [ $? -ne 0 ]; then
+                DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
+a eșuat montarea $dev în ${mntpt}! Verificați $LOG pentru erori." ${MSGBOXSIZE}
+                DIE 1
+            fi
         fi
         # Check if was mounted HDD or SSD
         disk_name=$(lsblk -ndo pkname "$dev")
@@ -1143,30 +1187,43 @@ a eșuat montarea $dev în ${mntpt}! verificați $LOG pentru erori." ${MSGBOXSIZ
         if [ "$disk_type" -eq 1 ]; then
             # options for HDD
             options="compress=zstd,noatime,space_cache=v2"
-            echo "Opțiunile utilizate la montare și în fstab $options" >$LOG
+            echo "Opțiunile utilizate la montare și în fstab $options" >>$LOG
         else
             # options for SSD
             options="compress=zstd,noatime,space_cache=v2,discard=async,ssd"
-            echo "Opțiunile utilizate la montare și în fstab $options" >$LOG
+            echo "Opțiunile utilizate la montare și în fstab $options" >>$LOG
         fi
         # Create subvolume @, @home, @var_log, @var_lib and @snapshots
         if [ "$fstype" = "btrfs" ]; then
-        btrfs subvolume create $TARGETDIR/@ >$LOG 2>&1
-        btrfs subvolume create $TARGETDIR/@home >$LOG 2>&1
-        btrfs subvolume create $TARGETDIR/@var_log >$LOG 2>&1
-        btrfs subvolume create $TARGETDIR/@var_lib >$LOG 2>&1
-        btrfs subvolume create $TARGETDIR/@snapshots >$LOG 2>&1
-        umount $TARGETDIR >$LOG 2>&1
-        mount -t $fstype -o $options,subvol=@ $dev $TARGETDIR >$LOG 2>&1
-        mkdir -p $TARGETDIR/{home,var/log,var/lib,.snapshots} >$LOG 2>&1
-        mount -t $fstype -o $options,subvol=@home $dev $TARGETDIR/home >$LOG 2>&1
-        mount -t $fstype -o $options,subvol=@snapshots $dev $TARGETDIR/.snapshots >$LOG 2>&1
-        mount -t $fstype -o $options,subvol=@var_log $dev $TARGETDIR/var/log >$LOG 2>&1
-        mount -t $fstype -o $options,subvol=@var_lib $dev $TARGETDIR/var/lib >$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@ >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@home >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@var_log >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@var_lib >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@snapshots >>$LOG 2>&1
+        umount $TARGETDIR >>$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@ $dev $TARGETDIR >>$LOG 2>&1
+        mkdir -p $TARGETDIR/{home,var/log,var/lib,.snapshots} >>$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@home $dev $TARGETDIR/home >>$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@snapshots $dev $TARGETDIR/.snapshots >>$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@var_log $dev $TARGETDIR/var/log >>$LOG 2>&1
+        mount -t $fstype -o $options,subvol=@var_lib $dev $TARGETDIR/var/lib >>$LOG 2>&1
+        elif [ "$fstype" = "btrfs_lvm" ]; then
+        btrfs subvolume create $TARGETDIR/@ >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@home >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@var_log >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@var_lib >>$LOG 2>&1
+        btrfs subvolume create $TARGETDIR/@snapshots >>$LOG 2>&1
+        umount $TARGETDIR >>$LOG 2>&1
+        mount -t btrfs -o $options,subvol=@ /dev/mapper/vg0-brgvos $TARGETDIR >>$LOG 2>&1
+        mkdir -p $TARGETDIR/{home,var/log,var/lib,.snapshots} >>$LOG 2>&1
+        mount -t btrfs -o $options,subvol=@home /dev/mapper/vg0-brgvos $TARGETDIR/home >>$LOG 2>&1
+        mount -t btrfs -o $options,subvol=@snapshots /dev/mapper/vg0-brgvos $TARGETDIR/.snapshots >>$LOG 2>&1
+        mount -t btrfs -o $options,subvol=@var_log /dev/mapper/vg0-brgvos $TARGETDIR/var/log >>$LOG 2>&1
+        mount -t btrfs -o $options,subvol=@var_lib /dev/mapper/vg0-brgvos $TARGETDIR/var/lib >>$LOG 2>&1
         fi
         # Add entry to target fstab
         uuid=$(blkid -o value -s UUID "$dev")
-        if [ "$fstype" = "f2fs" -o "$fstype" = "btrfs" -o "$fstype" = "xfs" ]; then
+        if [ "$fstype" = "f2fs" -o "$fstype" = "btrfs" -o "$fstype" = "btrfs_lvm" -o "$fstype" = "xfs" ]; then
             fspassno=0
         else
             fspassno=1
@@ -1177,6 +1234,16 @@ a eșuat montarea $dev în ${mntpt}! verificați $LOG pentru erori." ${MSGBOXSIZ
             echo "UUID=$uuid /.snapshots $fstype $options,subvol=@snapshots 0 $fspassno" >>$TARGET_FSTAB
             echo "UUID=$uuid /var/log $fstype $options,subvol=@var_log 0 $fspassno" >>$TARGET_FSTAB
             echo "UUID=$uuid /var/lib $fstype $options,subvol=@var_lib 0 $fspassno" >>$TARGET_FSTAB
+        elif [ "$fstype" = "btrfs_lvm" ]; then
+            ROOT_UUID=$(blkid -s UUID -o value /dev/mapper/vg0-brgvos)
+            SWAP_UUID=$(blkid -s UUID -o value /dev/mapper/vg0-swap)
+            
+            echo "UUID=$ROOT_UUID / btrfs $options,subvol=@ 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$ROOT_UUID /home btrfs $options,subvol=@home 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$ROOT_UUID /.snapshots btrfs $options,subvol=@snapshots 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$ROOT_UUID /var/log btrfs $options,subvol=@var_log 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$ROOT_UUID /var/lib btrfs $options,subvol=@var_lib 0 $fspassno" >>$TARGET_FSTAB
+            echo "UUID=$SWAP_UUID none swap defaults 0 $fspassno" >>$TARGET_FSTAB
         else
             echo "UUID=$uuid $mntpt $fstype defaults 0 $fspassno" >>$TARGET_FSTAB
         fi
@@ -1190,8 +1257,8 @@ a eșuat montarea $dev în ${mntpt}! verificați $LOG pentru erori." ${MSGBOXSIZ
         shift 6
         [ "$mntpt" = "/" -o "$fstype" = "swap" ] && continue
         mkdir -p ${TARGETDIR}${mntpt}
-        echo "Montez $dev în $mntpt ($fstype)..." >$LOG
-        mount -t $fstype $dev ${TARGETDIR}${mntpt} >$LOG 2>&1
+        echo "Montez $dev în $mntpt ($fstype)..." >>$LOG
+        mount -t $fstype $dev ${TARGETDIR}${mntpt} >>$LOG 2>&1
         if [ $? -ne 0 ]; then
             DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
 a eșuat montarea $dev în $mntpt! verificați $LOG pentru erori." ${MSGBOXSIZE}
@@ -1211,8 +1278,8 @@ a eșuat montarea $dev în $mntpt! verificați $LOG pentru erori." ${MSGBOXSIZE}
 mount_filesystems() {
     for f in sys proc dev; do
         [ ! -d $TARGETDIR/$f ] && mkdir $TARGETDIR/$f
-        echo "Montez $TARGETDIR/$f..." >$LOG
-        mount --rbind /$f $TARGETDIR/$f >$LOG 2>&1
+        echo "Montez $TARGETDIR/$f..." >>$LOG
+        mount --rbind /$f $TARGETDIR/$f >>$LOG 2>&1
     done
 }
 
@@ -1223,19 +1290,19 @@ umount_filesystems() {
         local dev=$2; local fstype=$3
         shift 6
         if [ "$fstype" = "swap" ]; then
-            echo "Dezactivarea spațiului de swap activat în $dev..." >$LOG
-            swapoff $dev >$LOG 2>&1
+            echo "Dezactivarea spațiului de swap activat în $dev..." >>$LOG
+            swapoff $dev >>$LOG 2>&1
             continue
         fi
     done
-    echo "Demontez $TARGETDIR..." >$LOG
-    umount -R $TARGETDIR >$LOG 2>&1
+    echo "Demontez $TARGETDIR..." >>$LOG
+    umount -R $TARGETDIR >>$LOG 2>&1
 }
 
 log_and_count() {
     local progress whole tenth
     while read line; do
-        echo "$line" >$LOG
+        echo "$line" >>$LOG
         copy_count=$((copy_count + 1))
         progress=$((1000 * copy_count / copy_total))
         if [ "$progress" != "$copy_progress" ]; then
@@ -1250,7 +1317,7 @@ log_and_count() {
 copy_rootfs() {
     local tar_in="--create --one-file-system --xattrs"
     TITLE="Verificați $LOG pentru detalii ..."
-    INFOBOX "Pregătim fișierele, vă rugăm să aveți răbdare ..." 4 60
+    INFOBOX "Se numără fișierele, vă rog să aveți răbdare ..." 4 80
     copy_total=$(tar ${tar_in} -v -f /dev/null / 2>/dev/null | wc -l)
     export copy_total copy_count=0 copy_progress=
     clear
@@ -1258,7 +1325,7 @@ copy_rootfs() {
         tar --extract --xattrs --xattrs-include='*' --preserve-permissions -v -f - -C $TARGETDIR | \
         log_and_count | \
         DIALOG --title "${TITLE}" \
-            --progressbox "Copierea imaginii live în noul rootfs țintă" 5 60
+            --progressbox "Copierea imaginii live în noul rootfs țintă" 5 80
     if [ $? -ne 0 ]; then
         DIE 1
     fi
@@ -1403,25 +1470,25 @@ ${BOLD}Doriți să continuați?${RESET}" 20 80 || return
         # Remove modified sddm.conf to let sddm use the defaults.
         rm -f $TARGETDIR/etc/sddm.conf
         # Remove live user.
-        echo "Eliminarea $USERNAME utilizator live in directorul țintă ..." >$LOG
-        chroot $TARGETDIR userdel -r $USERNAME >$LOG 2>&1
+        echo "Eliminarea $USERNAME utilizator live in directorul țintă ..." >>$LOG
+        chroot $TARGETDIR userdel -r $USERNAME >>$LOG 2>&1
         rm -f $TARGETDIR/etc/sudoers.d/99-void-live
         sed -i "s,GETTY_ARGS=\"--noclear -a $USERNAME\",GETTY_ARGS=\"--noclear\",g" $TARGETDIR/etc/sv/agetty-tty1/conf
         TITLE="Verificați $LOG pentru detalii ..."
-        INFOBOX "Reconstruirea initramfs pentru țintă ..." 4 60
-        echo "Reconstruirea initramfs pentru țintă ..." >$LOG
+        INFOBOX "Reconstruirea initramfs pentru țintă ..." 4 80
+        echo "Reconstruirea initramfs pentru țintă ..." >>$LOG
         # mount required fs
         mount_filesystems
         chroot $TARGETDIR dracut --no-hostonly --add-drivers "ahci" --force >>$LOG 2>&1
-        INFOBOX "Eliminarea pachetelor temporare din țintă ..." 4 60
-        echo "Eliminarea pachetelor temporare din țintă ..." >$LOG
-        TO_REMOVE="dialog xtools-minimal xmirror"
+        INFOBOX "Eliminarea pachetelor temporare din țintă ..." 4 80
+        echo "Eliminarea pachetelor temporare din țintă ..." >>$LOG
+        TO_REMOVE="dialog xmirror"
         # only remove espeakup and brltty if it wasn't enabled in the live environment
         if ! [ -e "/var/service/espeakup" ]; then
             TO_REMOVE+=" espeakup"
         fi
         if ! [ -e "/var/service/brltty" ]; then
-            TO_REMOVE+=" brltty"
+            TO_REMOVE+=" python3-brlapi brltty"
         fi
         if [ "$(get_option BOOTLOADER)" = none ]; then
             TO_REMOVE+=" grub-x86_64-efi grub-i386-efi grub"
@@ -1551,7 +1618,7 @@ menu_source() {
 }
 
 menu_mirror() {
-    xmirror 2>$LOG && MIRROR_DONE=1
+    xmirror 2>>$LOG && MIRROR_DONE=1
 }
 
 menu() {
@@ -1565,7 +1632,7 @@ menu() {
         DIALOG --default-item $DEFITEM \
             --extra-button --extra-label "Salvate" \
             --title " BRGV-OS Linux meniu de instalare " \
-            --menu "$MENULABEL" 10 70 0 \
+            --menu "$MENULABEL" 10 80 0 \
             "Keyboard" "Setați tastatura sistemului" \
             "Network" "Configurați rețeaua" \
             "Source" "Setați sursa de instalare" \
@@ -1584,7 +1651,7 @@ menu() {
         DIALOG --default-item $DEFITEM \
             --extra-button --extra-label "Salvate" \
             --title " BRGV-OS Linux meniu de instalare " \
-            --menu "$MENULABEL" 10 70 0 \
+            --menu "$MENULABEL" 10 80 0 \
             "Keyboard" "Setează tastatura sistemului" \
             "Network" "Configurați rețeaua" \
             "Source" "Setați sursa de instalare" \
