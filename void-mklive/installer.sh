@@ -93,9 +93,9 @@ RESET="\Zn"
 # Properties shared per widget.
 MENULABEL="${BOLD}Use UP and DOWN keys to navigate \
 menus. Use TAB to switch between buttons and ENTER to select.${RESET}"
-MENUSIZE="14 60 0"
+MENUSIZE="14 70 0"
 INPUTSIZE="8 60"
-MSGBOXSIZE="8 70"
+MSGBOXSIZE="8 80"
 YESNOSIZE="$INPUTSIZE"
 WIDGET_SIZE="10 70"
 
@@ -1130,7 +1130,7 @@ failed to activate swap on $dev!\ncheck $LOG for errors." ${MSGBOXSIZE}
                 lvcreate --yes --name swap -L $sawp_need vg0 >>$LOG 2>&1
                 lvcreate --yes --name brgvos -l +100%FREE vg0 >>$LOG 2>&1
                 TITLE="Check $LOG for details ..."
-                INFOBOX "Creating filesystem $fstype on /dev/mapper/vg0-brgvos for $mntpt ..." 8 60
+                INFOBOX "Creating filesystem btrfs on /dev/mapper/vg0-brgvos..." 8 80
                 echo "Running $MKFS -L brgvos /dev/mapper/vg0-brgvos..." >>$LOG
                 $MKFS -L brgvos /dev/mapper/vg0-brgvos >>$LOG 2>&1; rv=$?
                 if [ $rv -ne 0 ]; then
@@ -1139,7 +1139,7 @@ failed to create filesystem $fstype on $dev!\ncheck $LOG for errors." ${MSGBOXSI
                     DIE 1
                 fi
                 TITLE="Check $LOG for details ..."
-                INFOBOX "Creating filesystem $fstype on /dev/mapper/vg0-swap for $mntpt ..." 8 60
+                INFOBOX "Creating filesystem swap on /dev/mapper/vg0-swap..." 8 80
                 echo "Running $MKFS -L brgvos /dev/mapper/vg0-swap..." >>$LOG
                 mkswap /dev/mapper/vg0-swap >>$LOG 2>&1; rv=$?
                 if [ $rv -ne 0 ]; then
@@ -1149,7 +1149,7 @@ failed to create filesystem swap on /dev/mapper/vg0-swap!\ncheck $LOG for errors
                 fi
                 else
                     TITLE="Check $LOG for details ..."
-                    INFOBOX "Creating filesystem $fstype on $dev for $mntpt ..." 8 60
+                    INFOBOX "Creating filesystem $fstype on $dev for $mntpt ..." 8 80
                     echo "Running $MKFS $dev..." >>$LOG
                     $MKFS $dev >>$LOG 2>&1; rv=$?
                 if [ $rv -ne 0 ]; then
@@ -1164,7 +1164,7 @@ failed to create filesystem $fstype on $dev!\ncheck $LOG for errors." ${MSGBOXSI
         [ "$mntpt" != "/" ] && continue
         mkdir -p $TARGETDIR
         if [ "$fstype" = "btrfs_lvm" ]; then
-            echo "Mounting /dev/mapper/vg0-brgvos on $mntpt ($fstype)..." >>$LOG
+            echo "Mounting /dev/mapper/vg0-brgvos on $mntpt (btrfs)..." >>$LOG
             mount /dev/mapper/vg0-brgvos $TARGETDIR >>$LOG 2>&1
             else
                 echo "Mounting $dev on $mntpt ($fstype)..." >>$LOG
@@ -1312,7 +1312,7 @@ log_and_count() {
 copy_rootfs() {
     local tar_in="--create --one-file-system --xattrs"
     TITLE="Check $LOG for details ..."
-    INFOBOX "Counting files, please be patient ..." 4 60
+    INFOBOX "Counting files, please be patient ..." 4 80
     copy_total=$(tar ${tar_in} -v -f /dev/null / 2>/dev/null | wc -l)
     export copy_total copy_count=0 copy_progress=
     clear
@@ -1320,7 +1320,7 @@ copy_rootfs() {
         tar --extract --xattrs --xattrs-include='*' --preserve-permissions -v -f - -C $TARGETDIR | \
         log_and_count | \
         DIALOG --title "${TITLE}" \
-            --progressbox "Copying live image to target rootfs." 5 60
+            --progressbox "Copying live image to target rootfs." 5 80
     if [ $? -ne 0 ]; then
         DIE 1
     fi
@@ -1470,20 +1470,20 @@ ${BOLD}Do you want to continue?${RESET}" 20 80 || return
         rm -f $TARGETDIR/etc/sudoers.d/99-void-live
         sed -i "s,GETTY_ARGS=\"--noclear -a $USERNAME\",GETTY_ARGS=\"--noclear\",g" $TARGETDIR/etc/sv/agetty-tty1/conf
         TITLE="Check $LOG for details ..."
-        INFOBOX "Rebuilding initramfs for target ..." 4 60
+        INFOBOX "Rebuilding initramfs for target ..." 4 80
         echo "Rebuilding initramfs for target ..." >>$LOG
         # mount required fs
         mount_filesystems
         chroot $TARGETDIR dracut --no-hostonly --add-drivers "ahci" --force >>$LOG 2>&1
-        INFOBOX "Removing temporary packages from target ..." 4 60
+        INFOBOX "Removing temporary packages from target ..." 4 80
         echo "Removing temporary packages from target ..." >>$LOG
-        TO_REMOVE="dialog xtools-minimal xmirror"
+        TO_REMOVE="dialog xmirror"
         # only remove espeakup and brltty if it wasn't enabled in the live environment
         if ! [ -e "/var/service/espeakup" ]; then
             TO_REMOVE+=" espeakup"
         fi
         if ! [ -e "/var/service/brltty" ]; then
-            TO_REMOVE+=" brltty"
+            TO_REMOVE+=" python3-brlapi brltty"
         fi
         if [ "$(get_option BOOTLOADER)" = none ]; then
             TO_REMOVE+=" grub-x86_64-efi grub-i386-efi grub"
@@ -1627,7 +1627,7 @@ menu() {
         DIALOG --default-item $DEFITEM \
             --extra-button --extra-label "Settings" \
             --title " BRGV-OS Linux installation menu " \
-            --menu "$MENULABEL" 10 70 0 \
+            --menu "$MENULABEL" 10 80 0 \
             "Keyboard" "Set system keyboard" \
             "Network" "Set up the network" \
             "Source" "Set source installation" \
@@ -1646,7 +1646,7 @@ menu() {
         DIALOG --default-item $DEFITEM \
             --extra-button --extra-label "Settings" \
             --title " BRGV-OS Linux installation menu " \
-            --menu "$MENULABEL" 10 70 0 \
+            --menu "$MENULABEL" 10 80 0 \
             "Keyboard" "Set system keyboard" \
             "Network" "Set up the network" \
             "Source" "Set source installation" \
