@@ -25,6 +25,61 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #-
 
+# Set the color for dialog interface
+dialogRcFile="$HOME/.dialogrc"
+sh_create_dialogrc() {
+  cat > "$dialogRcFile" <<-EOF
+screen_color = (white,black,off)
+dialog_color = (white,black,off)
+title_color = (cyan,black,on)
+border_color = dialog_color
+shadow_color = (black,black,on)
+button_inactive_color = dialog_color
+button_key_inactive_color = dialog_color
+button_label_inactive_color = dialog_color
+button_active_color = (white,cyan,on)
+button_key_active_color = button_active_color
+button_label_active_color = (black,cyan,on)
+tag_key_selected_color = (white,cyan,on)
+item_selected_color = tag_key_selected_color
+form_text_color = (BLUE,black,ON)
+form_item_readonly_color = (green,black,on)
+itemhelp_color = (white,cyan,off)
+inputbox_color = dialog_color
+inputbox_border_color = dialog_color
+searchbox_color = dialog_color
+searchbox_title_color = title_color
+searchbox_border_color = border_color
+position_indicator_color = title_color
+menubox_color = dialog_color
+menubox_border_color = border_color
+item_color = dialog_color
+tag_color = title_color
+tag_selected_color = button_label_active_color
+tag_key_color = button_key_inactive_color
+check_color = dialog_color
+check_selected_color = button_active_color
+uarrow_color = screen_color
+darrow_color = screen_color
+form_active_text_color = button_active_color
+gauge_color = title_color
+border2_color = dialog_color
+searchbox_border2_color = dialog_color
+menubox_border2_color = dialog_color
+separate_widget = ''
+tab_len = 0
+visit_items = off
+use_shadow = off
+use_colors = on
+EOF
+}
+cleanup() {
+  rm -f "$dialogRcFile"
+}
+if [[ ! -e "$dialogRcFile" ]]; then
+    sh_create_dialogrc
+fi
+
 # Make sure we don't inherit these from env.
 SOURCE_DONE=
 HOSTNAME_DONE=
@@ -124,6 +179,7 @@ DIE() {
         echo 4 >/proc/sys/kernel/printk
     fi
     umount_filesystems
+    cleanup
     exit $rval
 }
 
@@ -1482,7 +1538,7 @@ ${BOLD}Doriți să continuați?${RESET}" 20 80 || return
         chroot $TARGETDIR dracut --no-hostonly --add-drivers "ahci" --force >>$LOG 2>&1
         INFOBOX "Eliminarea pachetelor temporare din țintă ..." 4 80
         echo "Eliminarea pachetelor temporare din țintă ..." >>$LOG
-        TO_REMOVE="dialog xmirror"
+        TO_REMOVE="xmirror dialog"
         # only remove espeakup and brltty if it wasn't enabled in the live environment
         if ! [ -e "/var/service/espeakup" ]; then
             TO_REMOVE+=" espeakup"
