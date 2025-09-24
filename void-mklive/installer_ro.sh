@@ -1543,9 +1543,10 @@ ${BOLD}Doriți să continuați?${RESET}" 20 80 || return
         if ! [ -e "/var/service/espeakup" ]; then
             TO_REMOVE+=" espeakup"
         fi
-        if ! [ -e "/var/service/brltty" ]; then
-            TO_REMOVE+=" python3-brlapi brltty"
-        fi
+        # For Gnome have dependencie Orca and this have dependencie brltty
+        #if ! [ -e "/var/service/brltty" ]; then
+        #    TO_REMOVE+=" python3-brlapi brltty"
+        #fi
         if [ "$(get_option BOOTLOADER)" = none ]; then
             TO_REMOVE+=" grub-x86_64-efi grub-i386-efi grub"
         fi
