@@ -508,6 +508,7 @@ menu_filesystems() {
             --menu "$MENULABEL" ${MENUSIZE} \
             "btrfs" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
             "btrfs_lvm" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
+            "btrfs_lvm_crypt" "Subvol. @,@home,@var_log,@var_lib,@snapshots" \
             "ext2" "Linux ext2 (fără jurnalizare)" \
             "ext3" "Linux ext3 (cu jurnalizare)" \
             "ext4" "Linux ext4 (cu jurnalizare)" \
@@ -891,6 +892,9 @@ set_bootloader() {
         grub_args="--target=$EFI_TARGET --efi-directory=/boot/efi --bootloader-id=brgvos_grub --recheck"
     fi
     echo "Se instalează grub $grub_args $dev..." >>$LOG
+    # Check if root file system was crypted and add option in grub config
+    $(cryptsetup isLuks "$ROOTFS") && chroot $TARGETDIR sed -i -e '$aGRUB_ENABLE_CRYPTODISK=y' /etc/default/grub >>$LOG 2>&1
+    # Install grub
     chroot $TARGETDIR grub-install $grub_args $dev >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
@@ -900,7 +904,7 @@ instalarea GRUB a eșuat $dev!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
     echo "Pregătesc Logo-ul și denumirea în meniul grub $TARGETDIR..." >>$LOG
     chroot $TARGETDIR sed -i 's+#GRUB_BACKGROUND=/usr/share/void-artwork/splash.png+GRUB_BACKGROUND=/usr/share/brgvos-artwork/splash.png+g' /etc/default/grub >>$LOG 2>&1
     chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >>$LOG 2>&1
-    chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 quiet splash"/g' /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 rd.auto=1 quiet splash"/g' /etc/default/grub >>$LOG 2>&1
     chroot $TARGETDIR sed -i -e '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >>$LOG 2>&1
     echo "Rularea grub-mkconfig pe $TARGETDIR..." >>$LOG
     chroot $TARGETDIR grub-mkconfig -o /boot/grub/grub.cfg >>$LOG 2>&1
@@ -1172,6 +1176,7 @@ nu s-a putut activa swap în $dev!\nverificați $LOG pentru erori." ${MSGBOXSIZE
             case "$fstype" in
             btrfs) MKFS="mkfs.btrfs -f"; modprobe btrfs >>$LOG 2>&1;;
             btrfs_lvm) MKFS="mkfs.btrfs -f"; modprobe btrfs >>$LOG 2>&1;;
+            btrfs_lvm_crypt) MKFS="mkfs.btrfs -f"; modprobe btrfs >>$LOG 2>&1;;
             ext2) MKFS="mke2fs -F"; modprobe ext2 >>$LOG 2>&1;;
             ext3) MKFS="mke2fs -F -j"; modprobe ext3 >>$LOG 2>&1;;
             ext4) MKFS="mke2fs -F -t ext4"; modprobe ext4 >>$LOG 2>&1;;
@@ -1220,13 +1225,53 @@ a eșuat crearea sistemului de fișiere $fstype în $dev!\nVerificați $LOG pent
                 fi
                 
             fi
+            # Prepare LVM with Crypt
+            if [ "$fstype" = "btrfs_lvm_crypt" ]; then
+                PASSPHRASE=$(get_option USERPASSWORD)
+                echo -n "$PASSPHRASE" | cryptsetup luksFormat --type=luks1 $dev >>$LOG 2>&1
+                echo -n "$PASSPHRASE" | cryptsetup luksOpen $dev crypt -d - >>$LOG 2>&1
+                pvcreate /dev/mapper/crypt >>$LOG 2>&1
+                vgcreate vg0 /dev/mapper/crypt >>$LOG 2>&1
+                lvcreate --yes --name swap -L $sawp_need vg0 >>$LOG 2>&1
+                lvcreate --yes --name brgvos -l +100%FREE vg0 >>$LOG 2>&1
+                TITLE="Verificați $LOG pentru detalii..."
+                INFOBOX "Crearea sistemului de fișiere btrfs în /dev/mapper/vg0-brgvos..." 8 80
+                echo "Rulez $MKFS -L brgvos /dev/mapper/vg0-brgvos..." >>$LOG
+                $MKFS -L brgvos /dev/mapper/vg0-brgvos >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
+a eșuat crearea sistemului de fișiere btrfs în /dev/mapper/vg0-brgvos!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                TITLE="Verificați $LOG pentru detalii..."
+                INFOBOX "Crearea sistemului de fișiere swap în /dev/mapper/vg0-swap..." 8 80
+                echo "Rulez $MKFS -L brgvos /dev/mapper/vg0-swap..." >>$LOG
+                mkswap /dev/mapper/vg0-swap >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
+a eșuat crearea sistemului de fișiere swap în /dev/mapper/vg0-swap!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                else
+                    TITLE="Verificați $LOG pentru detalii..."
+                    INFOBOX "Crearea sistemuli de fișiere $fstype în $dev pentru $mntpt ..." 8 80
+                    echo "Rulez $MKFS $dev..." >>$LOG
+                    $MKFS $dev >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
+a eșuat crearea sistemului de fișiere $fstype în $dev!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                
+            fi
         fi
         # Mount rootfs the first one.
         [ "$mntpt" != "/" ] && continue
         mkdir -p $TARGETDIR
-        if [ "$fstype" = "btrfs_lvm" ]; then
+        if [ "$fstype" = "btrfs_lvm" ] || [ "$fstype" = "btrfs_lvm_crypt" ]; then
             echo "Montez /dev/mapper/vg0-brgvos în $mntpt (btrfs)..." >>$LOG
             mount /dev/mapper/vg0-brgvos $TARGETDIR >>$LOG 2>&1
+            export ROOTFS=$dev
             else
                 echo "Montez $dev în $mntpt ($fstype)..." >>$LOG
                 mount -t $fstype $dev $TARGETDIR >>$LOG 2>&1
@@ -1263,7 +1308,7 @@ a eșuat montarea $dev în ${mntpt}! Verificați $LOG pentru erori." ${MSGBOXSIZ
         mount -t $fstype -o $options,subvol=@snapshots $dev $TARGETDIR/.snapshots >>$LOG 2>&1
         mount -t $fstype -o $options,subvol=@var_log $dev $TARGETDIR/var/log >>$LOG 2>&1
         mount -t $fstype -o $options,subvol=@var_lib $dev $TARGETDIR/var/lib >>$LOG 2>&1
-        elif [ "$fstype" = "btrfs_lvm" ]; then
+        elif [ "$fstype" = "btrfs_lvm" ] || [ "$fstype" = "btrfs_lvm_crypt" ]; then
         btrfs subvolume create $TARGETDIR/@ >>$LOG 2>&1
         btrfs subvolume create $TARGETDIR/@home >>$LOG 2>&1
         btrfs subvolume create $TARGETDIR/@var_log >>$LOG 2>&1
@@ -1279,7 +1324,7 @@ a eșuat montarea $dev în ${mntpt}! Verificați $LOG pentru erori." ${MSGBOXSIZ
         fi
         # Add entry to target fstab
         uuid=$(blkid -o value -s UUID "$dev")
-        if [ "$fstype" = "f2fs" -o "$fstype" = "btrfs" -o "$fstype" = "btrfs_lvm" -o "$fstype" = "xfs" ]; then
+        if [ "$fstype" = "f2fs" -o "$fstype" = "btrfs" -o "$fstype" = "btrfs_lvm" -o "$fstype" = "btrfs_lvm_crypt" -o "$fstype" = "xfs" ]; then
             fspassno=0
         else
             fspassno=1
@@ -1290,7 +1335,7 @@ a eșuat montarea $dev în ${mntpt}! Verificați $LOG pentru erori." ${MSGBOXSIZ
             echo "UUID=$uuid /.snapshots $fstype $options,subvol=@snapshots 0 $fspassno" >>$TARGET_FSTAB
             echo "UUID=$uuid /var/log $fstype $options,subvol=@var_log 0 $fspassno" >>$TARGET_FSTAB
             echo "UUID=$uuid /var/lib $fstype $options,subvol=@var_lib 0 $fspassno" >>$TARGET_FSTAB
-        elif [ "$fstype" = "btrfs_lvm" ]; then
+        elif [ "$fstype" = "btrfs_lvm" ] || [ "$fstype" = "btrfs_lvm_crypt" ]; then
             ROOT_UUID=$(blkid -s UUID -o value /dev/mapper/vg0-brgvos)
             SWAP_UUID=$(blkid -s UUID -o value /dev/mapper/vg0-swap)
             
@@ -1706,7 +1751,7 @@ menu() {
     else
         AFTER_HOSTNAME="Locale"
         DIALOG --default-item $DEFITEM \
-            --extra-button --extra-label "Salvate" \
+            --extra-button --extra-label "Setări" \
             --title " BRGV-OS Linux meniu de instalare " \
             --menu "$MENULABEL" 10 80 0 \
             "Keyboard" "Setează tastatura sistemului" \
