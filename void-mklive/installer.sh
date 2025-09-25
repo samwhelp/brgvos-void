@@ -508,7 +508,7 @@ menu_filesystems() {
             --menu "$MENULABEL" ${MENUSIZE} \
             "btrfs" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
             "btrfs_lvm" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
-            "btrfs_lvm_crypt" "Subvol. @,@home,@var_log,@var_lib,@snapshots" \
+            "btrfs_lvm_crypt" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
             "ext2" "Linux ext2 (fără jurnalizare)" \
             "ext3" "Linux ext3 (cu jurnalizare)" \
             "ext4" "Linux ext4 (cu jurnalizare)" \
