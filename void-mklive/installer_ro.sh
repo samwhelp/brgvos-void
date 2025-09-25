@@ -149,7 +149,7 @@ RESET="\Zn"
 MENULABEL="${BOLD}Folosiți tastele SUS și JOS pentru a naviga în meniu. \
 Folosiți TAB pentru a comuta între butoane și ENTER pentru a selecta.${RESET}"
 MENUSIZE="14 70 0"
-INPUTSIZE="8 60"
+INPUTSIZE="8 70"
 MSGBOXSIZE="8 80"
 YESNOSIZE="$INPUTSIZE"
 WIDGET_SIZE="10 70"
