@@ -73,12 +73,12 @@ use_shadow = off
 use_colors = on
 EOF
 }
-if [[ ! -e "$dialogRcFile" ]]; then
-    sh_create_dialogrc
-fi
 cleanup() {
   rm -f "$dialogRcFile"
 }
+if [[ ! -e "$dialogRcFile" ]]; then
+    sh_create_dialogrc
+fi
 
 # Make sure we don't inherit these from env.
 SOURCE_DONE=
@@ -508,9 +508,10 @@ menu_filesystems() {
             --menu "$MENULABEL" ${MENUSIZE} \
             "btrfs" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
             "btrfs_lvm" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
-            "ext2" "Linux ext2 (no journaling)" \
-            "ext3" "Linux ext3 (journal)" \
-            "ext4" "Linux ext4 (journal)" \
+            "btrfs_lvm_crypt" "Subvol. @,@home,@var_log,@var_lib,@snapshots" \
+            "ext2" "Linux ext2 (fără jurnalizare)" \
+            "ext3" "Linux ext3 (cu jurnalizare)" \
+            "ext4" "Linux ext4 (cu jurnalizare)" \
             "f2fs" "Flash-Friendly Filesystem" \
             "swap" "Linux swap" \
             "vfat" "FAT32" \
@@ -886,6 +887,9 @@ set_bootloader() {
         grub_args="--target=$EFI_TARGET --efi-directory=/boot/efi --bootloader-id=brgvos_grub --recheck"
     fi
     echo "Running grub-install $grub_args $dev..." >>$LOG
+    # Check if root file system was crypted and add option in grub config
+    $(cryptsetup isLuks "$ROOTFS") && chroot $TARGETDIR sed -i -e '$aGRUB_ENABLE_CRYPTODISK=y' /etc/default/grub >>$LOG 2>&1
+    # Install grub
     chroot $TARGETDIR grub-install $grub_args $dev >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
@@ -895,7 +899,7 @@ failed to install GRUB to $dev!\nCheck $LOG for errors." ${MSGBOXSIZE}
     echo "Preparing the Logo and name in the grub menu $TARGETDIR..." >>$LOG
     chroot $TARGETDIR sed -i 's+#GRUB_BACKGROUND=/usr/share/void-artwork/splash.png+GRUB_BACKGROUND=/usr/share/brgvos-artwork/splash.png+g' /etc/default/grub >>$LOG 2>&1
     chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >>$LOG 2>&1
-    chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 quiet splash"/g' /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 rd.auto=1 quiet splash"/g' /etc/default/grub >>$LOG 2>&1
     chroot $TARGETDIR sed -i -e '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >>$LOG 2>&1
     echo "Running grub-mkconfig on $TARGETDIR..." >>$LOG
     chroot $TARGETDIR grub-mkconfig -o /boot/grub/grub.cfg >>$LOG 2>&1
@@ -1167,6 +1171,7 @@ failed to activate swap on $dev!\ncheck $LOG for errors." ${MSGBOXSIZE}
             case "$fstype" in
             btrfs) MKFS="mkfs.btrfs -f"; modprobe btrfs >>$LOG 2>&1;;
             btrfs_lvm) MKFS="mkfs.btrfs -f"; modprobe btrfs >>$LOG 2>&1;;
+            btrfs_lvm_crypt) MKFS="mkfs.btrfs -f"; modprobe btrfs >>$LOG 2>&1;;
             ext2) MKFS="mke2fs -F"; modprobe ext2 >>$LOG 2>&1;;
             ext3) MKFS="mke2fs -F -j"; modprobe ext3 >>$LOG 2>&1;;
             ext4) MKFS="mke2fs -F -t ext4"; modprobe ext4 >>$LOG 2>&1;;
@@ -1215,13 +1220,53 @@ failed to create filesystem $fstype on $dev!\ncheck $LOG for errors." ${MSGBOXSI
                 fi
                 
             fi
+            # Prepare LVM with Crypt
+            if [ "$fstype" = "btrfs_lvm_crypt" ]; then
+                PASSPHRASE=$(get_option USERPASSWORD)
+                echo -n "$PASSPHRASE" | cryptsetup luksFormat --type=luks1 $dev >>$LOG 2>&1
+                echo -n "$PASSPHRASE" | cryptsetup luksOpen $dev crypt -d - >>$LOG 2>&1
+                pvcreate /dev/mapper/crypt >>$LOG 2>&1
+                vgcreate vg0 /dev/mapper/crypt >>$LOG 2>&1
+                lvcreate --yes --name swap -L $sawp_need vg0 >>$LOG 2>&1
+                lvcreate --yes --name brgvos -l +100%FREE vg0 >>$LOG 2>&1
+                TITLE="Check $LOG for details .."
+                INFOBOX "Creating filesystem btrfs în /dev/mapper/vg0-brgvos..." 8 80
+                echo "Running $MKFS -L brgvos /dev/mapper/vg0-brgvos..." >>$LOG
+                $MKFS -L brgvos /dev/mapper/vg0-brgvos >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
+failed to create filesystem btrfs on /dev/mapper/vg0-brgvos!\nCheck $LOG for errors." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                TITLE="Check $LOG for details ..."
+                INFOBOX "Creating filesystem swap în /dev/mapper/vg0-swap..." 8 80
+                echo "Running $MKFS -L brgvos /dev/mapper/vg0-swap..." >>$LOG
+                mkswap /dev/mapper/vg0-swap >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
+failed to create filesystem swap on /dev/mapper/vg0-swap!\nCheck $LOG for errors." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                else
+                    TITLE="Check $LOG for details ..."
+                    INFOBOX "Creating filesystem $fstype on $dev for $mntpt ..." 8 80
+                    echo "Running $MKFS $dev..." >>$LOG
+                    $MKFS $dev >>$LOG 2>&1; rv=$?
+                if [ $rv -ne 0 ]; then
+                    DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
+failed to create filesystem $fstype on $dev!\nCheck $LOG for errors." ${MSGBOXSIZE}
+                    DIE 1
+                fi
+                
+            fi
         fi
         # Mount rootfs the first one.
         [ "$mntpt" != "/" ] && continue
         mkdir -p $TARGETDIR
-        if [ "$fstype" = "btrfs_lvm" ]; then
-            echo "Mounting /dev/mapper/vg0-brgvos on $mntpt (btrfs)..." >>$LOG
+        if [ "$fstype" = "btrfs_lvm" ] || [ "$fstype" = "btrfs_lvm_crypt" ]; then
+            echo "Monting /dev/mapper/vg0-brgvos on $mntpt (btrfs)..." >>$LOG
             mount /dev/mapper/vg0-brgvos $TARGETDIR >>$LOG 2>&1
+            export ROOTFS=$dev
             else
                 echo "Mounting $dev on $mntpt ($fstype)..." >>$LOG
                 mount -t $fstype $dev $TARGETDIR >>$LOG 2>&1
@@ -1258,7 +1303,7 @@ failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
         mount -t $fstype -o $options,subvol=@snapshots $dev $TARGETDIR/.snapshots >>$LOG 2>&1
         mount -t $fstype -o $options,subvol=@var_log $dev $TARGETDIR/var/log >>$LOG 2>&1
         mount -t $fstype -o $options,subvol=@var_lib $dev $TARGETDIR/var/lib >>$LOG 2>&1
-        elif [ "$fstype" = "btrfs_lvm" ]; then
+        elif [ "$fstype" = "btrfs_lvm" ] || [ "$fstype" = "btrfs_lvm_crypt" ]; then
         btrfs subvolume create $TARGETDIR/@ >>$LOG 2>&1
         btrfs subvolume create $TARGETDIR/@home >>$LOG 2>&1
         btrfs subvolume create $TARGETDIR/@var_log >>$LOG 2>&1
@@ -1274,7 +1319,7 @@ failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
         fi
         # Add entry to target fstab
         uuid=$(blkid -o value -s UUID "$dev")
-        if [ "$fstype" = "f2fs" -o "$fstype" = "btrfs" -o "$fstype" = "btrfs_lvm" -o "$fstype" = "xfs" ]; then
+        if [ "$fstype" = "f2fs" -o "$fstype" = "btrfs" -o "$fstype" = "btrfs_lvm" -o "$fstype" = "btrfs_lvm_crypt" -o "$fstype" = "xfs" ]; then
             fspassno=0
         else
             fspassno=1
@@ -1285,7 +1330,7 @@ failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
             echo "UUID=$uuid /.snapshots $fstype $options,subvol=@snapshots 0 $fspassno" >>$TARGET_FSTAB
             echo "UUID=$uuid /var/log $fstype $options,subvol=@var_log 0 $fspassno" >>$TARGET_FSTAB
             echo "UUID=$uuid /var/lib $fstype $options,subvol=@var_lib 0 $fspassno" >>$TARGET_FSTAB
-        elif [ "$fstype" = "btrfs_lvm" ]; then
+        elif [ "$fstype" = "btrfs_lvm" ] || [ "$fstype" = "btrfs_lvm_crypt" ]; then
             ROOT_UUID=$(blkid -s UUID -o value /dev/mapper/vg0-brgvos)
             SWAP_UUID=$(blkid -s UUID -o value /dev/mapper/vg0-swap)
             
