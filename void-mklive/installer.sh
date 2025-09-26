@@ -888,7 +888,24 @@ set_bootloader() {
     fi
     echo "Running grub-install $grub_args $dev..." >>$LOG
     # Check if root file system was crypted and add option in grub config
-    $(cryptsetup isLuks "$ROOTFS") && chroot $TARGETDIR sed -i -e '$aGRUB_ENABLE_CRYPTODISK=y' /etc/default/grub >>$LOG 2>&1
+    $(cryptsetup isLuks "$ROOTFS") && bool=1 || bool=0
+    echo "Check if root file system was crypted and add option in grub config" >>$LOG
+    if [ "$bool" -eq 1 ]; then
+        echo "Detected crypted device on $ROOTFS"  >>$LOG
+        CRYPT_UUID=$(blkid -s UUID -o value "$ROOTFS")
+        chroot $TARGETDIR dd bs=512 count=4 if=/dev/urandom of=/boot/cryptlvm.key >>$LOG 2>&1
+        echo -n "$PASSPHRASE" | cryptsetup luksAddKey $ROOTFS $TARGETDIR/boot/cryptlvm.key >>$LOG 2>&1
+        chroot $TARGETDIR chmod 0600 /boot/cryptlvm.key >>$LOG 2>&1
+        awk 'BEGIN{print "crypt UUID='"$CRYPT_UUID"' /boot/cryptlvm.key luks"}' >> $TARGETDIR/etc/crypttab
+        chroot $TARGETDIR touch /etc/dracut.conf.d/10-crypt.conf >>$LOG 2>&1
+        awk 'BEGIN{print "install_items+=\" /boot/cryptlvm.key /etc/crypttab \""}' >> $TARGETDIR/etc/dracut.conf.d/10-crypt.conf
+        echo "Generate again initramfs because was created a key for open crypted device $ROOTFS" >>$LOG
+        chroot $TARGETDIR dracut --no-hostonly --force >>$LOG 2>&1
+        echo "Enable cryptodisk option in grub config" >>$LOG 
+        chroot $TARGETDIR sed -i '$aGRUB_ENABLE_CRYPTODISK=y' /etc/default/grub >>$LOG 2>&1
+        else
+        echo "Device $ROOTFS is not crypted"  >>$LOG
+    fi
     # Install grub
     chroot $TARGETDIR grub-install $grub_args $dev >>$LOG 2>&1
     if [ $? -ne 0 ]; then
@@ -899,8 +916,14 @@ failed to install GRUB to $dev!\nCheck $LOG for errors." ${MSGBOXSIZE}
     echo "Preparing the Logo and name in the grub menu $TARGETDIR..." >>$LOG
     chroot $TARGETDIR sed -i 's+#GRUB_BACKGROUND=/usr/share/void-artwork/splash.png+GRUB_BACKGROUND=/usr/share/brgvos-artwork/splash.png+g' /etc/default/grub >>$LOG 2>&1
     chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >>$LOG 2>&1
-    chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 rd.auto=1 quiet splash"/g' /etc/default/grub >>$LOG 2>&1
-    chroot $TARGETDIR sed -i -e '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >>$LOG 2>&1
+    if [ "$bool" -eq 1 ]; then
+        echo "Prepare parameters on Grub for crypted device $ROOTFS"  >>$LOG
+        chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 rd.auto=1 cryptkey=rootfs:\/boot\/cryptlvm.key quiet splash"/g' /etc/default/grub >>$LOG 2>&1
+        else
+        echo "Prepare parameters on Grub for device $ROOTFS"  >>$LOG
+        chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 quiet splash"/g' /etc/default/grub >>$LOG 2>&1
+    fi
+    chroot $TARGETDIR sed -i '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >>$LOG 2>&1
     echo "Running grub-mkconfig on $TARGETDIR..." >>$LOG
     chroot $TARGETDIR grub-mkconfig -o /boot/grub/grub.cfg >>$LOG 2>&1
     if [ $? -ne 0 ]; then
@@ -1208,20 +1231,8 @@ failed to create filesystem $fstype on $dev!\ncheck $LOG for errors." ${MSGBOXSI
 failed to create filesystem swap on /dev/mapper/vg0-swap!\ncheck $LOG for errors." ${MSGBOXSIZE}
                     DIE 1
                 fi
-                else
-                    TITLE="Check $LOG for details ..."
-                    INFOBOX "Creating filesystem $fstype on $dev for $mntpt ..." 8 80
-                    echo "Running $MKFS $dev..." >>$LOG
-                    $MKFS $dev >>$LOG 2>&1; rv=$?
-                if [ $rv -ne 0 ]; then
-                    DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
-failed to create filesystem $fstype on $dev!\ncheck $LOG for errors." ${MSGBOXSIZE}
-                    DIE 1
-                fi
-                
-            fi
-            # Prepare LVM with Crypt
-            if [ "$fstype" = "btrfs_lvm_crypt" ]; then
+                # Prepare LVM with Crypt
+                elif [ "$fstype" = "btrfs_lvm_crypt" ]; then
                 PASSPHRASE=$(get_option USERPASSWORD)
                 echo -n "$PASSPHRASE" | cryptsetup luksFormat --type=luks1 $dev >>$LOG 2>&1
                 echo -n "$PASSPHRASE" | cryptsetup luksOpen $dev crypt -d - >>$LOG 2>&1
@@ -1256,8 +1267,7 @@ failed to create filesystem swap on /dev/mapper/vg0-swap!\nCheck $LOG for errors
                     DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
 failed to create filesystem $fstype on $dev!\nCheck $LOG for errors." ${MSGBOXSIZE}
                     DIE 1
-                fi
-                
+                fi  
             fi
         fi
         # Mount rootfs the first one.
@@ -1823,3 +1833,4 @@ done
 
 exit 0
 # vim: set ts=4 sw=4 et:
+
