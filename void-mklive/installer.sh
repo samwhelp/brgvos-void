@@ -149,7 +149,7 @@ RESET="\Zn"
 MENULABEL="${BOLD}Use UP and DOWN keys to navigate \
 menus. Use TAB to switch between buttons and ENTER to select.${RESET}"
 MENUSIZE="14 70 0"
-INPUTSIZE="8 60"
+INPUTSIZE="8 70"
 MSGBOXSIZE="8 80"
 YESNOSIZE="$INPUTSIZE"
 WIDGET_SIZE="10 70"
@@ -569,19 +569,31 @@ menu_partitions() {
             local software=$(cat $ANSWER)
 
             DIALOG --title "Modify Partition Table on $device" --msgbox "\n
-${BOLD}${software} will be executed in disk $device.${RESET}\n\n
+${BOLD}${MAGENTA}${software}${RESET} ${BOLD}will be executed in disk $device.${RESET}\n\n
 For BIOS systems, MBR or GPT partition tables are supported. To use GPT\n
 on PC BIOS systems, an empty partition of 1MB must be added at the first\n
-2GB of the disk with the partition type \`BIOS Boot'.\n
-${BOLD}NOTE: you don't need this on EFI systems.${RESET}\n\n
+2GB of the disk with the partition type ${BOLD}${BLUE}'BIOS Boot'${RESET}.\n
+${BOLD}${GREEN}NOTE: you don't need this on EFI systems.${RESET}\n\n
 For EFI systems, GPT is mandatory and a FAT32 partition with at least 100MB\n
-must be created with the partition type \`EFI System'. This will be used as\n
-the EFI System Partition. This partition must have the mountpoint \`/boot/efi'.\n\n
+must be created with the partition type ${BOLD}${BLUE}'EFI System'${RESET}. This will be used as\n
+the EFI System Partition. This partition must have the mountpoint '/boot/efi'.\n\n
 At least 1 partition is required for the rootfs (/). For this partition,\n
 at least 12GB is required, but more is recommended. The rootfs partition\n
-should have the partition type \`Linux Filesystem'. For swap, RAM*2\n
-should be enough and the partition type \`Linux swap' should be used.\n\n
-${BOLD}WARNING: /usr is not supported as a separate partition.${RESET}\n
+should have the partition type ${BOLD}${BLUE}'Linux Filesystem'${RESET}. For swap, RAM*2\n
+should be enough and the partition type ${BOLD}${BLUE}'Linux swap'${RESET} should be used.\n\n
+${BOLD}${RED}WARNING: /usr is not supported as a separate partition.${RESET}\n\n
+For ${BOLD}${CYAN}'btrfs'${RESET} option, installer script detect if the used disk is a HDD or 
+SSD (to prepare mount options) and automatically creates the following subvolumes:\n\n
+* @, which will be mounted at /;\n
+* @home, which will be mounted at /home;\n
+* @var_log, which will be mounted at /var/log;\n
+* @var_lib, which will be mounted at /var/lib;\n
+* @snapshots, which will be mounted at /.snapshots.\n\n
+For ${BOLD}${CYAN}'btrfs_lvm'${RESET} subvolume is created on LVM and for ${BOLD}${CYAN}'btrfs_lvm_crypt'${RESET} 
+subvolume is also created on LVM but this time device was before crypted.\n\n
+${BOLD}${GREEN}INFO: Passphrase used for crypt is the user password.${RESET}\n\n
+${BOLD}${RED}WARNING: Also for ${BOLD}${CYAN}'btrfs_lvm'${RESET} ${BOLD}${RED}and ${BOLD}${CYAN}'btrfs_lvm_crypt'${RESET}
+${BOLD}${RED}installer created automatically ${BOLD}${BLUE}'Linux swap' ${BOLD}${RED}partition with rule 2*RAM.${RESET}\n\n   
 ${RESET}\n" 23 80
             if [ $? -eq 0 ]; then
                 while true; do
@@ -1558,8 +1570,8 @@ ${BOLD}Do you want to continue?${RESET}" 10 60 || return
 
     DIALOG --yesno "${BOLD}The following operations will be executed:${RESET}\n\n
 ${BOLD}${TARGETFS}${RESET}\n
-${BOLD}${RED}WARNING: data on partitions will be COMPLETELY DESTROYED for new \
-filesystems.${RESET}\n\n
+${BOLD}${RED}WARNING: data on partitions will be COMPLETELY DESTROYED for NEW \
+FILESYSTEMS.${RESET}\n\n
 ${BOLD}Do you want to continue?${RESET}" 20 80 || return
     unset TARGETFS
 
