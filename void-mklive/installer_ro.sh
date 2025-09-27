@@ -569,20 +569,30 @@ menu_partitions() {
             local software=$(cat $ANSWER)
 
             DIALOG --title "Modificarea Tabelă de Partiție pentru $device" --msgbox "\n
-${BOLD}${software} va fi executat pe discul $device.${RESET}\n\n
+${BOLD}${MAGENTA}${software}${RESET} ${BOLD}va fi executat pe discul $device.${RESET}\n\n
 Pentru sistemele BIOS, sunt acceptate tabelele de partiții MBR sau GPT.\n
-Pentru a utiliza GPT pe sistemele BIOS ale PC-ului, trebuie adăugată o\n
-partiție goală de 1 MB la primii 2 GB ai discului cu tipul de partiție \`BIOS Boot'.\n
-${BOLD}NOTĂ: nu aveți nevoie de acest lucru pe sistemele EFI.${RESET}\n\n
-Pentru sistemele EFI, GPT este obligatoriu și trebuie creată o partiție\n
-FAT32 cu cel puțin 100MB cu tipul de partiție \`EFI System'. Aceasta va fi 
-utilizată ca partiție de sistem EFI. Această partiție trebuie să aibă\n punctul de montare \`/boot/efi'.\n\n
-Este necesară cel puțin o partiție pentru rootfs (/). Pentru această partiție,  
-sunt necesari cel puțin 12GB, dar se recomandă mai mult.\n
-Partiția rootfs ar trebui să aibă tipul de partiție \`Linux Filesystem'.\n
-Pentru swap, RAM*2 ar trebui să fie suficient și ar trebui utilizat tipul \n
-de partiție \`Linux swap'.\n\n
-${BOLD}AVERTISMENT: /usr nu este suportat ca partiție separată.${RESET}\n
+Pentru a utiliza GPT pe sistemele BIOS ale PC-ului, trebuie adăugată o 
+partiție goală de 1 MB la primii 2 GB ai discului de tipul ${BOLD}${BLUE}'BIOS Boot'${RESET}.\n\n
+${BOLD}${GREEN}NOTĂ: nu aveți nevoie de acest lucru pe sistemele EFI.${RESET}\n\n
+Pentru sistemele EFI, GPT este obligatoriu și trebuie creată o partiție 
+FAT32 cu cel puțin 100MB cu tipul de partiție ${BOLD}${BLUE}'EFI System'${RESET}. Aceasta va fi 
+utilizată ca partiție de sistem EFI. Această partiție trebuie să aibă punctul de montare '/boot/efi'.\n\n
+Este necesară cel puțin o partiție pentru rootfs (/). Pentru această partiție, sunt necesari cel puțin 12GB, dar se recomandă mai mult.\n
+Partiția rootfs ar trebui să aibă tipul de partiție ${BOLD}${BLUE}'Linux Filesystem'${RESET}.\n
+Pentru swap, 2*RAM ar trebui să fie suficient utilizând tipul de parti-\nție ${BOLD}${BLUE}'Linux swap'${RESET}.\n\n
+${BOLD}${RED}AVERTISMENT: /usr nu este suportat ca partiție separată.${RESET}\n\n
+Pentru opțiunea ${BOLD}${CYAN}'btrfs'${RESET}, installer-ul detectează automat dacă se folosește un hardisc 
+de tip HDD sau SSD (pentru a pregăti parametrii de montare) și crează automat următoarele subvolume:\n\n
+* @, va fi montat în /;\n
+* @home, va fi montat în /home;\n
+* @var_log, va fi montat în /var/log;\n
+* @var_lib, va fi montat în /var/lib;\n
+* @snapshots, va fi montat în /.snapshots.\n\n
+Pentru opțiunea ${BOLD}${CYAN}'btrfs_lvm'${RESET} subvolumele sunt create în LVM, iar pentru opțiunea ${BOLD}${CYAN}'btrfs_lvm_crypt'${RESET} 
+device-ul este inițial criptat și apoi subvolumele sunt de asemenea create în LVM.\n\n
+${BOLD}${GREEN}INFO: Fraza cheie utilizată la criptare este parola utilizatorlui.${RESET}\n\n
+${BOLD}${RED}AVERTISMENT: Pentru opțiunile ${BOLD}${CYAN}'btrfs_lvm'${RESET} ${BOLD}${RED}și ${BOLD}${CYAN}'btrfs_lvm_crypt'${RESET}
+${BOLD}${RED}installer-ul va crea automat un volum ${BOLD}${BLUE}'Linux swap' ${BOLD}${RED}utilizând regula 2*RAM.${RESET}\n\n 
 ${RESET}\n" 23 80
             if [ $? -eq 0 ]; then
                 while true; do
@@ -1563,8 +1573,7 @@ ${BOLD}Doriți să continuați?${RESET}" 10 60 || return
 
     DIALOG --yesno "${BOLD}Următoarele operațiuni vor fi executate:${RESET}\n\n
 ${BOLD}${TARGETFS}${RESET}\n
-${BOLD}${RED}AVERTISMENT: datele de pe partiții vor fi COMPLET DISTRUSE pentru noile \
-sisteme de fișiere.${RESET}\n\n
+${BOLD}${RED}AVERTISMENT: datele de pe partițiile SISTEM DE FIȘIER NOU vor fi COMPLET DISTRUSE.${RESET}\n\n
 ${BOLD}Doriți să continuați?${RESET}" 20 80 || return
     unset TARGETFS
 
