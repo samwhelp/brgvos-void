@@ -1627,7 +1627,7 @@ ${BOLD}Doriți să continuați?${RESET}" 20 80 || return
         install_packages
     fi
 
-    INFOBOX "Aplicarea setărilor de instalare..." 4 60
+    INFOBOX "Aplicarea setărilor de instalare..." 4 80
 
     # copy target fstab.
     install -Dm644 $TARGET_FSTAB $TARGETDIR/etc/fstab
