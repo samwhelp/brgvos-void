@@ -1276,10 +1276,11 @@ failed to create filesystem $fstype on $dev!\nCheck $LOG for errors." ${MSGBOXSI
         if [ "$fstype" = "btrfs_lvm" ] || [ "$fstype" = "btrfs_lvm_crypt" ]; then
             echo "Monting /dev/mapper/vg0-brgvos on $mntpt (btrfs)..." >>$LOG
             mount /dev/mapper/vg0-brgvos $TARGETDIR >>$LOG 2>&1
-            export ROOTFS=$dev
+            ROOTFS=$dev
             else
                 echo "Mounting $dev on $mntpt ($fstype)..." >>$LOG
                 mount -t $fstype $dev $TARGETDIR >>$LOG 2>&1
+                ROOTFS=$dev
             if [ $? -ne 0 ]; then
                 DIALOG --msgbox "${BOLD}${RED}ERROR:${RESET} \
 failed to mount $dev on ${mntpt}! check $LOG for errors." ${MSGBOXSIZE}
