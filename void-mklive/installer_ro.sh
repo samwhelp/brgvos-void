@@ -508,7 +508,7 @@ menu_filesystems() {
             --menu "$MENULABEL" ${MENUSIZE} \
             "btrfs" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
             "btrfs_lvm" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
-            "btrfs_lvm_crypt" "Subvol. @,@home,@var_log,@var_lib,@snapshots" \
+            "btrfs_lvm_crypt" "Subvolume @,@home,@var_log,@var_lib,@snapshots" \
             "ext2" "Linux ext2 (fără jurnalizare)" \
             "ext3" "Linux ext3 (cu jurnalizare)" \
             "ext4" "Linux ext4 (cu jurnalizare)" \
@@ -893,7 +893,24 @@ set_bootloader() {
     fi
     echo "Se instalează grub $grub_args $dev..." >>$LOG
     # Check if root file system was crypted and add option in grub config
-    $(cryptsetup isLuks "$ROOTFS") && chroot $TARGETDIR sed -i -e '$aGRUB_ENABLE_CRYPTODISK=y' /etc/default/grub >>$LOG 2>&1
+    $(cryptsetup isLuks "$ROOTFS") && bool=1 || bool=0
+    echo "Se verifică dacă rootfs-ul a fost cryptat și se aduc opțiunile în configul lui grub" >>$LOG
+    if [ "$bool" -eq 1 ]; then
+        echo "S-a detectat dispozivul $ROOTFS ca fiind criptat"  >>$LOG
+        CRYPT_UUID=$(blkid -s UUID -o value "$ROOTFS")
+        chroot $TARGETDIR dd bs=512 count=4 if=/dev/urandom of=/boot/cryptlvm.key >>$LOG 2>&1
+        echo -n "$PASSPHRASE" | cryptsetup luksAddKey $ROOTFS $TARGETDIR/boot/cryptlvm.key >>$LOG 2>&1
+        chroot $TARGETDIR chmod 0600 /boot/cryptlvm.key >>$LOG 2>&1
+        awk 'BEGIN{print "crypt UUID='"$CRYPT_UUID"' /boot/cryptlvm.key luks"}' >> $TARGETDIR/etc/crypttab
+        chroot $TARGETDIR touch /etc/dracut.conf.d/10-crypt.conf >>$LOG 2>&1
+        awk 'BEGIN{print "install_items+=\" /boot/cryptlvm.key /etc/crypttab \""}' >> $TARGETDIR/etc/dracut.conf.d/10-crypt.conf
+        echo "Generate again initramfs because was created a key for open crypted device $ROOTFS" >>$LOG
+        chroot $TARGETDIR dracut --no-hostonly --force >>$LOG 2>&1
+        echo "Se activează opțiunea pentru disc criptat în configul lui Grub" >>$LOG 
+        chroot $TARGETDIR sed -i '$aGRUB_ENABLE_CRYPTODISK=y' /etc/default/grub >>$LOG 2>&1
+        else
+        echo "Dispozitivul $ROOTFS nu este criptat"  >>$LOG
+    fi
     # Install grub
     chroot $TARGETDIR grub-install $grub_args $dev >>$LOG 2>&1
     if [ $? -ne 0 ]; then
@@ -904,9 +921,15 @@ instalarea GRUB a eșuat $dev!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
     echo "Pregătesc Logo-ul și denumirea în meniul grub $TARGETDIR..." >>$LOG
     chroot $TARGETDIR sed -i 's+#GRUB_BACKGROUND=/usr/share/void-artwork/splash.png+GRUB_BACKGROUND=/usr/share/brgvos-artwork/splash.png+g' /etc/default/grub >>$LOG 2>&1
     chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >>$LOG 2>&1
-    chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 rd.auto=1 quiet splash"/g' /etc/default/grub >>$LOG 2>&1
-    chroot $TARGETDIR sed -i -e '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >>$LOG 2>&1
-    echo "Rularea grub-mkconfig pe $TARGETDIR..." >>$LOG
+    if [ "$bool" -eq 1 ]; then
+        echo "Se pregătesc parametrii în Grub pentru dispozitvul criptat $ROOTFS"  >>$LOG
+        chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 rd.auto=1 cryptkey=rootfs:\/boot\/cryptlvm.key quiet splash"/g' /etc/default/grub >>$LOG 2>&1
+        else
+        echo "Se pregătesc parametrii în Grub pentru dispozitvul $ROOTFS"  >>$LOG
+        chroot $TARGETDIR sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 quiet splash"/g' /etc/default/grub >>$LOG 2>&1
+    fi
+    chroot $TARGETDIR sed -i '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >>$LOG 2>&1
+    echo "Running grub-mkconfig on $TARGETDIR..." >>$LOG
     chroot $TARGETDIR grub-mkconfig -o /boot/grub/grub.cfg >>$LOG 2>&1
     if [ $? -ne 0 ]; then
         DIALOG --msgbox "${BOLD}${RED}EROARE${RESET}: \
@@ -1213,20 +1236,8 @@ a eșuat crearea sistemului de fișiere btrfs în /dev/mapper/vg0-brgvos!\nVerif
 a eșuat crearea sistemului de fișiere swap în /dev/mapper/vg0-swap!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
                     DIE 1
                 fi
-                else
-                    TITLE="Verificați $LOG pentru detalii..."
-                    INFOBOX "Crearea sistemuli de fișiere $fstype în $dev pentru $mntpt ..." 8 80
-                    echo "Rulez $MKFS $dev..." >>$LOG
-                    $MKFS $dev >>$LOG 2>&1; rv=$?
-                if [ $rv -ne 0 ]; then
-                    DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
-a eșuat crearea sistemului de fișiere $fstype în $dev!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
-                    DIE 1
-                fi
-                
-            fi
-            # Prepare LVM with Crypt
-            if [ "$fstype" = "btrfs_lvm_crypt" ]; then
+                # Prepare LVM with Crypt
+                elif [ "$fstype" = "btrfs_lvm_crypt" ]; then
                 PASSPHRASE=$(get_option USERPASSWORD)
                 echo -n "$PASSPHRASE" | cryptsetup luksFormat --type=luks1 $dev >>$LOG 2>&1
                 echo -n "$PASSPHRASE" | cryptsetup luksOpen $dev crypt -d - >>$LOG 2>&1
@@ -1261,8 +1272,7 @@ a eșuat crearea sistemului de fișiere swap în /dev/mapper/vg0-swap!\nVerifica
                     DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
 a eșuat crearea sistemului de fișiere $fstype în $dev!\nVerificați $LOG pentru erori." ${MSGBOXSIZE}
                     DIE 1
-                fi
-                
+                fi  
             fi
         fi
         # Mount rootfs the first one.
@@ -1271,10 +1281,11 @@ a eșuat crearea sistemului de fișiere $fstype în $dev!\nVerificați $LOG pent
         if [ "$fstype" = "btrfs_lvm" ] || [ "$fstype" = "btrfs_lvm_crypt" ]; then
             echo "Montez /dev/mapper/vg0-brgvos în $mntpt (btrfs)..." >>$LOG
             mount /dev/mapper/vg0-brgvos $TARGETDIR >>$LOG 2>&1
-            export ROOTFS=$dev
+            ROOTFS=$dev
             else
                 echo "Montez $dev în $mntpt ($fstype)..." >>$LOG
                 mount -t $fstype $dev $TARGETDIR >>$LOG 2>&1
+                ROOTFS=$dev
             if [ $? -ne 0 ]; then
                 DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET} \
 a eșuat montarea $dev în ${mntpt}! Verificați $LOG pentru erori." ${MSGBOXSIZE}
