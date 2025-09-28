@@ -63,7 +63,32 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > * @var_log, which will be mounted at /var/log;
 > * @var_lib, which will be mounted at /var/lib;
 > * @snapshots, which will be mounted at /.snapshots.
-> 
+>
+>
+> For `btrfs_lvm` option, installer script detect if used disk is a HDD or SSD (to prepare mount options) and automatically creates the following subvolumes:
+> * @, which will be mounted at /;
+> * @home, which will be mounted at /home;
+> * @var_log, which will be mounted at /var/log;
+> * @var_lib, which will be mounted at /var/lib;
+> * @snapshots, which will be mounted at /.snapshots.  
+>
+> into logical volume `vg0-brgvos`.  
+> Also installer create automatically another logical volume `vg0-swap` with rule `2*RAM` for capacity.  
+>
+>  
+> For `btrfs_lvm_crypt` option, installer script detect if used disk is a HDD or SSD (to prepare mount options) and automatically creates the following subvolumes:
+> * @, which will be mounted at /;
+> * @home, which will be mounted at /home;
+> * @var_log, which will be mounted at /var/log;
+> * @var_lib, which will be mounted at /var/lib;
+> * @snapshots, which will be mounted at /.snapshots.  
+>
+> into into logical volume `vg0-brgvos`.  But before to create volume group `vg0` physical device `crypt` is encrypted.  
+> Also installer create automatically another logical volume `v0-swap` with rule `2*RAM` for capacity.  
+>
+> ### $\textcolor{green}{For\ passphrase\ is\ used\ user\ password}$  
+>
+>
 > ### $\textcolor{orange}{For\ how\ to\ install,\ configure\ and\ use\ the\ \textbf {BRGV-OS}\ read\ on}$ [Wiki](https://github.com/florintanasa/brgvos-void/wiki) 
   
 ## $\textcolor{teal}{License}$
