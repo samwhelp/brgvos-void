@@ -914,7 +914,7 @@ set_bootloader() {
         awk 'BEGIN{print "crypt UUID='"$CRYPT_UUID"' /boot/cryptlvm.key luks"}' >> $TARGETDIR/etc/crypttab
         chroot $TARGETDIR touch /etc/dracut.conf.d/10-crypt.conf >>$LOG 2>&1
         awk 'BEGIN{print "install_items+=\" /boot/cryptlvm.key /etc/crypttab \""}' >> $TARGETDIR/etc/dracut.conf.d/10-crypt.conf
-        echo "Generate again initramfs because was created a key for open crypted device $ROOTFS" >>$LOG
+        echo "Se generează initramfs deoarece a fost creată o cheie pentru dispozitiv criptat $ROOTFS" >>$LOG
         chroot $TARGETDIR dracut --no-hostonly --force >>$LOG 2>&1
         echo "Se activează opțiunea pentru disc criptat în configul lui Grub" >>$LOG 
         chroot $TARGETDIR sed -i '$aGRUB_ENABLE_CRYPTODISK=y' /etc/default/grub >>$LOG 2>&1
