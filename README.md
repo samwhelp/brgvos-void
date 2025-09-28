@@ -63,7 +63,8 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > * @var_log, which will be mounted at /var/log;
 > * @var_lib, which will be mounted at /var/lib;
 > * @snapshots, which will be mounted at /.snapshots.
->
+>   
+>[<img src="https://img.youtube.com/vi/L0JpCGG6WsQ/maxresdefault.jpg" width="480" height="260"/>](https://www.youtube.com/embed/L0JpCGG6WsQ?autoplay=1&mute=1)
 >
 > For `btrfs_lvm` option, installer script detect if used disk is a HDD or SSD (to prepare mount options) and automatically creates the following subvolumes:
 > * @, which will be mounted at /;
@@ -75,6 +76,7 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > into logical volume `vg0-brgvos`.  
 > Also installer create automatically another logical volume `vg0-swap` with rule `2*RAM` for capacity.  
 >
+> [<img src="https://img.youtube.com/vi/Oc5nYe3L7QQ/maxresdefault.jpg" width="480" height="260"/>](https://www.youtube.com/embed/Oc5nYe3L7QQ?autoplay=1&mute=1)
 >  
 > For `btrfs_lvm_crypt` option, installer script detect if used disk is a HDD or SSD (to prepare mount options) and automatically creates the following subvolumes:
 > * @, which will be mounted at /;
@@ -86,6 +88,8 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > into into logical volume `vg0-brgvos`.  But before to create volume group `vg0` physical device `crypt` is encrypted.  
 > Also installer create automatically another logical volume `v0-swap` with rule `2*RAM` for capacity.  
 >
+> [<img src="https://img.youtube.com/vi/SdkBCgjaBBY/maxresdefault.jpg" width="480" height="260"/>](https://www.youtube.com/embed/SdkBCgjaBBY?autoplay=1&mute=1)
+> 
 > ### $\textcolor{green}{For\ passphrase\ is\ used\ user\ password}$  
 >
 >
