@@ -77,7 +77,7 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 >|:-------|:------:|
 > | * @, which will be mounted at /;<br>* @home, which will be mounted at /home;<br>* @var_log, which will be mounted at /var/log;<br>* @var_lib, which will be mounted at /var/lib;<br>* @snapshots, which will be mounted at /.snapshots.| [<img src="https://img.youtube.com/vi/SdkBCgjaBBY/maxresdefault.jpg" width="480" height="260"/>](https://www.youtube.com/embed/SdkBCgjaBBY?autoplay=1&mute=1)| 
 >
-> into into logical volume `vg0-brgvos`.  But before to create volume group `vg0` physical device `crypt` is encrypted.  
+> into logical volume `vg0-brgvos`.  But before to create volume group `vg0` physical device `crypt` is encrypted.  
 > Also installer create automatically another logical volume `v0-swap` with rule `2*RAM` for capacity.  
 >
 > 
