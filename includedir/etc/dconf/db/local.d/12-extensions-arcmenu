@@ -24,8 +24,8 @@ prefs-visible-page=0
 right-panel-width=200
 search-entry-border-radius=(true, 25)
 show-activities-button=false
-show-update-notification-v64=false
-update-notifier-project-version=66
+update-notifier-enabled=false
+update-notifier-project-version=69
 
 [org/gnome/shell/extensions/arcmenu/pinned-apps-folders/1a14933d-d178-4274-b974-71ba008d07a9]
 pinned-apps=[{'id': 'org.gnome.FileRoller.desktop'}, {'id': 'org.gnome.Calculator.desktop'}, {'id': 'org.gnome.Weather.desktop'}, {'id': 'org.gnome.Snapshot.desktop'}, {'id': 'org.gnome.clocks.desktop'}, {'id': 'org.gnome.Maps.desktop'}]
