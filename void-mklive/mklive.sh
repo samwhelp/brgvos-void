@@ -729,115 +729,119 @@ if [ "$VARIANT" = gnome ]; then
     
     # install extensions first version
     info_msg "Install extensions from includedir"
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/arcmenuarcmenu.com.v66.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/blur-my-shellaunetx.v69.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/ProxySwitcherflannaghan.com.v25.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/clipboard-indicatortudmotu.com.v68.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/VitalsCoreCoding.com.v73.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-gtk-themebrgvos.v8.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-icons-themebrgvos.v4.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-user-themebrgvos.v3.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/appindicatorsupportrgcjonas.gmail.com.v61.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/arcmenuarcmenu.com.v69.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/blur-my-shellaunetx.v70.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/caffeinepatapon.info.v58.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/clipboard-indicatortudmotu.com.v69.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/customize-ibushollowman.ml.v92.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dash-to-paneljderose9.github.com.v68.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/lockkeysvaina.lt.v63.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/mediacontrolscliffniff.github.com.v38.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/network-statsgnome.noroadsleft.xyz.v27.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/openweather-extensionpenguin-teal.github.io.v18.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/tiling-assistantleleat-on-github.v52.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/user-themegnome-shell-extensions.gcampax.github.com.v64.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dash-to-dockmicxgx.gmail.com.v102.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dash-to-paneljderose9.github.com.v72.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dingrastersoft.com.v80.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/appindicatorsupportrgcjonas.gmail.com.v60.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-icons-themebrgvos.v3.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-gtk-themebrgvos.v7.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/accent-user-themebrgvos.v2.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/light-dark-cursor-themebrgvos.v1.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/set-notification-positionbrgvos.v2.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/dash-to-dockmicxgx.gmail.com.v101.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/logomenuaryan_k.v37.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/space-barluchrioh.v33.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/caffeinepatapon.info.v57.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/light-dark-cursor-themebrgvos.v2.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/lockkeysvaina.lt.v63.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/logomenuaryan_k.v38.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/mediacontrolscliffniff.github.com.v41.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/set-notification-positionbrgvos.v3.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/openweather-extensionpenguin-teal.github.io.v18.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/simple-weatherromanlefler.com.v4.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/space-barluchrioh.v34.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/tiling-assistantleleat-on-github.v53.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/user-themegnome-shell-extensions.gcampax.github.com.v64.shell-extension.zip
 
-
-    # install extensions second version but is intercative - I leave as example
+    # install extensions this was second version but is intercative - I leave as example
     #chroot "$ROOTFS" unzip -q /tmp/extensions/blur-my-shellaunetx.v68.shell-extension.zip -d /usr/share/gnome-shell/extensions/
 
     # work also but crash mklive because can't unmount the dev and proc remain accesated by dbus
     #chroot "$ROOTFS" gext -F install blur-my-shell@aunetx
 
-    # move estension from user to system this for first version
+    # move estension from user to system
     info_msg "Move estension from 'root' user to system '/usr/share/gnome-shell/extensions/'"
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/ProxySwitcher@flannaghan.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/Vitals@CoreCoding.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-gtk-theme@brgvos /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-icons-theme@brgvos /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-user-theme@brgvos /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/appindicatorsupport@rgcjonas.gmail.com /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/arcmenu@arcmenu.com /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/blur-my-shell@aunetx /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/ProxySwitcher@flannaghan.com /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/customize-ibus@hollowman.ml /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/network-stats@gnome.noroadsleft.xyz /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/openweather-extension@penguin-teal.github.io /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/lockkeys@vaina.lt /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/tiling-assistant@leleat-on-github /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com  /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/appindicatorsupport@rgcjonas.gmail.com /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/ding@rastersoft.com /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-icons-theme@brgvos /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-gtk-theme@brgvos /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/accent-user-theme@brgvos /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/set-notification-position@brgvos /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/logomenu@aryan_k /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/space-bar@luchrioh /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/caffeine@patapon.info /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/customize-ibus@hollowman.ml /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/ding@rastersoft.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/lockkeys@vaina.lt /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/logomenu@aryan_k /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/set-notification-position@brgvos /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/openweather-extension@penguin-teal.github.io /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/simple-weather@romanlefler.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/space-bar@luchrioh /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/tiling-assistant@leleat-on-github /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com  /usr/share/gnome-shell/extensions/
     
     # create directory schemas for extensions 
     info_msg "Create directory schemas for extensions"
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/ProxySwitcher@flannaghan.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/Vitals@CoreCoding.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/accent-gtk-theme@brgvos/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/accent-icons-theme@brgvos/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/accent-user-theme@brgvos/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/appindicatorsupport@rgcjonas.gmail.com/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/arcmenu@arcmenu.com/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/blur-my-shell@aunetx/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/ProxySwitcher@flannaghan.com/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/customize-ibus@hollowman.ml/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/network-stats@gnome.noroadsleft.xyz/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/openweather-extension@penguin-teal.github.io/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/lockkeys@vaina.lt/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/tiling-assistant@leleat-on-github/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/appindicatorsupport@rgcjonas.gmail.com/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/ding@rastersoft.com/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/accent-icons-theme@brgvos/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/accent-gtk-theme@brgvos/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/accent-user-theme@brgvos/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/set-notification-position@brgvos/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/caffeine@patapon.info/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/customize-ibus@hollowman.ml/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/ding@rastersoft.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/lockkeys@vaina.lt/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/set-notification-position@brgvos/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/openweather-extension@penguin-teal.github.io/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/simple-weather@romanlefler.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/tiling-assistant@leleat-on-github/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com/schemas 
 
     # compile schemas for extensions 
-    info_msg "Compile schemas for extensions" 
+    info_msg "Compile schemas for extensions"
+   chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/ProxySwitcher@flannaghan.com/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/Vitals@CoreCoding.com/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/accent-gtk-theme@brgvos/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/accent-icons-theme@brgvos/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/accent-user-theme@brgvos/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/appindicatorsupport@rgcjonas.gmail.com/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/arcmenu@arcmenu.com/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/blur-my-shell@aunetx/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/ProxySwitcher@flannaghan.com/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/customize-ibus@hollowman.ml/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/network-stats@gnome.noroadsleft.xyz/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/openweather-extension@penguin-teal.github.io/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/lockkeys@vaina.lt/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/tiling-assistant@leleat-on-github/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/appindicatorsupport@rgcjonas.gmail.com/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/ding@rastersoft.com/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/accent-icons-theme@brgvos/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/accent-gtk-theme@brgvos/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/accent-user-theme@brgvos/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/set-notification-position@brgvos/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/caffeine@patapon.info/schemas
-
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/customize-ibus@hollowman.ml/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/ding@rastersoft.com/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/light-dark-cursor-theme@brgvos/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/lockkeys@vaina.lt/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/set-notification-position@brgvos/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/openweather-extension@penguin-teal.github.io/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/simple-weather@romanlefler.com/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas   
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/tiling-assistant@leleat-on-github/schemas
+    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas
+    
     # add permissions to the user to read extensions
     info_msg "Add permissions to the user to read extensions"
     chroot "$ROOTFS" chmod -R 755 /usr/share/gnome-shell/extensions/
