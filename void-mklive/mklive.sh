@@ -746,12 +746,13 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/light-dark-cursor-themebrgvos.v2.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/lockkeysvaina.lt.v63.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/logomenuaryan_k.v38.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/mediacontrolscliffniff.github.com.v41.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/mediacontrolscliffniff.github.com.v40.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/radiokayradokaton.com.v7.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/set-notification-positionbrgvos.v3.shell-extension.zip
-    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/openweather-extensionpenguin-teal.github.io.v18.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/simple-weatherromanlefler.com.v4.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/space-barluchrioh.v34.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/tiling-assistantleleat-on-github.v53.shell-extension.zip
+    chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/tilingshellferrarodomenico.com.v59.shell-extension.zip
     chroot "$ROOTFS" gnome-extensions install --force /tmp/extensions/user-themegnome-shell-extensions.gcampax.github.com.v64.shell-extension.zip
 
     # install extensions this was second version but is intercative - I leave as example
@@ -780,11 +781,12 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/lockkeys@vaina.lt /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/logomenu@aryan_k /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/radiokayra@dokaton.com /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/set-notification-position@brgvos /usr/share/gnome-shell/extensions/
-    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/openweather-extension@penguin-teal.github.io /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/simple-weather@romanlefler.com /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/space-bar@luchrioh /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/tiling-assistant@leleat-on-github /usr/share/gnome-shell/extensions/
+    chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/tilingshell@ferrarodomenico.com /usr/share/gnome-shell/extensions/
     chroot "$ROOTFS" mv /root/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com  /usr/share/gnome-shell/extensions/
     
     # create directory schemas for extensions 
@@ -807,11 +809,12 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/lockkeys@vaina.lt/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/radiokayra@dokaton.com/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/set-notification-position@brgvos/schemas
-    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/openweather-extension@penguin-teal.github.io/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/simple-weather@romanlefler.com/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/tiling-assistant@leleat-on-github/schemas
+    chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/tilingshell@ferrarodomenico.com/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas
     chroot "$ROOTFS" mkdir -p /usr/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com/schemas 
 
@@ -836,7 +839,6 @@ if [ "$VARIANT" = gnome ]; then
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/logomenu@aryan_k/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/set-notification-position@brgvos/schemas
-    chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/openweather-extension@penguin-teal.github.io/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/simple-weather@romanlefler.com/schemas
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/space-bar@luchrioh/schemas   
     chroot "$ROOTFS" glib-compile-schemas /usr/share/gnome-shell/extensions/tiling-assistant@leleat-on-github/schemas
