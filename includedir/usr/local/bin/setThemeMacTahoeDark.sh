@@ -4,11 +4,13 @@
 gnome-extensions disable 'mediacontrols@cliffniff.github.com'
 gnome-extensions disable 'arcmenu@arcmenu.com'
 gnome-extensions disable 'dash-to-panel@jderose9.github.com'
+gnome-extensions disable 'tilingshell@ferrarodomenico.com'
 
 # enable extensions used in MacTahoe
 gnome-extensions enable 'dash-to-dock@micxgx.gmail.com'
 gnome-extensions enable 'logomenu@aryan_k'
 gnome-extensions enable 'space-bar@luchrioh'
+gnome-extensions enable 'tiling-assistant@leleat-on-github'
 
 # set interface to Light theme
 dconf write /org/gnome/desktop/interface/accent-color "'slate'"
@@ -102,8 +104,10 @@ dconf write /org/gnome/desktop/wm/preferences/button-layout "'close,minimize,max
 dconf write /org/gnome/shell/extensions/space-bar/appearance/active-workspace-text-color "'rgb(255,255,255)'"
 dconf write /org/gnome/shell/extensions/space-bar/appearance/inactive-workspace-text-color "'rgb(222,221,218)'"
 
-# set position on panel for openweatherrefined
-dconf write /org/gnome/shell/extensions/openweatherrefined/position-in-panel "'center'"
+# set position on panel for simple-weather
+dconf write /org/gnome/shell/extensions/simple-weather/panel-box "'center'"
+dconf write /org/gnome/shell/extensions/simple-weather/main-location-index "int64 0"
+dconf write /org/gnome/shell/extensions/simple-weather/panel-priority "int64 0"
 
 # in Wayland we can't restart gnome-shell so next message work only X
 #killall -HUP gnome-shell

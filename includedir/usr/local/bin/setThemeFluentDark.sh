@@ -4,11 +4,13 @@
 gnome-extensions disable 'dash-to-dock@micxgx.gmail.com'
 gnome-extensions disable 'logomenu@aryan_k'
 gnome-extensions disable 'space-bar@luchrioh'
+gnome-extensions disable 'tiling-assistant@leleat-on-github'
 
 # enable extensions to be used in Fluent
 gnome-extensions enable 'mediacontrols@cliffniff.github.com'
 gnome-extensions enable 'arcmenu@arcmenu.com'
 gnome-extensions enable 'dash-to-panel@jderose9.github.com'
+gnome-extensions enable 'tilingshell@ferrarodomenico.com'
 
 # set interface to Light theme
 dconf write /org/gnome/desktop/interface/accent-color "'red'"
@@ -99,8 +101,9 @@ dconf write /org/gnome/desktop/background/secondary-color "'#00ffff'"
 # set preferences position for buttons on windows
 dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,maximize,close'"
 
-# set position on panel for openweatherrefined
-dconf write /org/gnome/shell/extensions/openweatherrefined/position-in-panel "'left'"
+# set position on panel for simple-weather
+dconf write /org/gnome/shell/extensions/simple-weather/panel-box "'left'"
+dconf write /org/gnome/shell/extensions/simple-weather/main-location-index "int64 0"
 
 # in Wayland we can't restart gnome-shell so next message work only X
 #killall -HUP gnome-shell
