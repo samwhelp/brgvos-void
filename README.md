@@ -47,40 +47,37 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 > In this moment the build is for ro_RO (Romanian language) and en_US (English USA language) , but with few modifications can be buildid for anothers.  
 > Exist iso images files for: ro_RO.UTF-8 and en_US.UTF-8.  
 > ISO files can be downloaded from:  
-> here [![Download BRGV-OS iso ro_RO version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_28092025_100159.iso/download) for **ro_RO** versions   
+> here [![Download BRGV-OS iso ro_RO version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_08112025_101946.iso/download) for **ro_RO** versions   
 > or  
-> here [![Download BRGV-OS iso en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_28092025_134147.iso/download) for **en_US** version   
+> here [![Download BRGV-OS iso en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_08112025_112401.iso/download) for **en_US** version   
 > and  
 > SHA256 files can be downloaded from:  
-> here [![Download BRGV-OS sha256 ro_RO version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_28092025_100159.sha256/download) for **ro_RO** versions  
+> here [![Download BRGV-OS sha256 ro_RO version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/ro_RO/BRGV-OS_gnome_ro_RO.UTF-8_x86_64_08112025_101946.sha256/download) for **ro_RO** versions  
 > or  
-> here [![Download BRGV-OS sha256 en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_28092025_134147.sha256/download) for **en_US** version 
+> here [![Download BRGV-OS sha256 en_US version](https://img.shields.io/sourceforge/dm/brgv-os.svg)](https://sourceforge.net/projects/brgv-os/files/brgv-os-2025/en_US/BRGV-OS_gnome_en_US.UTF-8_x86_64_08112025_112401.sha256/download) for **en_US** version 
     
 > [!NOTE]  
-> For `btrfs` option, installer script detect if used disk is a HDD or SSD (to prepare mount options) and automatically creates the following 
->|subvolumes:|Video demo how to install|
->|:-------|:------:|
-> | * @, which will be mounted at /;<br>* @home, which will be mounted at /home;<br>* @var_log, which will be mounted at /var/log;<br>* @var_lib, which will be mounted at /var/lib;<br>* @snapshots, which will be mounted at /.snapshots.|[<img src="https://img.youtube.com/vi/L0JpCGG6WsQ/maxresdefault.jpg" width="480" height="260"/>](https://www.youtube.com/embed/L0JpCGG6WsQ?autoplay=1&mute=1)| 
+>The installer has reached version 0.29.  
+> The major change is that, installations can now be performed on partitions encrypted with LUKS and/or organized by LVM.  
+>**BRGV-OS** can now be installed on:
+> * LUKS - Full Encrypt mode, where all partitions are encrypted;
+> * LUKS - Not Full Encrypt mode, where the /boot partition is not encrypted;
+> * LVM, where partitions is organizated on volumes group and logical volumes;
+> * LVM + LUKS - Full Encrypt mode;
+> * LVM + LUKS - Not Full Encrypt mode;
+> * Clasical, on partions;
+> * Or combinations (Not Full Encrypt is one).   
 >
-> 
-> For `btrfs_lvm` option, installer script detect if used disk is a HDD or SSD (to prepare mount options) and automatically creates the following
->|subvolumes:|Video demo how to install|
->|:-------|:------:|
-> | * @, which will be mounted at /;<br>* @home, which will be mounted at /home;<br>* @var_log, which will be mounted at /var/log;<br>* @var_lib, which will be mounted at /var/lib;<br>* @snapshots, which will be mounted at /.snapshots.|[<img src="https://img.youtube.com/vi/Oc5nYe3L7QQ/maxresdefault.jpg" width="480" height="260"/>](https://www.youtube.com/embed/Oc5nYe3L7QQ?autoplay=1&mute=1)| 
->
-> into logical volume `vg0-brgvos`.  
-> Also installer create automatically another logical volume `vg0-swap` with rule `2*RAM` for capacity.  
->
+>Partitions can be formatted as btrfs, ext4/3/2, xfs, or f2fs.
 >  
-> For `btrfs_lvm_crypt` option, installer script detect if used disk is a HDD or SSD (to prepare mount options) and automatically creates the following
->|subvolumes:|Video demo how to install|
->|:-------|:------:|
-> | * @, which will be mounted at /;<br>* @home, which will be mounted at /home;<br>* @var_log, which will be mounted at /var/log;<br>* @var_lib, which will be mounted at /var/lib;<br>* @snapshots, which will be mounted at /.snapshots.| [<img src="https://img.youtube.com/vi/SdkBCgjaBBY/maxresdefault.jpg" width="480" height="260"/>](https://www.youtube.com/embed/SdkBCgjaBBY?autoplay=1&mute=1)| 
+>Since the installer is a separate project, I decided to start a new repository at https://github.com/florintanasa/
+> brgvos-installer where you can find more information about it and the installation modes. 
 >
-> into logical volume `vg0-brgvos`.  But before to create volume group `vg0` physical device `crypt` is encrypted.  
-> Also installer create automatically another logical volume `v0-swap` with rule `2*RAM` for capacity.  
+>Next video is a demo with last BRGV-OS release:
+>|<sub>vg0</br>`sda3`+`sdb1`</syb>|<sub>vg1</br>`sdc1`</sub>|<sub>BRGV-OS installed on not full encryption</sub>|
+>|:---:|:---:|:---:|
+>|<sub>LVM&LUKS: `LVM`+`LUKS`</br>LVSWAP (GB): `8`</br>LVROTFS (%): `20`</br>LVHOME (%): `60`</br>LVEXTRA-1 (%): `0`</br>LVEXTRA-2 (%): `20`</sub>|<sub>LVM&LUKS: `LVM`+`LUKS`</br>LVSWAP (GB): `0`</br>LVROTFS (%): `0`</br>LVHOME (%): `0`</br>LVEXTRA-1 (%): `100`</br>LVEXTRA-2 (%): `0`</sub>|[<img src="https://img.youtube.com/vi/i-pM3y-Hem0/maxresdefault.jpg" width="250" height="150"/>](https://www.youtube.com/embed/i-pM3y-Hem0?autoplay=1&mute=1)| 
 >
-> 
 > ### $\textcolor{green}{For\ passphrase\ is\ used\ user\ password}$  
 >
 >
