@@ -70,8 +70,7 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 >
 >Partitions can be formatted as btrfs, ext4/3/2, xfs, or f2fs.
 >  
->Since the installer is a separate project, I decided to start a new repository at https://github.com/florintanasa/
-> brgvos-installer where you can find more information about it and the installation modes. 
+>Since the installer is a separate project, I decided to start a new repository at https://github.com/florintanasa/brgvos-installer where you can find more information about it and the installation modes. 
 >
 >Next video is a demo with last BRGV-OS release:
 >|<sub>vg0</br>`sda3`+`sdb1`</syb>|<sub>vg1</br>`sdc1`</sub>|<sub>BRGV-OS installed on not full encryption</sub>|
