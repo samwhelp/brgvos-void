@@ -89,6 +89,10 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 >|:---:|:---:|
 >|<sub>LVM&LUKS: `LUKS`</br>sda4->crypt_0</br>sdb1->crypt_1</br>sdc1->crypt_2</br>FS: ext4</sub>|[<img src="https://img.youtube.com/vi/ggxpwnq2wsw/default.jpg" width="250" height="150"/>](https://www.youtube.com/embed/ggxpwnq2wsw?autoplay=1&mute=1)|
 >
+>|<sub></sub>|<sub>BRGV-OS installed on</br>"clasical" mode</sub>|
+>|:---:|:---:|
+>|<sub>LVM&LUKS: `-`</br>sda2->`swap`</br>sda3->/</br>sdb1->/home</br>sdc1->/var/lib/libvirt</br>FS: ext4</sub>|[<img src="https://img.youtube.com/vi/tp_MaYa66VQ/default.jpg" width="250" height="150"/>](https://www.youtube.com/embed/tp_MaYa66VQ?autoplay=1&mute=1)|
+>
 >
 > ### $\textcolor{green}{For\ passphrase\ is\ used\ user\ password}$  
 >
