@@ -73,9 +73,10 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 >Since the installer is a separate project, I decided to start a new repository at https://github.com/florintanasa/brgvos-installer where you can find more information about it and the installation modes. 
 >
 >Next video is a demo with last BRGV-OS release:
->|<sub>vg0</br>`sda3`+`sdb1`</syb>|<sub>vg1</br>`sdc1`</sub>|<sub>BRGV-OS installed on not full encryption</sub>|
->|:---:|:---:|:---:|
->|<sub>LVM&LUKS: `LVM`+`LUKS`</br>LVSWAP (GB): `8`</br>LVROTFS (%): `20`</br>LVHOME (%): `60`</br>LVEXTRA-1 (%): `0`</br>LVEXTRA-2 (%): `20`</sub>|<sub>LVM&LUKS: `LVM`+`LUKS`</br>LVSWAP (GB): `0`</br>LVROTFS (%): `0`</br>LVHOME (%): `0`</br>LVEXTRA-1 (%): `100`</br>LVEXTRA-2 (%): `0`</sub>|[<img src="https://img.youtube.com/vi/i-pM3y-Hem0/maxresdefault.jpg" width="250" height="150"/>](https://www.youtube.com/embed/i-pM3y-Hem0?autoplay=1&mute=1)| 
+>|<sub>vg0</br>`sda3`+`sdb1`</syb>|<sub>vg1</br>`sdc1`</sub>|<sub>BRGV-OS installed on</br>not full encrypted mode with LVM</sub>|<sub>vg0</br>`sda2`+`sda3`+`sdb1`</syb>|<sub>vg1</br>`sdc1`</sub>|<sub>BRGV-OS installed on</br>full encryption mode with LVM</sub>|
+>|:---:|:---:|:---:|:---:|:---:|:---:|
+>|<sub>LVM&LUKS: `LVM`+`LUKS`</br>LVSWAP (GB): `8`</br>LVROTFS (%): `20`</br>LVHOME (%): `60`</br>LVEXTRA-1 (%): `0`</br>LVEXTRA-2 (%): `20`</sub>|<sub>LVM&LUKS: `LVM`+`LUKS`</br>LVSWAP (GB): `0`</br>LVROTFS (%): `0`</br>LVHOME (%): `0`</br>LVEXTRA-1 (%): `100`</br>LVEXTRA-2 (%): `0`</sub>|[<img src="https://img.youtube.com/vi/i-pM3y-Hem0/maxresdefault.jpg" width="250" height="150"/>](https://www.youtube.com/embed/i-pM3y-Hem0?autoplay=1&mute=1)|<sub>LVM&LUKS: `LVM`+`LUKS`</br>LVSWAP (GB): `8`</br>LVROTFS (%): `20`</br>LVHOME (%): `60`</br>LVEXTRA-1 (%): `0`</br>LVEXTRA-2 (%): `20`</sub>|<sub>LVM&LUKS: `LVM`+`LUKS`</br>LVSWAP (GB): `0`</br>LVROTFS (%): `0`</br>LVHOME (%): `0`</br>LVEXTRA-1 (%): `100`</br>LVEXTRA-2 (%): `0`</sub>|[<img src="https://img.youtube.com/vi/9Tf47WQGJrQ/maxresdefault.jpg" width="250" height="150"/>](https://www.youtube.com/embed/9Tf47WQGJrQ?autoplay=1&mute=1)|
+> 
 >
 > ### $\textcolor{green}{For\ passphrase\ is\ used\ user\ password}$  
 >
