@@ -81,6 +81,10 @@ After that, if everything works ok, we find the iso image is in directory `iso b
 >|:---:|:---:|:---:|
 >|<sub>LVM&LUKS: `LVM`+`LUKS`</br>LVSWAP (GB): `8`</br>LVROTFS (%): `20`</br>LVHOME (%): `60`</br>LVEXTRA-1 (%): `0`</br>LVEXTRA-2 (%): `20`</sub>|<sub>LVM&LUKS: `LVM`+`LUKS`</br>LVSWAP (GB): `0`</br>LVROTFS (%): `0`</br>LVHOME (%): `0`</br>LVEXTRA-1 (%): `100`</br>LVEXTRA-2 (%): `0`</sub>|[<img src="https://img.youtube.com/vi/9Tf47WQGJrQ/maxresdefault.jpg" width="250" height="150"/>](https://www.youtube.com/embed/9Tf47WQGJrQ?autoplay=1&mute=1)|
 >
+>|<sub>unencrypt:</br>`sda2-swap`</sub>|<sub>BRGV-OS installed on</br>not full encryption mode 1</sub>|
+>|:---:|:---:|
+>|<sub>LVM&LUKS: `LUKS`</br>sda3->crypt_0</br>sdb1->crypt_1</br>sdc1->crypt_2</br>FS: btrfs</sub>|[<img src="https://img.youtube.com/vi/VYUWoElShNQ/default.jpg" width="250" height="150"/>](https://www.youtube.com/embed/VYUWoElShNQ?autoplay=1&mute=1)|
+>
 > ### $\textcolor{green}{For\ passphrase\ is\ used\ user\ password}$  
 >
 >
