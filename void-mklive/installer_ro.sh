@@ -277,7 +277,7 @@ DIALOG() {
   rm -f $ANSWER
   dialog --colors --keep-tite --no-shadow --no-mouse \
     --backtitle "${BOLD}${WHITE}BRGV-OS Linux installation -- https://github.com/florintanasa/brgvos-void (@@MKLIVE_VERSION@@)${RESET}" \
-    --cancel-label "Back" --aspect 20 "$@" 2>$ANSWER
+    --cancel-label "Înapoi" --aspect 20 "$@" 2>$ANSWER
   return $?
 }
 
@@ -2233,7 +2233,7 @@ umount_filesystems() {
     local dev=$2; local fstype=$3
     shift 6
     if [ "$fstype" = "swap" ]; then
-      echo "Dezactivarea spațiului de swap activat în $dev..." >>"$LOG"
+      echo "Dezactivez spațiului de swap activat în $dev..." >>"$LOG"
       swapoff "$dev" >>"$LOG" 2>&1
       continue
     fi
@@ -2675,17 +2675,17 @@ fi
 # main()
 #
 DIALOG --title "${BOLD}${RED} Să începem ... ${RESET}" --msgbox "\n
-Bun venit la instalarea ${BOLD}${CYAN}'BRGV-OS Linux'${RESET}. O simplă și minimală distribuție Linux bazată pe \
-${BOLD}${CYAN}'Void Linux'${RESET}, și construită din arborele de pachete sursă disponibil pentru XBPS, un nou sistem \
-alternativ de pachete binare.\n
+Bine aţi venit la instalarea ${BOLD}${MAGENTA}'BRGV-OS'${RESET} Linux. O distribuţie simplă şi minimală bazată pe \
+${BOLD}${MAGENTA}'Void'${RESET}, creată de la zero şi construită din arborele de pachete sursă disponibil pentru XBPS, un nou \
+sistem alternativ de pachete binare.\n
 \n
-Instalarea ar trebui să fie destul de simplă. Dacă sunt probleme cu instalarea vă rog să întrebați la \
-${BOLD}https://github.com/florintanasa/brgvos-void/discussions${RESET} sau alăturațivă grupului ${BOLD}#voidlinux${RESET} \
-on ${BOLD}irc.libera.chat${RESET}.\n
+Instalarea ar trebui să fie destul de simplă. Dacă întâmpinaţi probleme, vă rog să întrebaţi la \
+${BOLD}${YELLOW}https://github.com/florintanasa/brgvos-void/discussions${RESET} sau alăturaţi-vă ${BOLD}${YELLOW}#voidlinux${RESET} \
+pe ${BOLD}${YELLOW}irc.libera.chat${RESET}.\n
 \n
-Mai multe informații la:\n
-${BOLD}https://github.com/florintanasa/brgvos-void${RESET}\n
-${BOLD}https://www.voidlinux.org${RESET}\n" 18 80
+Mai multe informaţii la:\n
+${BOLD}${YELLOW}https://github.com/florintanasa/brgvos-void${RESET}\n
+${BOLD}${YELLOW}https://www.voidlinux.org${RESET}\n" 18 80
 
 while true; do
   menu
