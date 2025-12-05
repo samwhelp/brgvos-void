@@ -796,6 +796,8 @@ menu_lvm_luks() {
     else
       set_option CRYPTO_LUKS "0"
     fi
+  elif [ "$rv" -eq 1 ]; then # Verify if the user not accept the dialog
+    return
   fi
   # Input box is available only if LVM and/or CRYPTO_LUKS was selected
   _lvm=$(get_option LVM)
@@ -880,6 +882,7 @@ menu_lvm_luks() {
     exec 3>&-
   fi
   #set_lvm_luks
+  LVMLUKS_DONE=1
 }
 
 # Function to create lvm and/or luks with loaded parameters from saved configure file
@@ -942,7 +945,7 @@ set_lvm_luks() {
         set -- $_pv; vgcreate "$_vgname" "$@" # Create volume group
       fi
       # Check if user choose to use LVM with encrypt for devices
-      if [ "$_crypt" = 1 ];then
+      if [ "$_crypt" = 1 ]; then
         set -- $_cd; pvcreate "$@" # Create physical volume
         set -- $_cd; vgcreate "$_vgname" "$@" # Create volume group
       fi
