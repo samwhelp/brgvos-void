@@ -796,6 +796,8 @@ menu_lvm_luks() {
     else
       set_option CRYPTO_LUKS "0"
     fi
+  elif [ "$rv" -eq 1 ]; then # Verify if the user not accept the dialog
+    return
   fi
   # Input box is available only if LVM and/or CRYPTO_LUKS was selected
   _lvm=$(get_option LVM)
@@ -880,6 +882,7 @@ menu_lvm_luks() {
     exec 3>&-
   fi
   #set_lvm_luks
+  LVMLUKS_DONE=1
 }
 
 # Function to create lvm and/or luks with loaded parameters from saved configure file
@@ -2598,6 +2601,7 @@ menu() {
       "UserAccount" "Set primary user name and password" \
       "BootLoader" "Set disk to install bootloader" \
       "Partition" "Partition disk(s)" \
+      "Raid" "Raid software" \
       "LVM&LUKS" "Set LVM and crypto LUKS" \
       "Filesystems" "Configure filesystems and mount points" \
       "Install" "Start installation with saved settings" \
@@ -2619,6 +2623,7 @@ menu() {
       "UserAccount" "Set primary user name and password" \
       "BootLoader" "Set disk to install bootloader" \
       "Partition" "Partition disk(s)" \
+      "Raid" "Raid software" \
       "LVM&LUKS" "Set LVM and crypto LUKS" \
       "Filesystems" "Configure filesystems and mount points" \
       "Install" "Start installation with saved settings" \
@@ -2647,8 +2652,9 @@ menu() {
   "UserAccount") menu_useraccount && [ -n "$USERLOGIN_DONE" ] && [ -n "$USERPASSWORD_DONE" ] \
     && DEFITEM="BootLoader";;
   "BootLoader") menu_bootloader && [ -n "$BOOTLOADER_DONE" ] && DEFITEM="Partition";;
-  "Partition") menu_partitions && [ -n "$PARTITIONS_DONE" ] && DEFITEM="LVM&LUKS";;
-  "LVM&LUKS") menu_lvm_luks && [ -n "$PARTITIONS_DONE" ] && DEFITEM="Filesystems";;
+  "Partition") menu_partitions && [ -n "$PARTITIONS_DONE" ] && DEFITEM="Raid";;
+  "Raid") menu_raid && [ -n "$RAID_DONE" ] && DEFITEM="LVM&LUKS";;
+  "LVM&LUKS") menu_lvm_luks && [ -n "$LVMLUKS_DONE" ] && DEFITEM="Filesystems";;
   "Filesystems") menu_filesystems && [ -n "$FILESYSTEMS_DONE" ] && DEFITEM="Install";;
   "Install") menu_install;;
   "Exit") DIE;;
