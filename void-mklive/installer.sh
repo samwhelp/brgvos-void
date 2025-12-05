@@ -945,7 +945,7 @@ set_lvm_luks() {
         set -- $_pv; vgcreate "$_vgname" "$@" # Create volume group
       fi
       # Check if user choose to use LVM with encrypt for devices
-      if [ "$_crypt" = 1 ];then
+      if [ "$_crypt" = 1 ]; then
         set -- $_cd; pvcreate "$@" # Create physical volume
         set -- $_cd; vgcreate "$_vgname" "$@" # Create volume group
       fi
@@ -2676,17 +2676,17 @@ fi
 # main()
 #
 DIALOG --title "${BOLD}${RED} Enter ... ${RESET}" --msgbox "\n
-Welcome to the ${BOLD}${CYAN}'BRGV-OS Linux'${RESET} installation. A simple and minimal Linux spin distribution based on \
-${BOLD}${CYAN}'Void Linux'${RESET}, made from scratch and built from the source package tree available for XBPS, a new \
+Welcome to the ${BOLD}${MAGENTA}'BRGV-OS'${RESET} Linux installation. A simple and minimal Linux spin distribution based on \
+${BOLD}${MAGENTA}'Void'${RESET}, made from scratch and built from the source package tree available for XBPS, a new \
 alternative binary package system.\n
 \n
 The installation should be pretty straightforward. If you are in trouble please ask at \
-${BOLD}https://github.com/florintanasa/brgvos-void/discussions${RESET} or join to ${BOLD}#voidlinux${RESET} on \
-${BOLD}irc.libera.chat${RESET}.\n
+${BOLD}${YELLOW}https://github.com/florintanasa/brgvos-void/discussions${RESET} or join to ${BOLD}${YELLOW}#voidlinux${RESET} \
+on ${BOLD}${YELLOW}irc.libera.chat${RESET}.\n
 \n
 More info at:\n
-${BOLD}https://github.com/florintanasa/brgvos-void${RESET}\n
-${BOLD}https://www.voidlinux.org${RESET}\n" 18 80
+${BOLD}${YELLOW}https://github.com/florintanasa/brgvos-void${RESET}\n
+${BOLD}${YELLOW}https://www.voidlinux.org${RESET}\n" 18 80
 
 while true; do
   menu
