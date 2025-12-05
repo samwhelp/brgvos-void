@@ -1629,10 +1629,10 @@ set_bootloader() {
   chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >>$LOG 2>&1
   if [ "$bool" -eq 1 ] && [ "$_boot" -eq 0 ]; then # For full encrypted installation
     echo "Prepare parameters on Grub for crypted device(s) ${bold}${luks_devices[*]}${reset}"  >>$LOG
-    chroot $TARGETDIR sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 ${_rd_luks_uuid} cryptkey=rootfs:\/boot\/cryptlvm.key quiet splash\"/g" /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 ${RD_MD_UUID} ${_rd_luks_uuid} cryptkey=rootfs:\/boot\/cryptlvm.key quiet splash\"/g" /etc/default/grub >>$LOG 2>&1
   else # For not full encrypted installation
     echo "Prepare parameters on Grub for device ${bold}$ROOTFS${reset}"  >>$LOG
-    chroot $TARGETDIR sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 ${_rd_luks_uuid} quiet splash\"/g" /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 ${RD_MD_UUID} ${_rd_luks_uuid} quiet splash\"/g" /etc/default/grub >>$LOG 2>&1
   fi
   chroot $TARGETDIR sed -i '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >>$LOG 2>&1
   echo "Running grub-mkconfig on ${bold}$TARGETDIR${reset}..." >>"$LOG"
@@ -1883,12 +1883,13 @@ as FAT32, mountpoint /boot/efi and at least with 100MB of size." ${MSGBOXSIZE}
 create_filesystems() {
   # Define some variables local
   local mnts dev mntpt fstype fspassno mkfs size rv uuid MKFS mem_total swap_need disk_name disk_type ROOT_UUID SWAP_UUID
-  local _lvm _crypt _vgname _lvswap _lvrootfs _home _basename_mntpt _devcrypt
+  local _lvm _crypt _vgname _lvswap _lvrootfs _home _basename_mntpt _devcrypt _raid
   # Initialize some local variables
   disk_type=0
   _lvm=$(get_option LVM)
   _crypt=$(get_option CRYPTO_LUKS)
   _devcrypt=$(get_option DEVCRYPT)
+  _raid=$(get_option RAID)
   # Check if is defined mount device for /home
   [ -n "$(grep -E '/home .*' /tmp/.brgvos-installer.conf)" ] && _home=1 || _home=0
   # Output all defined MOUNTPOINT from configure file
@@ -2146,8 +2147,15 @@ failed to mount ${BOLD}$dev${RESET} on ${BOLD}${mntpt}${RESET}! check $LOG for e
         options="defaults,noatime,nodiratime"
       elif [ "$fstype" = "xfs" ]; then
         options="defaults,noatime,nodiratime,user_xattr"
-      elif [ "$fstype" = "vfat" ] || [ "$fstype" = "f2fs" ]; then
+      elif [ "$fstype" = "f2fs" ]; then
         options="defaults"
+      elif [ "$fstype" = "vfat" ]; then
+        if [ -n "$_raid" ] && [ "$mntpt" = "/boot/efi" ]; then # Check if was selected RAID and set noauto for /boot/efi for RAID
+          options="defaults,noauto"
+          fspassno=0 # Set do not check fsck at boot because is not auto-mounted
+        else
+          options="defaults"
+        fi
       fi
       echo "Options, for filesystem ${bold}$fstype${reset}, used for mount ${bold}$mntpt${reset} in fstab
        is ${bold}$options${reset} on ${bold}HDD${reset}" >>"$LOG"
@@ -2158,8 +2166,15 @@ failed to mount ${BOLD}$dev${RESET} on ${BOLD}${mntpt}${RESET}! check $LOG for e
         options="defaults,noatime,nodiratime,discard"
       elif [ "$fstype" = "xfs" ]; then
         options="defaults,noatime,nodiratime,discard,ssd,user_xattr"
-      elif [ "$fstype" = "vfat" ] || [ "$fstype" = "f2fs" ]; then
+      elif [ "$fstype" = "f2fs" ]; then
         options="defaults"
+      elif [ "$fstype" = "vfat" ]; then
+        if [ -n "$_raid" ] && [ "$mntpt" = "/boot/efi" ]; then # Check if was selected RAID and set noauto for /boot/efi for RAID
+          options="defaults,noauto"
+          fspassno=0 # Set do not check fsck at boot because is not auto-mounted
+        else
+          options="defaults"
+        fi
       fi
       echo "Options, for filesystem ${bold}$fstype${reset}, used for mount ${bold}$mntpt${reset} in fstab
        is ${bold}$options${reset} on ${bold}SSD${reset}" >>"$LOG"
