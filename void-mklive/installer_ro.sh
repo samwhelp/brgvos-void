@@ -979,6 +979,200 @@ set_lvm_luks() {
   fi
 }
 
+# Function for choose partitions for raid software
+menu_raid() {
+  # Define some local variables
+  local _desc _answers _dev _raid rv
+  # Description for radiolist box
+  _desc="Selectaţi ce software RAID doriţi să definiţi"
+  DIALOG --title "RAID software" --msgbox "\n
+${BOLD}${RED}AVERTISMENT:\n
+Când o partiție este adăugată la un array RAID existent, datele de pe acea partiție se pierd deoarece subsistemul RAID
+zero‑ează dispozitivul înainte de a-l încorpora.\n
+Partiţia ${BLUE}'/boot/efi' ${RED}din configuraţia RAID are opţiunea ${BLUE}'noauto' ${RED}în
+${BLUE}'/etc/fstab'${RED}, deci nu este montată automat la pornire. Montaţi‑o manual numai când este necesar (de ex., înainte
+de a rula update, dracut etc.).${RESET}
+\n
+\n
+${BOLD}RAID îmbunătăţeşte performanţa stocării, creşte viteza de citire/scriere, oferă redundanţă a datelor, permite toleranţa la defecte,
+reduce timpul de nefuncţionare şi protejează împotriva pierderii datelor, făcând sistemele mai fiabile şi eficiente.${RESET}
+\n
+\n
+${BOLD}${MAGENTA}RAID ${RED}0 ${YELLOW}(Stripare)${RESET}\n
+- Discuri/partiţii (DP) = minimum 2\n
+- Toleranţă la defecte 0\n
+- Creştere viteză citire 2x\n
+- Creştere viteză scriere 2x\n
+- Eficienţa spaţiului pe disc 100%\n
+\n
+${BOLD}${MAGENTA}RAID ${RED}1 ${YELLOW}(Oglindire)${RESET}\n
+- Discuri/partiţii 2\n
+- Toleranţă la defecte 1\n
+- Creştere viteză citire 2x\n
+- Creştere viteză scriere 1x\n
+- Eficienţa spaţiului pe disc 50%\n
+\n
+${BOLD}${MAGENTA}RAID ${RED}4 ${YELLOW}(Stripare + Paritate)${RESET}\n
+- Discuri/partiţii (DP) = minimum 3\n
+- Toleranţă la defecte 1\n
+- Creştere viteză citire 2x\n
+- Creştere viteză scriere 1x\n
+- Eficienţa spaţiului pe disc > 66%\n
+\n
+${BOLD}${MAGENTA}RAID ${RED}5 ${YELLOW}(Stripare + Paritate)${RESET}\n
+- Discuri/partiţii (DP) = minimum 3\n
+- Toleranţă la defecte 1\n
+- Creştere viteză citire (DP)x\n
+- Creştere viteză scriere 1x\n
+- Eficienţa spaţiului pe disc > 66%\n
+\n
+${BOLD}${MAGENTA}RAID ${RED}6 ${YELLOW}(Stripare + Dublă Paritate)${RESET}\n
+- Discuri/partiţii (DP) = minimum 4\n
+- Toleranţă la defecte 2\n
+- Creştere viteză citire (DP)x\n
+- Creştere viteză scriere 1x\n
+- Eficienţa spaţiului pe disc >= 50%\n
+\n
+${BOLD}${MAGENTA}RAID ${RED}10 ${YELLOW}(Oglindire în benzi)${RESET}\n
+- Discuri/partiţii (DP) = minimum 4\n
+- Toleranţă la defecte 1 până la (DP/2)\n
+- Creştere viteză citire (DP)x\n
+- Creştere viteză scriere (DP/2)x\n
+- Eficienţa spaţiului pe disc 50%\n
+\n
+${BOLD}${MAGENTA}RAID ${RED}50 ${YELLOW}(Paritate + Stripare)${RESET}\n
+- Discuri/partiţii (DP) = minimum 6\n
+- Toleranţă la defecte 1 per grup\n
+- Creştere viteză citire (DP‑2)x\n
+- Creştere viteză scriere 1x\n
+- Eficienţa spaţiului pe disc > 66%\n
+\n
+${BOLD}${MAGENTA}RAID ${RED}60 ${YELLOW}(Dublă Paritate + Stripare)${RESET}\n
+- Discuri/partiţii (DP) = minimum 8\n
+- Toleranţă la defecte 2 per grup\n
+- Creştere viteză citire (DP‑2)x\n
+- Creştere viteză scriere 1x\n
+- Eficienţa spaţiului pe disc 50%\n
+" 23 80
+  # Verify if the user accept the dialog
+  rv=$?
+  if [ "$rv" -eq 0 ]; then
+    # Create dialog
+    DIALOG --no-tags --radiolist "$_desc" 20 60 2 \
+      raid0 "RAID 0" on \
+      raid1 "RAID 1" off \
+      raid4 "RAID 4" off \
+      raid5 "RAID 5" off \
+      raid6 "RAID 6" off \
+      raid10 "RAID 10" off
+    # Verify if the user accept the dialog
+    rv=$?
+    if [ "$rv" -eq 0 ]; then
+      _answers=$(cat "$ANSWER")
+      if echo "$_answers" | grep -w "raid0"; then
+        set_option RAID "0"
+      elif echo "$_answers" | grep -w "raid1"; then
+        set_option RAID "1"
+      elif echo "$_answers" | grep -w "raid4"; then
+        set_option RAID "4"
+      elif echo "$_answers" | grep -w "raid5"; then
+        set_option RAID "5"
+      elif echo "$_answers" | grep -w "raid6"; then
+        set_option RAID "6"
+      elif echo "$_answers" | grep -w "raid10"; then
+        set_option RAID "10"
+      fi
+    elif [ "$rv" -eq 1 ]; then # Verify if the user not accept the dialog
+      return
+    fi
+    # Read selected RAID option
+    _raid=$(get_option RAID)
+    # Check if the user select RAID
+    if [ "$_raid" -ge 0 ]; then
+      while true; do
+        DIALOG --ok-label "Select" --cancel-label "Done" --extra-button --extra-label "Abort" \
+          --title " Select partition(s) for raid" --menu "$MENULABEL" \
+          ${MENUSIZE} $(show_partitions_filtered "$_dev")
+        rv=$?
+        if [ "$rv" = 0 ]; then # Check if user press Select button
+          _dev+=$(cat "$ANSWER")
+          _dev+=" "
+        elif [[ -z "$_dev" ]] || [[ "$rv" -eq 3 ]]; then # Check if user press Abort or Done buttons without selection
+          return
+        elif [ "$rv" -ne 0 ]; then # Check if user press Done button
+          break
+        fi
+      done
+      # Delete last space
+      _dev=$(echo "$_dev"|awk '{$1=$1;print}')
+      if [[ -n "$_dev" ]]; then\
+        set_option RAIDPV "$_dev"
+        set_raid
+      else
+        set_option RAIDPV ""
+      fi
+    fi
+    RAID_DONE=1
+  else
+    return
+  fi
+}
+
+# Function to create raid software with loaded parameters from saved configure file
+set_raid() {
+  # Define some local variables
+  local _raid _raidpv _raidnbdev _mdadm _hostname _index _raid_uuid
+  # Load variables from configure file if exist else define presets
+  _raid=$(get_option RAID)
+  _raidpv=$(get_option RAIDPV)
+  _hostname=$(get_option HOSTNAME)
+  _index=$(get_option INDEXRAID)
+  # Add config file for dracut if not exist
+  if [ ! -f /etc/dracut.conf.d/md.conf ]; then
+    echo "mdadmconf=\"yes\"" > /etc/dracut.conf.d/md.conf
+  fi
+  # Check if the user choose an option for raid software and physically partitions for the raid
+  if [ -n "$_raid" ] && [ -n "$_raidpv" ]; then
+    [ -z "$_index" ] && _index=0  # Initialize an index for unique naming raid block if not exist saved in configure file
+    _raidnbdev=$(wc -w <<< "$_raidpv") # count numbers of partitions
+    echo "Create RAID $_raid for $_raidpv" >>"$LOG"
+    {
+      if [ "$_raid" -eq 0 ]; then
+        if echo "$_raidpv" | grep -q md; then # Check if used a raid, if yes do not write zero again
+          set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=0 --homehost="$_hostname" \
+            --raid-devices="$_raidnbdev" "$@"
+        else
+          set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=0 --write-zeroes --homehost="$_hostname" \
+          --raid-devices="$_raidnbdev" "$@"
+        fi
+      elif [ "$_raid" -eq 1 ]; then
+        set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=1 --write-zeroes --homehost="$_hostname" \
+        --bitmap='internal' --metadata=1.2 --raid-devices="$_raidnbdev" "$@"
+      elif [ "$_raid" -eq 4 ]; then
+        set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=4 --write-zeroes --homehost="$_hostname" \
+        --bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+      elif [ "$_raid" -eq 5 ]; then
+        set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=5 --write-zeroes --homehost="$_hostname" \
+        --bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+      elif [ "$_raid" -eq 6 ]; then
+        set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=6 --write-zeroes --homehost="$_hostname" \
+        --bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+      elif [ "$_raid" -eq 10 ]; then
+        set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=10 --write-zeroes --homehost="$_hostname" \
+        --bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+      fi
+    } >>"$LOG" 2>&1
+    # Prepare config file /etc/mdadm.conf
+    _mdadm=$(mdadm --detail --scan)
+    echo "$_mdadm" > /etc/mdadm.conf
+    # Prepare variable used in grub for kernel command line
+    _raid_uuid=$(sudo mdadm --detail /dev/md${_index} | grep UUID | awk '{print $NF}') # Got UUID for RAID block
+    RD_MD_UUID+="rd.md.uuid=$_raid_uuid " # Global variable used in set_boot function
+    _index=$((_index + 1))  # Increment the index for the next raid block
+    set_option INDEXRAID "$_index" # save in configure file the last unused index to be used for next set_raid appellation
+  fi
+}
+
 # Function for chose partition tool for modify partition table
 menu_partitions() {
   DIALOG --title " Selectați discul pentru partiționare " \
