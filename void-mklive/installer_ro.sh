@@ -193,6 +193,8 @@ USERGROUPS_DONE=
 USERACCOUNT_DONE=
 BOOTLOADER_DONE=
 PARTITIONS_DONE=
+RAID_DONE=
+LVMLUKS_DONE=
 NETWORK_DONE=
 FILESYSTEMS_DONE=
 MIRROR_DONE=
@@ -296,6 +298,11 @@ DIE() {
   set_option INDEX "" # clear INDEX value
   set_option DEVCRYPT "" # clear DEVCRYPT value
   set_option CRYPTS "" # clear CRYPTS value
+  set_option BOOTLOADER "" # clear BOOTLOADER value
+  set_option TEXTCONSOLE "" # clear TEXTCONSOLE value
+  set_option RAID "" # clear RAID value
+  set_option RAIDPV "" # clear RAIDPV value
+  set_option INDEXRAID "" # clear INDEXRAID value
   rm -f "$ANSWER" "$TARGET_FSTAB" "$TARGET_SERVICES"
   # re-enable printk
   if [ -w /proc/sys/kernel/printk ]; then
@@ -1876,12 +1883,13 @@ ca FAT32, cu punctul de montare /boot/efi și cu o dimensiune de cel puțin 100M
 create_filesystems() {
   # Define some variables local
   local mnts dev mntpt fstype fspassno mkfs size rv uuid MKFS mem_total swap_need disk_name disk_type ROOT_UUID SWAP_UUID
-  local _lvm _crypt _vgname _lvswap _lvrootfs _home _basename_mntpt _devcrypt
+  local _lvm _crypt _vgname _lvswap _lvrootfs _home _basename_mntpt _devcrypt _raid
   # Initialize some local variables
   disk_type=0
   _lvm=$(get_option LVM)
   _crypt=$(get_option CRYPTO_LUKS)
   _devcrypt=$(get_option DEVCRYPT)
+  _raid=$(get_option RAID)
   # Check if is defined mount device for /home
   [ -n "$(grep -E '/home .*' /tmp/.brgvos-installer.conf)" ] && _home=1 || _home=0
   # Output all defined MOUNTPOINT from configure file
@@ -2139,8 +2147,15 @@ create_filesystems() {
         options="defaults,noatime,nodiratime"
       elif [ "$fstype" = "xfs" ]; then
         options="defaults,noatime,nodiratime,user_xattr"
-      elif [ "$fstype" = "vfat" ] || [ "$fstype" = "f2fs" ]; then
+      elif [ "$fstype" = "f2fs" ]; then
         options="defaults"
+      elif [ "$fstype" = "vfat" ]; then
+        if [ -n "$_raid" ] && [ "$mntpt" = "/boot/efi" ]; then # Check if was selected RAID and set noauto for /boot/efi for RAID
+          options="defaults,noauto"
+          fspassno=0 # Set do not check fsck at boot because is not auto-mounted
+        else
+          options="defaults"
+        fi
       fi
       echo "Opțiunile pentru sistemul de fișiere ${bold}$fstype${reset}, utilizate în montarea la ${bold}$mntpt${reset}
       și în fstab sunt ${bold}$options${reset} pentru ${bold}HDD${reset}" >>"$LOG"
@@ -2151,8 +2166,15 @@ create_filesystems() {
         options="defaults,noatime,nodiratime,discard"
       elif [ "$fstype" = "xfs" ]; then
         options="defaults,noatime,nodiratime,discard,ssd,user_xattr"
-      elif [ "$fstype" = "vfat" ] || [ "$fstype" = "f2fs" ]; then
+      elif [ "$fstype" = "f2fs" ]; then
         options="defaults"
+      elif [ "$fstype" = "vfat" ]; then
+        if [ -n "$_raid" ] && [ "$mntpt" = "/boot/efi" ]; then # Check if was selected RAID and set noauto for /boot/efi for RAID
+          options="defaults,noauto"
+          fspassno=0 # Set do not check fsck at boot because is not auto-mounted
+        else
+          options="defaults"
+        fi
       fi
       echo "Opțiunile pentru sistemul de fișiere ${bold}$fstype${reset}, utilizate în montarea la ${bold}$mntpt${reset}
       și în fstab sunt ${bold}$options${reset} pentru ${bold}SSD${reset}" >>"$LOG"
@@ -2575,6 +2597,7 @@ menu() {
       "UserAccount" "Setați numele de utilizator și parola" \
       "BootLoader" "Setați discul pentru instalarea bootloader-ului" \
       "Partition" "Partiționați discul(-rile)" \
+      "Raid" "Raid software" \
       "LVM&LUKS" "Configurați LVM și/sau criptarea cu LUKS" \
       "Filesystems" "Configurați sistemul de fișiere și punctele de montare" \
       "Install" "Porniți instalarea cu setările realizate" \
@@ -2596,6 +2619,7 @@ menu() {
       "UserAccount" "Setați numele de utilizator și parola" \
       "BootLoader" "Setați discul pentru instalarea bootloader-ului" \
       "Partition" "Partiționați discul(-rile)" \
+      "Raid" "Raid software" \
       "LVM&LUKS" "Configurați LVM și/sau criptarea cu LUKS" \
       "Filesystems" "Configurați sistemul de fișiere și punctele de montare" \
       "Install" "Porniți instalarea cu setările realizate" \
@@ -2624,8 +2648,9 @@ menu() {
   "UserAccount") menu_useraccount && [ -n "$USERLOGIN_DONE" ] && [ -n "$USERPASSWORD_DONE" ] \
     && DEFITEM="BootLoader";;
   "BootLoader") menu_bootloader && [ -n "$BOOTLOADER_DONE" ] && DEFITEM="Partition";;
-  "Partition") menu_partitions && [ -n "$PARTITIONS_DONE" ] && DEFITEM="LVM&LUKS";;
-  "LVM&LUKS") menu_lvm_luks && [ -n "$PARTITIONS_DONE" ] && DEFITEM="Filesystems";;
+  "Partition") menu_partitions && [ -n "$PARTITIONS_DONE" ] && DEFITEM="Raid";;
+  "Raid") menu_raid && [ -n "$RAID_DONE" ] && DEFITEM="LVM&LUKS";;
+  "LVM&LUKS") menu_lvm_luks && [ -n "$LVMLUKS_DONE" ] && DEFITEM="Filesystems";;
   "Filesystems") menu_filesystems && [ -n "$FILESYSTEMS_DONE" ] && DEFITEM="Install";;
   "Install") menu_install;;
   "Exit") DIE;;
