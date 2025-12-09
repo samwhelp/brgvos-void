@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+
+##path
+base_dir_path="$(dirname "$(realpath "${0}")")"
+
 . ./void-mklive/lib.sh
 
 # Check for root permissions.
@@ -81,7 +85,8 @@ sudo ./mkiso.sh \
 -p "$other_pkg" \
 -S "$service" \
 -o $title'_'$variant'_'$locale'_'$arch'_'$data.iso \
--I ../includedir
+-x "$base_dir_path/postscript.sh" \
+-I "$base_dir_path/includedir"
 
 # Create hash file and move the files to iso directory
 if [ -e $title'_'$variant'_'$locale'_'$arch'_'$data.iso ]
