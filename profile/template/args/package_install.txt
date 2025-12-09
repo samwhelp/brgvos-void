@@ -1,4 +1,5 @@
-nano 
+nano
+micro
 mc 
 eza 
 duf 
