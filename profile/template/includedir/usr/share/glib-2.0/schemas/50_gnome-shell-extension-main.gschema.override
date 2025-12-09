@@ -4,12 +4,13 @@
 disable-user-extensions=false
 disabled-extensions=@as []
 #enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-dock@micxgx.gmail.com', 'apps-menu@gnome-shell-extensions.gcampax.github.com']
-#enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'ubuntu-dock@ubuntu.com', 'apps-menu@gnome-shell-extensions.gcampax.github.com']
+enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'set-notification-position@brgvos', 'arcmenu@arcmenu.com', 'blur-my-shell@aunetx', 'ProxySwitcher@flannaghan.com', 'customize-ibus@hollowman.ml', 'dash-to-panel@jderose9.github.com', 'caffeine@patapon.info', 'lockkeys@vaina.lt', 'mediacontrols@cliffniff.github.com', 'clipboard-indicator@tudmotu.com', 'appindicatorsupport@rgcjonas.gmail.com', 'ding@rastersoft.com', 'accent-directories@taiwbi.com']
 
 
 
-[org.gnome.shell.extensions.user-theme]
-name='Orchis-Dark'
+
+#[org.gnome.shell.extensions.user-theme]
+#name='MacTahoe-Dark-red'
 
 
 

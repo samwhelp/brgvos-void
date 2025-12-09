@@ -2,15 +2,15 @@
 
 [org.gnome.desktop.interface]
 color-scheme='prefer-dark'
-gtk-theme='Fluent-round-Dark'
-icon-theme='Fluent'
-cursor-theme='Fluent-cursors'
+gtk-theme='MacTahoe-Dark-red'
+icon-theme='MacTahoe-grey-dark'
+cursor-theme='Fluent-dark-cursors'
 cursor-size=24
 
 
 [org.gnome.desktop.wm.preferences]
-theme='Fluent-round-Dark'
+theme='MacTahoe-Dark-red'
 
 
 [org.gnome.shell.extensions.user-theme]
-name='Fluent-round-Dark'
+name='MacTahoe-Dark-red'
