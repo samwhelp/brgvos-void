@@ -1,0 +1,5 @@
+desktop-environment-gnome-shell-extensions
+appearance-themes
+package-management-flathub
+base-dconf-system-db-init
+base-gsettings-schema-compile

@@ -1,0 +1,6 @@
+firefox-i18n-ro
+libreoffice-i18n-ro
+mythes-ro
+hyphen-ro
+manpages-ro
+hunspell-ro_RO

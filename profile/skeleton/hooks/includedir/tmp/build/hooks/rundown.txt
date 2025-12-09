@@ -1,0 +1,2 @@
+base-dconf-system-db-init
+base-gsettings-schema-compile
