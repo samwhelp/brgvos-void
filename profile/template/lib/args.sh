@@ -12,7 +12,7 @@ timestamp_start=$(date +'%d%m%Y_%H%M%S')
 
 ## args
 
-if [[ "${IS_DEBUG}" == "true" ]]; then
+if [ "${IS_DEBUG}" = "true" ]; then
 	echo
 	echo "##"
 	echo "## ## Load Args"
@@ -36,7 +36,7 @@ opt_service=$(cat "${plan_dir_path}/args/services.txt")
 opt_iso_file_name="${opt_title}_${opt_variant}_${opt_locale}_${opt_arch}_${timestamp_start}.iso"
 
 
-if [[ "${IS_DEBUG}" == "true" ]]; then
+if [ "${IS_DEBUG}" = "true" ]; then
 
 	echo
 	echo "## ## Option"
