@@ -1,7 +1,10 @@
+[desktop/ibus/general]
+preload-engines=['chewing']
+
 [org/gnome/desktop/input-sources]
-sources=[('xkb', 'ro'), ('xkb', 'us')]
+sources=[('xkb', 'us'), ('ibus', 'chewing')]
 xkb-options=@as []
-mru-sources=[('xkb', 'us')]
+mru-sources=[('xkb', 'us'), ('ibus', 'chewing')]
 
 [org/gnome/desktop/peripherals/keyboard]
 numlock-state=true
