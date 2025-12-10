@@ -25,3 +25,9 @@ sort-column='name'
 sort-directories-first=true
 sort-order='ascending'
 
+
+[org.gtk.Settings.FileChooser]
+show-hidden=true
+sort-column='name'
+sort-directories-first=true
+sort-order='ascending'
