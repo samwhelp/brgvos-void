@@ -245,7 +245,7 @@ sub_gnome_shell_extension_config_permission () {
 	## ## add permissions to the user to read extensions
 	##
 
-	info_msg "Add permissions to the user to read extensions"
+	echo "Add permissions to the user to read extensions"
 
 	chmod -R 755 /usr/share/gnome-shell/extensions/
 
