@@ -1,6 +1,7 @@
 nano
 micro
-mc 
+mc
+fzf
 eza 
 duf 
 ps_mem 

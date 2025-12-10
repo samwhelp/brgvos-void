@@ -9,6 +9,6 @@ workspace-names=['File', 'Edit', 'Web', 'Term', 'Misc']
 dynamic-workspaces=false
 
 
-[org.gnome.shell.overrides]
-dynamic-workspaces=false
+#[org.gnome.shell.overrides]
+#dynamic-workspaces=false
 
