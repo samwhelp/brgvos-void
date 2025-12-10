@@ -293,7 +293,7 @@ sub_themes_install_custom_theme_icon () {
 	## ## Add custom icon for arcmenu
 	##
 
-	info_msg "Add BRGV-OS icon for arcmenu"
+	echo "Add BRGV-OS icon for arcmenu"
 
 	cp -f /tmp/icons/brgvos-logo.svg /usr/share/gnome-shell/extensions/arcmenu@arcmenu.com/icons/
 
