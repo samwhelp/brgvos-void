@@ -1,5 +1,5 @@
 [org/gnome/desktop/input-sources]
-sources=[('xkb', 'ro'), ('xkb', 'us')]
+sources=[('xkb', 'us'), ('xkb', 'ro')]
 xkb-options=@as []
 mru-sources=[('xkb', 'us')]
 
