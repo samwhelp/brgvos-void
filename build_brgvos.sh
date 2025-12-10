@@ -74,7 +74,6 @@ info_msg "Now I run 'mkiso.sh' with the flags prepared before"
 sudo ./mkiso.sh \
 -a $arch \
 -b $variant \
--L $locale \
 -- -k $keymap \
 -B $variant \
 -l $locale \
