@@ -75,7 +75,6 @@ sudo ./mkiso.sh \
 -a $arch \
 -b $variant \
 -- -k $keymap \
--B $variant \
 -l $locale \
 -e $root_shell \
 -v $linux_version \
