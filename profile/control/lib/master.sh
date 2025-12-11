@@ -81,7 +81,7 @@ build_iso_profile_prepare_hooks_tail () {
 
 	util_dir_copy "${src_dir_path}" "${des_dir_path}"
 
-	echo 'chroot' | tee "${des_dir_path}/env.txt"
+	echo 'chroot' | tee "${des_dir_path}/env.txt" >/dev/null 2>&1
 
 	return 0
 }
@@ -115,7 +115,7 @@ build_iso_profile_override_by_control () {
 	util_dir_copy "${src_dir_path}" "${des_dir_path}"
 
 
-	echo 'build' | tee "${des_dir_path}/env.txt"
+	echo 'build' | tee "${des_dir_path}/env.txt" >/dev/null 2>&1
 
 
 	return 0
@@ -139,7 +139,7 @@ build_iso_profile_append_by_locale_package () {
 	local des_file_path="${des_dir_path}/args/package_install.txt"
 
 
-	cat "${src_file_path}" | tee -a "${des_file_path}"
+	cat "${src_file_path}" | tee -a "${des_file_path}" >/dev/null 2>&1
 
 
 	return 0
