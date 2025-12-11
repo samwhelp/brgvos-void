@@ -245,10 +245,19 @@ if [ -e /sys/firmware/efi/systab ]; then
   fi
 fi
 
-# For message with echo
+# For message with echo or printf in bash
 bold=$(tput bold) # Start bold text
 underline=$(tput smul) # Start underlined text
 reset=$(tput sgr0) # Turn off all attributes
+black=$(tput setaf 0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+yellow=$(tput setaf 3)
+blue=$(tput setaf 4)
+magenta=$(tput setaf 5)
+cyan=$(tput setaf 6)
+white=$(tput setaf 7)
+
 
 # Dialog colors
 BLACK="\Z0"
@@ -276,7 +285,7 @@ WIDGET_SIZE="10 70"
 DIALOG() {
   rm -f $ANSWER
   dialog --colors --keep-tite --no-shadow --no-mouse \
-    --backtitle "${BOLD}${WHITE}BRGV-OS Linux installation -- https://github.com/florintanasa/brgvos-void (@@MKLIVE_VERSION@@)${RESET}" \
+    --backtitle "${BOLD}${WHITE}BRGV-OS instalare Linux -- https://github.com/florintanasa/brgvos-void (@@MKLIVE_VERSION@@)${RESET}" \
     --cancel-label "Înapoi" --aspect 20 "$@" 2>$ANSWER
   return $?
 }
@@ -284,8 +293,15 @@ DIALOG() {
 INFOBOX() {
   # Note: dialog --infobox and --keep-tite don't work together
   dialog --colors --no-shadow --no-mouse \
-    --backtitle "${BOLD}${WHITE}BRGV-OS Linux installation -- https://github.com/florintanasa/brgvos-void (@@MKLIVE_VERSION@@)${RESET}" \
+    --backtitle "${BOLD}${WHITE}BRGV-OS instalare Linux -- https://github.com/florintanasa/brgvos-void (@@MKLIVE_VERSION@@)${RESET}" \
     --title "${TITLE}" --aspect 20 --infobox "$@"
+}
+
+GAUGE() {
+  # Note: dialog --infobox and --keep-tite don't work together
+  dialog --colors --no-shadow --no-mouse \
+    --backtitle "${BOLD}${WHITE}BRGV-OS instalare Linux -- https://github.com/florintanasa/brgvos-void (@@MKLIVE_VERSION@@)${RESET}" \
+    --title "${TITLE}" --aspect 20 --gauge "$@"
 }
 
 # Function used for clean exit from script
@@ -675,7 +691,7 @@ menu_filesystems() {
     else
       mntpoint=swap
     fi
-    DIALOG --yesno "Doriți să realizați un nou tip de sistem de fișiere pentru $dev?" ${YESNOSIZE}
+    DIALOG --yes-label "Da" --no-label "Nu" --yesno "Doriți să realizați un nou tip de sistem de fișiere pentru $dev?" ${YESNOSIZE}
     result=$?
     if [ "$result" -eq 0 ]; then
       reformat=1
@@ -1000,7 +1016,7 @@ ${BOLD}${RED}AVERTISMENT:\n
 Când o partiție este adăugată la un array RAID existent, datele de pe acea partiție se pierd deoarece subsistemul RAID
 zero‑ează dispozitivul înainte de a-l încorpora.\n
 Partiţia ${BLUE}'/boot/efi' ${RED}din configuraţia RAID are opţiunea ${BLUE}'noauto' ${RED}în
-${BLUE}'/etc/fstab'${RED}, deci nu este montată automat la pornire. Montaţi‑o manual numai când este necesar (de ex., înainte
+${BLUE}'/etc/fstab'${RED}, deci nu este montată automat la pornire. Montaţi‑o manual când este necesar (de ex., înainte
 de a rula update, dracut etc.).${RESET}
 \n
 \n
@@ -1100,7 +1116,7 @@ ${BOLD}${MAGENTA}RAID ${RED}60 ${YELLOW}(Dublă Paritate + Stripare)${RESET}\n
     # Check if the user select RAID
     if [ "$_raid" -ge 0 ]; then
       while true; do
-        DIALOG --ok-label "Select" --cancel-label "Done" --extra-button --extra-label "Abort" \
+        DIALOG --ok-label "Select" --cancel-label "Gata" --extra-button --extra-label "Anulează" \
           --title " Select partition(s) for raid" --menu "$MENULABEL" \
           ${MENUSIZE} $(show_partitions_filtered "$_dev")
         rv=$?
@@ -1128,6 +1144,74 @@ ${BOLD}${MAGENTA}RAID ${RED}60 ${YELLOW}(Dublă Paritate + Stripare)${RESET}\n
   fi
 }
 
+#  Function to calculate total capacity, out used on set_raid function
+calculate_total_capacity() {
+  local -a devs=("$@")
+  local total=0 size
+  for d in "${devs[@]}"; do
+    size=$(blockdev --getsize64 "$d")
+    total=$((total + size))
+  done
+  echo $((total / 1024))          # transform in KB
+}
+
+# Function to monitor progress for --write-zeroes
+#  $1 – total capacity in KB - calculated by function calculate_total_capacity
+#  $2 – device name for RAID (ex: md0)
+#  $3 - RAID type (ex: 5)
+#  $@ – Devices list
+monitor_progress() {
+  local total_kb=$1
+  local md_name=$2
+  local _raid=$3
+  shift 3
+  local -a devs=("$@")
+  # PID of mdadm launch by set_raid function
+  local mdadm_pid=$mdadm_pid
+  local last_perc=0
+  local written=0
+  TITLE="Progres pentru scriere zero"
+  GAUGE "Începerea procesului…" 10 70 0 &
+  local dlg_pid=$!
+  while :; do
+    local cur_written=0
+    for d in "${devs[@]}"; do
+      if [[ -b "$d" ]]; then
+        # iostat with -dk, jump the header and take col 7 (KB written)
+        local kb
+        kb=$(iostat -dk "$d" 1 1 | tail -n +4 | awk '{print $7}' | head -n1)
+        [[ -z $kb ]] && kb=0
+        cur_written=$((cur_written + kb))
+      fi
+    done
+    written=$cur_written
+    # Percent calcul
+    local perc=0
+    (( total_kb > 0 )) && perc=$((written * 100 / total_kb))
+    # Check the RAID status from /proc/mdstat
+    local status=$(grep "md${_index}" /proc/mdstat)
+    if echo "$status" | grep -q "active"; then
+      echo "Scrierea discurilor cu zero completă!" >> "$LOG"
+      perc=100
+    fi
+    # Refresh gauge dialog only if percentage is changed
+    if (( perc != last_perc )); then
+      last_perc=$perc
+      echo "$perc" | GAUGE "RAID $_raid: $md_name\nCapacitate totală: ${total_kb}KB\nScris: ${written}KB" 10 70
+    fi
+
+    # Out from function when the mdadm command is closed
+    if ! ps -p $mdadm_pid > /dev/null; then
+      echo "Comanda mdadm s‑a terminat." >> "$LOG"
+      break
+    fi
+    # Wait 1s
+    sleep 1
+  done
+  # Kill dialog using PID at the final
+  kill "$dlg_pid" 2>/dev/null
+}
+
 # Function to create raid software with loaded parameters from saved configure file
 set_raid() {
   # Define some local variables
@@ -1145,33 +1229,91 @@ set_raid() {
   if [ -n "$_raid" ] && [ -n "$_raidpv" ]; then
     [ -z "$_index" ] && _index=0  # Initialize an index for unique naming raid block if not exist saved in configure file
     _raidnbdev=$(wc -w <<< "$_raidpv") # count numbers of partitions
-    echo "Create RAID $_raid for $_raidpv" >>"$LOG"
+    echo "Construiesc RAID $_raid utilizând $_raidpv" >>"$LOG"
     {
       if [ "$_raid" -eq 0 ]; then
         if echo "$_raidpv" | grep -q md; then # Check if used a raid, if yes do not write zero again
           set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=0 --homehost="$_hostname" \
             --raid-devices="$_raidnbdev" "$@"
         else
-          set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=0 --write-zeroes --homehost="$_hostname" \
-          --raid-devices="$_raidnbdev" "$@"
+          set -- $_raidpv;
+          mdadm --create --verbose /dev/md${_index} --level=0 --write-zeroes --homehost="$_hostname" \
+                --raid-devices="$_raidnbdev" "$@" &> /dev/null &
+          mdadm_pid=$!
+          set -- $_raidpv;
+          # Call the function calculate_total_capacity with parameters (list of partitions) and assign the result
+          total_kb=$(calculate_total_capacity "$@")
+          set -- $_raidpv;
+          # Call the function with parameters
+          monitor_progress "$total_kb" "md${_index}" "$_raid" "$@"
         fi
       elif [ "$_raid" -eq 1 ]; then
-        set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=1 --write-zeroes --homehost="$_hostname" \
-        --bitmap='internal' --metadata=1.2 --raid-devices="$_raidnbdev" "$@"
+        set -- $_raidpv;
+        #mdadm --create --verbose /dev/md${_index} --level=1 --write-zeroes --homehost="$_hostname" \
+        #--bitmap='internal' --metadata=1.2 --raid-devices="$_raidnbdev" "$@"
+        mdadm --create --verbose /dev/md${_index} --level=1 --write-zeroes --homehost="$_hostname" \
+          --bitmap='internal' --metadata=1.2 --raid-devices="$_raidnbdev" "$@" &> /dev/null &
+        mdadm_pid=$!
+        set -- $_raidpv;
+        # Call the function calculate_total_capacity with parameters (list of partitions) and assign the result
+        total_kb=$(calculate_total_capacity "$@")
+        set -- $_raidpv;
+        # Call the function with parameters
+        monitor_progress "$total_kb" "md${_index}" "$_raid" "$@"
       elif [ "$_raid" -eq 4 ]; then
-        set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=4 --write-zeroes --homehost="$_hostname" \
-        --bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+        set -- $_raidpv;
+        #mdadm --create --verbose /dev/md${_index} --level=4 --write-zeroes --homehost="$_hostname" \
+        #--bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+        mdadm --create --verbose /dev/md${_index} --level=4 --write-zeroes --homehost="$_hostname" \
+          --bitmap='internal' --raid-devices="$_raidnbdev" "$@" &> /dev/null &
+        mdadm_pid=$!
+        set -- $_raidpv;
+        # Call the function calculate_total_capacity with parameters (list of partitions) and assign the result
+        total_kb=$(calculate_total_capacity "$@")
+        set -- $_raidpv;
+        # Call the function with parameters
+        monitor_progress "$total_kb" "md${_index}" "$_raid" "$@"
       elif [ "$_raid" -eq 5 ]; then
-        set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=5 --write-zeroes --homehost="$_hostname" \
-        --bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+        set -- $_raidpv;
+        #mdadm --create --verbose /dev/md${_index} --level=5 --write-zeroes --homehost="$_hostname" \
+        #--bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+        mdadm --create --verbose /dev/md${_index} --level=5 --write-zeroes --homehost="$_hostname" \
+          --bitmap='internal' --raid-devices="$_raidnbdev" "$@" &> /dev/null &
+        mdadm_pid=$!
+        set -- $_raidpv;
+        # Call the function calculate_total_capacity with parameters (list of partitions) and assign the result
+        total_kb=$(calculate_total_capacity "$@")
+        set -- $_raidpv;
+        # Call the function with parameters
+        monitor_progress "$total_kb" "md${_index}" "$_raid" "$@"
       elif [ "$_raid" -eq 6 ]; then
-        set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=6 --write-zeroes --homehost="$_hostname" \
-        --bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+        set -- $_raidpv;
+        #mdadm --create --verbose /dev/md${_index} --level=6 --write-zeroes --homehost="$_hostname" \
+        #--bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+        mdadm --create --verbose /dev/md${_index} --level=6 --write-zeroes --homehost="$_hostname" \
+          --bitmap='internal' --raid-devices="$_raidnbdev" "$@" &> /dev/null &
+        mdadm_pid=$!
+        set -- $_raidpv;
+        # Call the function calculate_total_capacity with parameters (list of partitions) and assign the result
+        total_kb=$(calculate_total_capacity "$@")
+        set -- $_raidpv;
+        # Call the function with parameters
+        monitor_progress "$total_kb" "md${_index}" "$_raid" "$@"
       elif [ "$_raid" -eq 10 ]; then
-        set -- $_raidpv; mdadm --create --verbose /dev/md${_index} --level=10 --write-zeroes --homehost="$_hostname" \
-        --bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+        set -- $_raidpv;
+        #mdadm --create --verbose /dev/md${_index} --level=10 --write-zeroes --homehost="$_hostname" \
+        #--bitmap='internal' --raid-devices="$_raidnbdev" "$@"
+        mdadm --create --verbose /dev/md${_index} --level=10 --write-zeroes --homehost="$_hostname" \
+          --bitmap='internal' --raid-devices="$_raidnbdev" "$@" &> /dev/null &
+        mdadm_pid=$!
+        set -- $_raidpv;
+        # Call the function calculate_total_capacity with parameters (list of partitions) and assign the result
+        total_kb=$(calculate_total_capacity "$@")
+        set -- $_raidpv;
+        # Call the function with parameters
+        monitor_progress "$total_kb" "md${_index}" "$_raid" "$@"
       fi
-    } >>"$LOG" 2>&1
+    } #>>"$LOG" 2>&1
     # Prepare config file /etc/mdadm.conf
     _mdadm=$(mdadm --detail --scan)
     echo "$_mdadm" > /etc/mdadm.conf
@@ -1373,7 +1515,7 @@ menu_rootpassword() {
       fi
       if [ -n "${_firstpass}" -a -n "${_secondpass}" ]; then
         if [ "${_firstpass}" != "${_secondpass}" ]; then
-          INFOBOX "Parolele nu se potrivesc! Va trebui să le introduceți din nou." 6 60
+          INFOBOX "${RED}EROARE:${RESET}Parolele nu se potrivesc! Va trebui să le introduceți din nou." 6 60
           unset _firstpass _secondpass _again
           sleep 2 && clear && continue
         fi
@@ -1410,7 +1552,7 @@ menu_useraccount() {
         USERLOGIN_DONE=1
         break
       else
-        INFOBOX "Nume de utilizator nevalid! Va trebui să încercați din nou." 6 60
+        INFOBOX "${RED}EROARE:${RESET}Nume de utilizator nevalid! Va trebui să încercați din nou." 6 60
         unset _userlogin
         sleep 2 && clear && continue
       fi
@@ -1448,7 +1590,7 @@ menu_useraccount() {
       fi
       if [ -n "${_firstpass}" -a -n "${_secondpass}" ]; then
         if [ "${_firstpass}" != "${_secondpass}" ]; then
-          INFOBOX "Parolele nu se potrivesc! Va trebui să le introduceți din nou." 6 60
+          INFOBOX "${RED}EROARE:${RESET}Parolele nu se potrivesc! Va trebui să le introduceți din nou." 6 60
           unset _firstpass _secondpass _again
           sleep 2 && clear && continue
         fi
@@ -1468,7 +1610,7 @@ menu_useraccount() {
     _groups="wheel,audio,video,floppy,cdrom,optical,kvm,users,xbuilder"
   fi
   while true; do
-    _desc="Selectați apartenența la grupuri pentru utilizator '$(get_option USERLOGIN)':"
+    _desc="Selectați apartenența la grupuri pentru utilizatorul '$(get_option USERLOGIN)':"
     for _group in $(cat /etc/group); do
       _gid="$(echo ${_group} | cut -d: -f3)"
       _group="$(echo ${_group} | cut -d: -f1)"
@@ -1522,7 +1664,7 @@ menu_bootloader() {
     fi
   done
   while true; do
-    DIALOG --yesno "Utilizați un terminal grafic pentru bootloader?" ${YESNOSIZE}
+    DIALOG --yes-label "Da" --no-label "Nu" --yesno "Utilizați un terminal grafic pentru bootloader?" ${YESNOSIZE}
     if [ $? -eq 0 ]; then
       set_option TEXTCONSOLE 0
       break
@@ -1632,10 +1774,10 @@ set_bootloader() {
   chroot $TARGETDIR sed -i 's/GRUB_DISTRIBUTOR="Void"/GRUB_DISTRIBUTOR="BRGV-OS"/g' /etc/default/grub >>$LOG 2>&1
   if [ "$bool" -eq 1 ] && [ "$_boot" -eq 0 ]; then # For full encrypted installation
     echo "Se pregătesc parametrii în Grub pentru dispozitvul criptat ${bold}${luks_devices[*]}${reset}"  >>$LOG
-    chroot $TARGETDIR sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 ${_rd_luks_uuid} cryptkey=rootfs:\/boot\/cryptlvm.key quiet splash\"/g" /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 ${RD_MD_UUID} ${_rd_luks_uuid} cryptkey=rootfs:\/boot\/cryptlvm.key quiet splash\"/g" /etc/default/grub >>$LOG 2>&1
   else # For not full encrypted installation
     echo "Se pregătesc parametrii în Grub pentru dispozitvul ${bold}$ROOTFS${reset}"  >>$LOG
-    chroot $TARGETDIR sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 ${_rd_luks_uuid} quiet splash\"/g" /etc/default/grub >>$LOG 2>&1
+    chroot $TARGETDIR sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 ${RD_MD_UUID} ${_rd_luks_uuid} quiet splash\"/g" /etc/default/grub >>$LOG 2>&1
   fi
   chroot $TARGETDIR sed -i '$aGRUB_DISABLE_OS_PROBER=false' /etc/default/grub >>$LOG 2>&1
   echo "Rulez grub-mkconfig on ${bold}$TARGETDIR${reset}..." >>"$LOG"
@@ -1666,7 +1808,7 @@ test_network() {
   if [ "$1" = "nm" ]; then
     DIALOG --msgbox "Managerul de rețea este activat, dar rețeaua este inaccesibilă. Vă rugăm să configurați extern cu nmcli, nmtui sau applet-ul Manager de rețea din bara de instrumente." ${MSGBOXSIZE}
   else
-    DIALOG --msgbox "Rețeaua este inaccesibilă, vă rugăm să o configurați corect." ${MSGBOXSIZE}
+    DIALOG --msgbox "${RED}EROARE:${RESET}Rețeaua este inaccesibilă, vă rugăm să o configurați corect." ${MSGBOXSIZE}
   fi
 }
 
@@ -1685,10 +1827,10 @@ configure_wifi() {
     DIALOG --msgbox "SSID nevalid." ${MSGBOXSIZE}
     return 1
   elif [ -z "$enc" -o "$enc" != "wep" -a "$enc" != "wpa" ]; then
-    DIALOG --msgbox "Tip de criptare nevalid (valori posibile: wep sau wpa)." ${MSGBOXSIZE}
+    DIALOG --msgbox "${RED}EROARE:${RESET}Tip de criptare nevalid (valori posibile: wep sau wpa)." ${MSGBOXSIZE}
     return 1
   elif [ -z "$pass" ]; then
-    DIALOG --msgbox "Parolă incorectă pentru AP" ${MSGBOXSIZE}
+    DIALOG --msgbox "${RED}EROARE:${RESET}Parolă incorectă pentru AP" ${MSGBOXSIZE}
   fi
 
   # reset the configuration to the default, if necessary
@@ -1720,7 +1862,7 @@ EOF
 configure_net() {
   local dev="$1" rval
 
-  DIALOG --yesno "Doriți să utilizați DHCP pentru $dev?" ${YESNOSIZE}
+  DIALOG --yes-label "Da" --no-label "Nu" --yesno "Doriți să utilizați DHCP pentru $dev?" ${YESNOSIZE}
   rval=$?
   if [ $rval -eq 0 ]; then
     configure_net_dhcp $dev
@@ -1886,9 +2028,9 @@ ca FAT32, cu punctul de montare /boot/efi și cu o dimensiune de cel puțin 100M
 create_filesystems() {
   # Define some variables local
   local mnts dev mntpt fstype fspassno mkfs size rv uuid MKFS mem_total swap_need disk_name disk_type ROOT_UUID SWAP_UUID
-  local _lvm _crypt _vgname _lvswap _lvrootfs _home _basename_mntpt _devcrypt _raid
+  local _lvm _crypt _vgname _lvswap _lvrootfs _home _basename_mntpt _devcrypt _raid _dev
   # Initialize some local variables
-  disk_type=0
+  disk_type=0 # Default SSD used
   _lvm=$(get_option LVM)
   _crypt=$(get_option CRYPTO_LUKS)
   _devcrypt=$(get_option DEVCRYPT)
@@ -1966,7 +2108,8 @@ create_filesystems() {
         DIE 1
       fi
     # Check if was mounted HDD or SSD
-    if [ "$_lvm" -eq 1 ] && [ "$_crypt" -eq 1 ]; then # For LVM on LUKS
+    # For LVM on LUKS
+    if lvdisplay -m $dev 2>/dev/null| awk '/^    Physical volume/ {print $3}'| grep -q crypt; then
       disk_name=$(lsblk -ndo pkname $(
         for pv in $(lvdisplay -m "$dev" | awk '/^    Physical volume/ {print $3}' | sort -u); do
           dm=$(basename "$(readlink -f "$pv")")
@@ -1975,23 +2118,26 @@ create_filesystems() {
           done
         done
       ) | sort -u)
-      echo "Pentru LVM+LUKS sunt utilizate discurile ${bold}$disk_name${reset}" >>"$LOG"
+      echo -e "Pentru LVM+LUKS sunt utilizate discurile:\n${bold}$disk_name${reset}" >>"$LOG"
       # Read every line from disk_name into matrices
       mapfile -t _map <<< "$disk_name"
       echo "Determin tipul de disc utilizat (SSD/HDD) pentru ${bold}${_map[0]}${reset}" >>"$LOG"
       # Get first element from matrices
       # I take in consideration only first disk (consider all disk are the same type HDD or SSD)
       disk_type=$(cat /sys/block/"${_map[0]}"/queue/rotational)
-    elif [ "$_lvm" -eq 1 ] && [ "$_crypt" -eq 0 ]; then # For LVM
+    # For LVM
+    elif lvs --noheadings|while read -r lvname vgname perms size; do
+      echo "/dev/mapper/${vgname}-${lvname}"; done | grep -q "$dev"; then
       disk_name=$(lsblk -ndo pkname $(lvdisplay -m "$dev" | awk '/^    Physical volume/ {print $3}') | sort -u)
-      echo "Pentru LVM sunt utilizate discurile ${bold}$disk_name${reset}" >>"$LOG"
+      echo -e "Pentru LVM sunt utilizate discurile:\n${bold}$disk_name${reset}" >>"$LOG"
       # Read every line from disk_name into matrices
       mapfile -t _map <<< "$disk_name"
       echo "Determin tipul de disc utilizat (SSD/HDD) pentru ${bold}${_map[0]}${reset}" >>"$LOG"
       # Get first element from matrices
       # I take in consideration only first disk (consider all disk are the same type HDD or SSD)
       disk_type=$(cat /sys/block/"${_map[0]}"/queue/rotational)
-    elif [ "$_crypt" -eq 1 ] && [ "$_lvm" -eq 0 ]; then # For LUKS
+    # For LUKS
+    elif ls -d /dev/mapper/crypt_* 2>/dev/null|grep '[0-9]'| grep -q "$dev"; then
       disk_name=$(lsblk -ndo pkname "$(
         for s in /sys/class/block/"$(basename "$(readlink -f "$dev")")"/slaves/*; do
           echo "/dev/${s##*/}"
@@ -1999,7 +2145,61 @@ create_filesystems() {
       )")
       echo "Pentru LUKS, determin tipul de disc utilizat (SSD/HDD) pentru ${bold}$disk_name${reset}" >>"$LOG"
       disk_type=$(cat /sys/block/"$disk_name"/queue/rotational)
-    else # For all over
+    # For RAID on LUKS
+    elif [ "$(cat /proc/mdstat | grep "$(basename "$dev")" | awk '{print $1}')" = "$(basename "$dev")" ] &&
+      ls -d /dev/mapper/crypt_* 2>/dev/null|grep '[0-9]'| grep -q crypt; then
+        disk_name=$(for s in /sys/class/block/$(basename "$(readlink -f "$dev")")/slaves/*; do
+          _dev=$(basename "$s")
+          if echo $_dev | grep -q dm; then
+            for s in /sys/class/block/$_dev/slaves/*; do
+              _dev=$(basename "$s")
+              parent=$(lsblk -ndo pkname /dev/"$_dev")
+              if [ -n "$parent" ]; then
+                echo "$parent"
+              fi
+            done | sort -u
+           else
+            parent=$(lsblk -ndo pkname /dev/"$_dev")
+            if [ -n "$parent" ]; then
+              echo "$parent"
+            fi
+          fi
+        done | sort -u)
+      echo -e "For RAID+LUKS are used next disks:\n ${bold}$disk_name${reset}" >>"$LOG"
+      # Read every line from disk_name into matrices
+      mapfile -t _map <<< "$disk_name"
+      echo "Determine type of disk (SSD/HDD) is used for ${bold}${_map[0]}${reset}" >>"$LOG"
+      # Get first element from matrices
+      # I take in consideration only first disk (consider all disk are the same type HDD or SSD)
+      disk_type=$(cat /sys/block/"${_map[0]}"/queue/rotational)
+    # For RAID
+    elif [ "$(cat /proc/mdstat | grep "$(basename "$dev")" | awk '{print $1}')" = "$(basename "$dev")" ]; then
+      disk_name=$(for s in /sys/class/block/$(basename "$(readlink -f "$dev")")/slaves/*; do
+        _dev=$(basename "$s")
+        if echo $_dev | grep -q md; then
+          for s in /sys/class/block/$_dev/slaves/*; do
+            _dev=$(basename "$s")
+            parent=$(lsblk -ndo pkname /dev/"$_dev")
+            if [ -n "$parent" ]; then
+              echo "$parent"
+            fi
+          done | sort -u
+        else
+          parent=$(lsblk -ndo pkname /dev/"$_dev")
+          if [ -n "$parent" ]; then
+            echo "$parent"
+          fi
+        fi
+      done | sort -u)
+      echo -e "Pentru RAID sunt utilizate discurile:\n${bold}$disk_name${reset}" >>"$LOG"
+      # Read every line from disk_name into matrices
+      mapfile -t _map <<< "$disk_name"
+      echo "Determin tipul de disc utilizat (SSD/HDD) pentru ${bold}${_map[0]}${reset}" >>"$LOG"
+      # Get first element from matrices
+      # I take in consideration only first disk (consider all disk are the same type HDD or SSD)
+      disk_type=$(cat /sys/block/"${_map[0]}"/queue/rotational)
+    # For all over
+    else
       disk_name=$(lsblk -ndo pkname "$dev")
       echo "Determin tipul de disc utilizat (SSD/HDD) pentru ${bold}$disk_name${reset}" >>"$LOG"
       disk_type=$(cat /sys/block/"$disk_name"/queue/rotational)
@@ -2091,13 +2291,9 @@ create_filesystems() {
       DIE
     fi
     # Check if was mounted HDD or SSD
-    # Some part of code is not used (for LVM, LVM+LUKS) now because I have only 2 logical volume: vg0-lvbrgvos for rootfs /
-    # and vg0-lvswap for swap, but I added for future, I which to add more volume for example vgo-lvhome for /home
     echo "Pentru dispozitivul ${bold}$dev${reset}" >>"$LOG"
-    if [[ $dev != /dev/mapper/* ]]; then # Check if device is not listed on /dev/mapper/
-      disk_name=$(lsblk -ndo pkname "$dev")
-      disk_type=$(cat /sys/block/"$disk_name"/queue/rotational)
-    elif [ "$_lvm" -eq 1 ] && [ "$_crypt" -eq 1 ]; then # For LVM on LUKS
+    # For LVM on LUKS
+    if lvdisplay -m $dev 2>/dev/null| awk '/^    Physical volume/ {print $3}'| grep -q crypt; then
       disk_name=$(lsblk -ndo pkname $(
         for pv in $(lvdisplay -m "$dev" | awk '/^    Physical volume/ {print $3}' | sort -u); do
           dm=$(basename "$(readlink -f "$pv")")
@@ -2106,13 +2302,15 @@ create_filesystems() {
           done
         done
       ) | sort -u)
-      echo "Pentru LVM+LUKS este utilizat discul ${bold}$disk_name${reset}" >>"$LOG"
+      echo -e "Pentru LVM+LUKS este/sunt utilizat(e) discul(e):\n${bold}$disk_name${reset}" >>"$LOG"
       # Read every line from disk_name into matrices
       mapfile -t _map <<< "$disk_name"
       # Get element from matrices
       disk_type=$(cat /sys/block/"${_map[0]}"/queue/rotational)
       echo "Determin tipul de disc utilizat (SSD/HDD) pentru ${bold}${_map[0]}${reset}" >>"$LOG"
-    elif [ "$_lvm" -eq 1 ] && [ "$_crypt" -eq 0 ]; then # For LVM
+    # For LVM
+    elif lvs --noheadings|while read -r lvname vgname perms size; do
+      echo "/dev/mapper/${vgname}-${lvname}"; done | grep -q "$dev"; then
       disk_name=$(lsblk -ndo pkname $(lvdisplay -m "$dev" | awk '/^    Physical volume/ {print $3}') | sort -u)
       echo "Pentru LVM este utilizat ${bold}$disk_name${reset}" >>"$LOG"
       # Read every line from disk_name into matrices
@@ -2120,15 +2318,70 @@ create_filesystems() {
       echo "Determin tipul de disc utilizat (SSD/HDD) pentru ${bold}${_map[0]}${reset}" >>"$LOG"
       # Get element from matrices
       disk_type=$(cat /sys/block/"${_map[0]}"/queue/rotational)
-    elif [ "$_crypt" -eq 1 ] && [ "$_lvm" -eq 0 ]; then # For LUKS
+    # For LUKS
+    elif ls -d /dev/mapper/crypt_* 2>/dev/null|grep '[0-9]'| grep -q "$dev"; then
       disk_name=$(lsblk -ndo pkname "$(
         for s in /sys/class/block/"$(basename "$(readlink -f "$dev")")"/slaves/*; do
           echo "/dev/${s##*/}"
         done
       )")
-      echo "Pentru LUKS, determin tipul de disc utilizat (SSD/HDD) pentru ${bold}$disk_name${reset}" >>"$LOG"
+      echo -e "Pentru LUKS, determin tipul de disc utilizat (SSD/HDD) pentru:\n${bold}$disk_name${reset}" >>"$LOG"
       disk_type=$(cat /sys/block/"$disk_name"/queue/rotational)
-    else # For all over, if exist :)
+    # For RAID on LUKS
+    elif [ "$(cat /proc/mdstat | grep "$(basename "$dev")" | awk '{print $1}')" = "$(basename "$dev")" ] &&
+      ls -d /dev/mapper/crypt_* 2>/dev/null|grep '[0-9]'| grep -q crypt; then
+        disk_name=$(for s in /sys/class/block/$(basename "$(readlink -f "$dev")")/slaves/*; do
+          _dev=$(basename "$s")
+          if echo $_dev | grep -q dm; then
+            for s in /sys/class/block/$_dev/slaves/*; do
+              _dev=$(basename "$s")
+              parent=$(lsblk -ndo pkname /dev/"$_dev")
+              if [ -n "$parent" ]; then
+                echo "$parent"
+              fi
+            done | sort -u
+           else
+            parent=$(lsblk -ndo pkname /dev/"$_dev")
+            if [ -n "$parent" ]; then
+              echo "$parent"
+            fi
+          fi
+        done | sort -u)
+      echo -e "Pentru RAID+LUKS sunt utilizate discurile:\n ${bold}$disk_name${reset}" >>"$LOG"
+      # Read every line from disk_name into matrices
+      mapfile -t _map <<< "$disk_name"
+      echo "Determin tipul de disc utilizat (SSD/HDD) pentru ${bold}${_map[0]}${reset}" >>"$LOG"
+      # Get first element from matrices
+      # I take in consideration only first disk (consider all disk are the same type HDD or SSD)
+      disk_type=$(cat /sys/block/"${_map[0]}"/queue/rotational)
+    # For RAID
+    elif [ "$(cat /proc/mdstat | grep "$(basename "$dev")" | awk '{print $1}')" = "$(basename "$dev")" ]; then
+      disk_name=$(for s in /sys/class/block/$(basename "$(readlink -f "$dev")")/slaves/*; do
+        _dev=$(basename "$s")
+        if echo $_dev | grep -q md; then
+          for s in /sys/class/block/$_dev/slaves/*; do
+            _dev=$(basename "$s")
+            parent=$(lsblk -ndo pkname /dev/"$_dev")
+            if [ -n "$parent" ]; then
+              echo "$parent"
+            fi
+          done | sort -u
+        else
+          parent=$(lsblk -ndo pkname /dev/"$_dev")
+          if [ -n "$parent" ]; then
+            echo "$parent"
+          fi
+        fi
+      done | sort -u)
+      echo -e "Pentru RAID sunt utilizate discurile:\n${bold}$disk_name${reset}" >>"$LOG"
+      # Read every line from disk_name into matrices
+      mapfile -t _map <<< "$disk_name"
+      echo "Determin tipul de disc utilizat (SSD/HDD) pentru ${bold}${_map[0]}${reset}" >>"$LOG"
+      # Get first element from matrices
+      # I take in consideration only first disk (consider all disk are the same type HDD or SSD)
+      disk_type=$(cat /sys/block/"${_map[0]}"/queue/rotational)
+    # For all over
+    else
       disk_name=$(lsblk -ndo pkname "$dev")
       echo "Determin tipul de disc utilizat (SSD/HDD) pentru ${bold}$disk_name${reset}" >>"$LOG"
       disk_type=$(cat /sys/block/"$disk_name"/queue/rotational)
@@ -2252,7 +2505,7 @@ log_and_count() {
     if [ "$progress" != "$copy_progress" ]; then
       whole=$((progress / 10))
       tenth=$((progress % 10))
-      printf "Progres: %d.%d%% (%d of %d files)\n" $whole $tenth $copy_count $copy_total
+      printf "Progres: %d.%d%% (%d din %d de fișiere)\n" $whole $tenth $copy_count $copy_total
       copy_progress=$progress
     fi
   done
@@ -2373,11 +2626,11 @@ menu_install() {
   BOOTLOADER_DONE="$(get_option BOOTLOADER)"
 
   if [ -z "$ROOTPASSWORD_DONE" ]; then
-    DIALOG --msgbox "${BOLD}Parola de root nu a fost configurată, \
+    DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET}${BOLD}Parola de root nu a fost configurată, \
     vă rugăm să faceți acest lucru înainte de a începe instalarea.${RESET}" ${MSGBOXSIZE}
     return 1
   elif [ -z "$BOOTLOADER_DONE" ]; then
-    DIALOG --msgbox "${BOLD}Discul pentru instalarea bootloader-ului nu a fost \
+    DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET}${BOLD}Discul pentru instalarea bootloader-ului nu a fost \
     configurat, vă rugăm să faceți acest lucru înainte de a începe instalarea.${RESET}" ${MSGBOXSIZE}
     return 1
   fi
@@ -2387,7 +2640,7 @@ menu_install() {
   validate_filesystems || return 1
 
   if [ -z "$FILESYSTEMS_DONE" ]; then
-    DIALOG --msgbox "${BOLD}Sistemele de fișiere necesare nu au fost configurate, \
+    DIALOG --msgbox "${BOLD}${RED}EROARE:${RESET}${BOLD}Sistemele de fișiere necesare nu au fost configurate, \
     vă rugăm să faceți acest lucru înainte de a începe instalarea.${RESET}" ${MSGBOXSIZE}
     return 1
   fi
@@ -2396,13 +2649,13 @@ menu_install() {
   validate_useraccount
 
   if [ -z "$USERACCOUNT_DONE" ]; then
-    DIALOG --yesno "${BOLD}Contul de utilizator nu este configurat corect.${RESET}\n\n
+    DIALOG --yes-label "Da" --no-label "Nu" --yesno "${BOLD}Contul de utilizator nu este configurat corect.${RESET}\n\n
     ${BOLD}${RED}AVERTISMENT: nu va fi creat niciun utilizator. Veți putea să vă conectați \
     doar cu utilizatorul root în noul sistem.${RESET}\n\n
     ${BOLD}Doriți să continuați?${RESET}" 10 60 || return
   fi
 
-  DIALOG --yesno "${BOLD}Următoarele operațiuni vor fi executate:${RESET}\n\n
+  DIALOG --yes-label "Da" --no-label "Nu" --yesno "${BOLD}Următoarele operațiuni vor fi executate:${RESET}\n\n
   ${BOLD}${TARGETFS}${RESET}\n
   ${BOLD}${RED}AVERTISMENT: datele de pe partițiile marcate SISTEM DE FIȘIER NOU vor fi COMPLET DISTRUSE.${RESET}\n\n
   ${BOLD}Doriți să continuați?${RESET}" 20 80 || return
@@ -2540,7 +2793,7 @@ menu_install() {
   umount_filesystems
 
   # installed successfully.
-  DIALOG --yesno "${BOLD}BRGV-OS Linux a fost instalat cu succes!${RESET}\n
+  DIALOG --yes-label "Da" --no-label "Nu" --yesno "${BOLD}${GREEN}BRGV-OS Linux a fost instalat cu succes!${RESET}\n
   Doriți să reporniți sistemul?" ${YESNOSIZE}
   if [ $? -eq 0 ]; then
     shutdown -r now
@@ -2600,8 +2853,8 @@ menu() {
       "UserAccount" "Setați numele de utilizator și parola" \
       "BootLoader" "Setați discul pentru instalarea bootloader-ului" \
       "Partition" "Partiționați discul(-rile)" \
-      "Raid" "Raid software" \
       "LVM&LUKS" "Configurați LVM și/sau criptarea cu LUKS" \
+      "Raid" "Raid software" \
       "Filesystems" "Configurați sistemul de fișiere și punctele de montare" \
       "Install" "Porniți instalarea cu setările realizate" \
       "Exit" "Ieșiți din mediul de instalare"
@@ -2622,8 +2875,8 @@ menu() {
       "UserAccount" "Setați numele de utilizator și parola" \
       "BootLoader" "Setați discul pentru instalarea bootloader-ului" \
       "Partition" "Partiționați discul(-rile)" \
-      "Raid" "Raid software" \
       "LVM&LUKS" "Configurați LVM și/sau criptarea cu LUKS" \
+      "Raid" "Raid software" \
       "Filesystems" "Configurați sistemul de fișiere și punctele de montare" \
       "Install" "Porniți instalarea cu setările realizate" \
       "Exit" "Ieșiți din mediul de instalare"
@@ -2651,13 +2904,13 @@ menu() {
   "UserAccount") menu_useraccount && [ -n "$USERLOGIN_DONE" ] && [ -n "$USERPASSWORD_DONE" ] \
     && DEFITEM="BootLoader";;
   "BootLoader") menu_bootloader && [ -n "$BOOTLOADER_DONE" ] && DEFITEM="Partition";;
-  "Partition") menu_partitions && [ -n "$PARTITIONS_DONE" ] && DEFITEM="Raid";;
-  "Raid") menu_raid && [ -n "$RAID_DONE" ] && DEFITEM="LVM&LUKS";;
-  "LVM&LUKS") menu_lvm_luks && [ -n "$LVMLUKS_DONE" ] && DEFITEM="Filesystems";;
+  "Partition") menu_partitions && [ -n "$PARTITIONS_DONE" ] && DEFITEM="LVM&LUKS";;
+  "LVM&LUKS") menu_lvm_luks && [ -n "$LVMLUKS_DONE" ] && DEFITEM="Raid";;
+  "Raid") menu_raid && [ -n "$RAID_DONE" ] && DEFITEM="Filesystems";;
   "Filesystems") menu_filesystems && [ -n "$FILESYSTEMS_DONE" ] && DEFITEM="Install";;
   "Install") menu_install;;
   "Exit") DIE;;
-  *) DIALOG --yesno "Anulați instalarea?" ${YESNOSIZE} && DIE
+  *) DIALOG --yes-label "Da" --no-label "Nu" --yesno "${RED}Anulați instalarea?${RESET}" ${YESNOSIZE} && DIE
   esac
 }
 
